@@ -3,6 +3,7 @@ import IconEye from "@/components/icon/icon-eye";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import IconLockDots from "@/components/icon/icon-lock-dots";
+import Image from "next/image";
 
 const ComponentsAuthLoginForm = () => {
   const router = useRouter();
@@ -18,18 +19,50 @@ const ComponentsAuthLoginForm = () => {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen items-center justify-center relative overflow-hidden">
+      {/* Background à deux couleurs solides */}
       <div className="absolute inset-0 flex">
         <div className="w-1/2 bg-[#FFDFBD]"></div>
         <div className="w-1/2 bg-[#F07D00]"></div>
       </div>
 
+      {/* SVG Animés autour du formulaire */}
+      {/* <div className="absolute top-0 left-0 z-0">
+        <svg width="200" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="40" stroke="#F07D00" strokeWidth="2" fill="none" className="animate-pulse" />
+        </svg>
+      </div>
+      <div className="absolute bottom-0 right-0 z-0">
+        <svg width="150" height="150" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="10" y="10" width="80" height="80" stroke="#FFDFBD" strokeWidth="2" fill="none" className="animate-spin-slow" />
+        </svg>
+      </div> */}
+
+      {/* Logo en haut à gauche */}
+      <div className="absolute top-5 left-5">
+        <Image
+          width={181}
+          height={82}
+          src="/assets/images/auth/logo.png"
+          alt="Logo"
+          className="h-12 w-auto"
+        />
+      </div>
+
       <div className="relative z-10 w-full max-w-md p-8 bg-white rounded-2xl shadow-lg dark:bg-gray-800">
-        <h1 className="text-xl font-semibold text-center text-gray-900 dark:text-white">
-          Bienvenue à Suivi Encaissement
-        </h1>
-        <h2 className="mt-2 text-3xl font-bold text-center text-gray-900 dark:text-white">
-          Connexion
+        {/* Logo centré au-dessus de "Login" */}
+        <div className="flex justify-center mb-4">
+          <Image
+            width={100}
+            height={100}
+            src="/assets/images/logo2.png"  // Le chemin du logo ici
+            alt="Logo"
+            className="h-16 w-auto"
+          />
+        </div>
+
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Login
         </h2>
         <form className="space-y-6 pt-5" onSubmit={submitForm}>
           <div>
@@ -44,7 +77,7 @@ const ComponentsAuthLoginForm = () => {
                 id="Email"
                 type="email"
                 placeholder="Entrez votre Email"
-                className="w-full py-3 px-4 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="w-full py-3 px-4 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-[#F07D00] focus:border-[#F07D00] sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 required
               />
             </div>
@@ -61,21 +94,21 @@ const ComponentsAuthLoginForm = () => {
                 id="Password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Entrez votre mot de passe"
-                className="w-full py-3 px-4 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="w-full py-3 px-4 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:ring-[#F07D00] focus:border-[#F07D00] sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 required
               />
               <span
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
                 onClick={togglePasswordVisibility}
               >
-                <IconEye className={showPassword ? 'text-indigo-500' : 'text-gray-500'} />
+                <IconEye className={showPassword ? 'text-[#F07D00]' : 'text-gray-500'} />
               </span>
             </div>
           </div>
           <div className="flex justify-end">
             <a
               href="/forgot-password"
-              className="text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+              className="text-sm text-[#F07D00] hover:text-[#F07D00] dark:text-[#F07D00] dark:hover:text-[#F07D00]"
             >
               Mot de passe oublié ?
             </a>
