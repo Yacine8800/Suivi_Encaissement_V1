@@ -1,5 +1,4 @@
-import BoxedSignIn from "@/components/auth/login/login";
-import ComponentsDashboardSales from "@/components/dashboard/components-dashboard-sales";
+import BoxedSignIn from "@/app/(auth)/login/page";
 import { Metadata } from "next";
 import React from "react";
 
