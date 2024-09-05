@@ -1,19 +1,15 @@
 "use client";
-import IconFacebook from "@/components/icon/icon-facebook";
-import IconInstagram from "@/components/icon/icon-instagram";
 import IconLayoutGrid from "@/components/icon/icon-layout-grid";
 import IconListCheck from "@/components/icon/icon-list-check";
 import IconSearch from "@/components/icon/icon-search";
-import IconTwitter from "@/components/icon/icon-twitter";
-import IconUserPlus from "@/components/icon/icon-user-plus";
 import IconX from "@/components/icon/icon-x";
-import IconTrashLines from "@/components/icon/icon-trash-lines";
 import IconPlus from "@/components/icon/icon-plus";
 import Link from "next/link";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
-import IconUser from "@/components/icon/icon-user";
+import Select from "react-select"; // Sélecteurs multiples
 import axios from "axios";
+import IconUser from "@/components/icon/icon-user"; // Assuming you have an IconUser component for the grid view
 
 const ComponentsAppsUsers = () => {
   const [addUserModal, setAddUserModal] = useState<any>(false);
@@ -21,6 +17,10 @@ const ComponentsAppsUsers = () => {
   const [value, setValue] = useState<any>("list");
   const [selectedUserToDelete, setSelectedUserToDelete] = useState<any>(null);
   const [selectedTag, setSelectedTag] = useState<string>("all");
+  const [availableDRs, setAvailableDRs] = useState<any[]>([]); // Directions Régionales disponibles
+  const [availableSecteurs, setAvailableSecteurs] = useState<any[]>([]); // Secteurs disponibles
+  const [availableProfiles, setAvailableProfiles] = useState<any[]>([]); // Profils dynamiques
+  const [drSecteurs, setDrSecteurs] = useState<{ [key: string]: any[] }>({}); // Secteurs par DR
 
   const [defaultParams] = useState({
     id: null,
@@ -41,25 +41,37 @@ const ComponentsAppsUsers = () => {
   const [search, setSearch] = useState<any>("");
   const [usersList, setUsersList] = useState<any>([]);
   const [filteredItems, setFilteredItems] = useState<any>([]);
-  const [availableProfiles, setAvailableProfiles] = useState<string[]>([]); // Pour les filtres dynamiques des profils
 
-  // Fonction pour charger les utilisateurs à partir de l'API
-  const fetchUsers = async () => {
+  // Récupération des utilisateurs, DR, Secteurs et Profils depuis l'API
+  const fetchUsersAndData = async () => {
     try {
-      const response = await axios.get("/api/getUsers");
-      setUsersList(response.data);
-      setFilteredItems(response.data);
-      extractAvailableProfiles(response.data); // Extraire les profils disponibles pour les filtres dynamiques
-    } catch (error) {
-      console.error("Erreur lors de la récupération des utilisateurs", error);
-    }
-  };
+      const [usersResponse, dataResponse] = await Promise.all([
+        axios.get("/api/getUsers"),
+        axios.get("/api/data"), // API data.json pour DR, Secteurs et Profils
+      ]);
+      setUsersList(usersResponse.data);
+      setFilteredItems(usersResponse.data);
+      setDrSecteurs(dataResponse.data.dr_secteurs); // Stockage des secteurs par DR
 
-  // Extraction des profils disponibles pour les filtres
-  const extractAvailableProfiles = (users: any) => {
-    const profiles = users.map((user: any) => user.profil);
-    const uniqueProfiles: any = Array.from(new Set(profiles)); // Pour obtenir des profils uniques
-    setAvailableProfiles(uniqueProfiles);
+      const drOptions = Object.keys(dataResponse.data.dr_secteurs).map(
+        (dr) => ({
+          value: dr,
+          label: dr,
+        })
+      );
+      setAvailableDRs(drOptions);
+
+      const profileOptions = dataResponse.data.profils.map((profil: any) => ({
+        value: profil.value,
+        label: profil.label,
+      }));
+      setAvailableProfiles(profileOptions);
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des utilisateurs ou données",
+        error
+      );
+    }
   };
 
   const searchUsers = () => {
@@ -78,12 +90,28 @@ const ComponentsAppsUsers = () => {
   };
 
   useEffect(() => {
-    fetchUsers(); // Charger les utilisateurs lors du montage
+    fetchUsersAndData(); // Charger utilisateurs, DR, Secteurs, et Profils au montage
   }, []);
 
   useEffect(() => {
     searchUsers();
   }, [search, selectedTag]);
+
+  // Filtrer les secteurs selon les DR sélectionnées
+  const handleDRChange = (selectedDRs: any) => {
+    const selectedDRValues = selectedDRs.map((dr: any) => dr.value);
+    const secteursForSelectedDRs = selectedDRValues.flatMap(
+      (dr: any) => drSecteurs[dr] || []
+    );
+    setAvailableSecteurs(secteursForSelectedDRs);
+    setParams((prev: any) => ({
+      ...prev,
+      dr: selectedDRs,
+      secteur: params.secteur.filter((secteur: any) =>
+        secteursForSelectedDRs.some((s: any) => s.value === secteur.value)
+      ),
+    }));
+  };
 
   const editUser = (user: any = null) => {
     const json = JSON.parse(JSON.stringify(defaultParams));
@@ -91,21 +119,29 @@ const ComponentsAppsUsers = () => {
     if (user) {
       let json1 = JSON.parse(JSON.stringify(user));
       setParams(json1);
+
+      // Précharger les secteurs selon les DR
+      const secteursForSelectedDRs = user.dr.flatMap(
+        (dr: any) => drSecteurs[dr.value] || []
+      );
+      setAvailableSecteurs(secteursForSelectedDRs);
     }
     setAddUserModal(true);
   };
 
-  const confirmDeleteUser = (user: any = null) => {
-    setSelectedUserToDelete(user);
-    setIsDeleteUserModal(true);
-  };
-
-  const deleteUser = () => {
-    setFilteredItems(
-      filteredItems.filter((u: any) => u.email !== selectedUserToDelete.email)
-    );
-    setIsDeleteUserModal(false);
-    setSelectedUserToDelete(null);
+  const confirmDeleteUser = async () => {
+    try {
+      await axios.delete(`/api/deleteUsers`, {
+        params: { id: selectedUserToDelete?.id }, // Pass the ID as a query parameter
+      });
+      setFilteredItems(
+        filteredItems.filter((u: any) => u.id !== selectedUserToDelete.id)
+      );
+      setIsDeleteUserModal(false); // Close the modal after deletion
+      setSelectedUserToDelete(null); // Reset selected user
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'utilisateur", error);
+    }
   };
 
   const changeValue = (e: any) => {
@@ -116,10 +152,8 @@ const ComponentsAppsUsers = () => {
   const updateUser = async () => {
     try {
       await axios.post("/api/updateUsers", params);
-      // Fermer la modale après la mise à jour réussie
       setAddUserModal(false);
-      // Recharger la liste des utilisateurs
-      fetchUsers();
+      fetchUsersAndData(); // Recharger après mise à jour
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'utilisateur", error);
     }
@@ -170,7 +204,7 @@ const ComponentsAppsUsers = () => {
             />
             <button
               type="button"
-              className="ltr:right-[11px] rtl:left-[11px] absolute top-1/2 -translate-y-1/2 peer-focus:text-primary"
+              className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]"
             >
               <IconSearch className="mx-auto" />
             </button>
@@ -191,25 +225,27 @@ const ComponentsAppsUsers = () => {
         {/* Génération dynamique des filtres de profils */}
         {availableProfiles.map((profile) => (
           <button
-            key={profile}
-            onClick={() => setSelectedTag(profile)}
+            key={profile.value}
+            onClick={() => setSelectedTag(profile.value)}
             className={`btn ${
-              selectedTag === profile ? "btn-primary" : "btn-outline-primary"
+              selectedTag === profile.value
+                ? "btn-primary"
+                : "btn-outline-primary"
             }`}
           >
-            {profile}
+            {profile.label}
           </button>
         ))}
       </div>
 
       {/* Table */}
-
       {value === "list" && (
         <div className="panel mt-5 overflow-hidden border-0 p-0">
           <div className="table-responsive">
             <table className="table-striped table-hover">
               <thead>
                 <tr>
+                  <th>Nom</th>
                   <th>Prénom</th>
                   <th>Email</th>
                   <th>Téléphone</th>
@@ -224,6 +260,7 @@ const ComponentsAppsUsers = () => {
                 {filteredItems.map((user: any) => {
                   return (
                     <tr key={user.email}>
+                      <td>{user.name}</td>
                       <td>{user.prenom}</td>
                       <td>{user.email}</td>
                       <td>{user.number}</td>
@@ -251,7 +288,10 @@ const ComponentsAppsUsers = () => {
                           <button
                             type="button"
                             className="btn btn-sm btn-outline-danger"
-                            onClick={() => confirmDeleteUser(user)}
+                            onClick={() => {
+                              setSelectedUserToDelete(user);
+                              setIsDeleteUserModal(true);
+                            }}
                           >
                             Supprimer
                           </button>
@@ -266,13 +306,101 @@ const ComponentsAppsUsers = () => {
         </div>
       )}
 
+      {/* Confirmation de suppression */}
+      <Transition appear show={isDeleteUserModal} as={Fragment}>
+        <Dialog
+          as="div"
+          open={isDeleteUserModal}
+          onClose={() => setIsDeleteUserModal(false)}
+          className="relative z-50"
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
+          >
+            <div className="fixed inset-0 bg-[black]/60" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center px-4 py-8">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="panel w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
+                  <div className="bg-[#fbfbfb] py-3 text-lg font-medium dark:bg-[#121c2c] ltr:pl-5 ltr:pr-[50px] rtl:pl-[50px] rtl:pr-5">
+                    Supprimer l'utilisateur
+                  </div>
+
+                  <div className="p-5 text-center">
+                    {/* Icone d'alerte rouge */}
+                    <div className="mx-auto w-fit rounded-full bg-danger p-4 text-white ring-4 ring-danger/30">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M13 16h-1v-4h-1m1-4h.01M12 18h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+
+                    <p className="mb-5 mt-4 text-gray-600 dark:text-gray-300">
+                      Êtes-vous sûr de vouloir supprimer l'utilisateur{" "}
+                      <span className="font-bold">
+                        {selectedUserToDelete?.name}{" "}
+                        {selectedUserToDelete?.prenom}
+                      </span>{" "}
+                      ?
+                    </p>
+
+                    <div className="flex items-center justify-end gap-4">
+                      <button
+                        type="button"
+                        className="btn btn-outline-success"
+                        onClick={() => setIsDeleteUserModal(false)}
+                      >
+                        Annuler
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={confirmDeleteUser}
+                      >
+                        Supprimer
+                      </button>
+                    </div>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
+
       {/* Grid */}
       {value === "grid" && (
         <div className="mt-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {filteredItems.map((user: any) => {
             return (
               <div
-                className="dark:bg-[#1c232f] relative overflow-hidden rounded-md bg-white text-center shadow"
+                className="relative overflow-hidden rounded-md bg-white text-center shadow dark:bg-[#1c232f]"
                 key={user.email}
               >
                 <div className="relative -mt-10 px-6 pb-24">
@@ -341,7 +469,10 @@ const ComponentsAppsUsers = () => {
                   <button
                     type="button"
                     className="btn btn-outline-danger w-1/2"
-                    onClick={() => confirmDeleteUser(user)}
+                    onClick={() => {
+                      setSelectedUserToDelete(user);
+                      setIsDeleteUserModal(true);
+                    }}
                   >
                     Supprimer
                   </button>
@@ -351,80 +482,6 @@ const ComponentsAppsUsers = () => {
           })}
         </div>
       )}
-
-      {/* Confirmation de suppression */}
-      <Transition appear show={isDeleteUserModal} as={Fragment}>
-        <Dialog
-          as="div"
-          open={isDeleteUserModal}
-          onClose={() => setIsDeleteUserModal(false)}
-          className="relative z-50"
-        >
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-[black]/60" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center px-4 py-8">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="panel w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark">
-                  <button
-                    type="button"
-                    onClick={() => setIsDeleteUserModal(false)}
-                    className="absolute top-4 text-gray-400 outline-none hover:text-gray-800 dark:hover:text-gray-600 ltr:right-4 rtl:left-4"
-                  >
-                    <IconX />
-                  </button>
-                  <div className="dark:bg-[#121c2c] ltr:pr-[50px] rtl:pl-[50px] bg-[#fbfbfb] py-3 text-lg font-medium ltr:pl-5 rtl:pr-5">
-                    Supprimer l'utilisateur
-                  </div>
-                  <div className="p-5 text-center">
-                    <div className="mx-auto w-fit rounded-full bg-danger p-4 text-white ring-4 ring-danger/30">
-                      <IconTrashLines className="mx-auto h-7 w-7" />
-                    </div>
-                    <div className="sm:w-3/4 mx-auto mt-5">
-                      Êtes-vous sûr de vouloir supprimer cet utilisateur?
-                    </div>
-
-                    <div className="mt-8 flex items-center justify-center">
-                      <button
-                        type="button"
-                        className="btn btn-outline-danger"
-                        onClick={() => setIsDeleteUserModal(false)}
-                      >
-                        Annuler
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-primary ltr:ml-4 rtl:mr-4"
-                        onClick={deleteUser}
-                      >
-                        Supprimer
-                      </button>
-                    </div>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
 
       {/* Modale d'ajout ou modification d'utilisateur */}
       <Transition appear show={addUserModal} as={Fragment}>
@@ -437,11 +494,11 @@ const ComponentsAppsUsers = () => {
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
             leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
           >
             <div className="fixed inset-0 bg-[black]/60" />
           </Transition.Child>
@@ -465,7 +522,7 @@ const ComponentsAppsUsers = () => {
                   >
                     <IconX />
                   </button>
-                  <div className="dark:bg-[#121c2c] ltr:pr-[50px] rtl:pl-[50px] bg-[#fbfbfb] py-3 text-lg font-medium ltr:pl-5 rtl:pr-5">
+                  <div className="bg-[#fbfbfb] py-3 text-lg font-medium dark:bg-[#121c2c] ltr:pl-5 ltr:pr-[50px] rtl:pl-[50px] rtl:pr-5">
                     Modifier l'utilisateur
                   </div>
                   <div className="p-5">
@@ -504,7 +561,7 @@ const ComponentsAppsUsers = () => {
                         />
                       </div>
                       <div className="mb-5">
-                        <label htmlFor="telephone">Téléphone</label>
+                        <label htmlFor="number">Téléphone</label>
                         <input
                           id="number"
                           type="text"
@@ -526,21 +583,44 @@ const ComponentsAppsUsers = () => {
                         />
                       </div>
                       <div className="mb-5">
-                        <label htmlFor="profil">Type d'utilisateur</label>
-                        <select
+                        <label htmlFor="profil">Profil</label>
+                        <Select
                           id="profil"
-                          className="form-select"
-                          value={params.profil}
-                          onChange={(e) => changeValue(e)}
-                        >
-                          <option value="">Sélectionnez le type</option>
-                          <option value="Comptable">Comptable</option>
-                          <option value="AGC">AGC</option>
-                          <option value="RC">RC</option>
-                          <option value="DR">DR</option>
-                          <option value="DFC">DFC</option>
-                        </select>
+                          value={availableProfiles.find(
+                            (p) => p.value === params.profil
+                          )}
+                          options={availableProfiles}
+                          onChange={(selectedProfile) =>
+                            setParams({
+                              ...params,
+                              profil: selectedProfile.value,
+                            })
+                          }
+                        />
                       </div>
+                      <div className="mb-5">
+                        <label htmlFor="dr">Direction Régionale</label>
+                        <Select
+                          id="dr"
+                          isMulti
+                          value={params.dr}
+                          options={availableDRs}
+                          onChange={handleDRChange}
+                        />
+                      </div>
+                      <div className="mb-5">
+                        <label htmlFor="secteur">Secteurs</label>
+                        <Select
+                          id="secteur"
+                          isMulti
+                          value={params.secteur}
+                          options={availableSecteurs}
+                          onChange={(selectedSecteurs) =>
+                            setParams({ ...params, secteur: selectedSecteurs })
+                          }
+                        />
+                      </div>
+
                       <div className="mt-8 flex items-center justify-end">
                         <button
                           type="button"
@@ -552,7 +632,7 @@ const ComponentsAppsUsers = () => {
                         <button
                           type="button"
                           className="btn btn-primary ltr:ml-4 rtl:mr-4"
-                          onClick={updateUser} // Appeler la fonction de mise à jour
+                          onClick={updateUser}
                         >
                           Mettre à jour l'utilisateur
                         </button>
