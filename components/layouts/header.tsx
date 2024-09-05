@@ -26,6 +26,7 @@ import IconMenuApps from "@/components/icon/menu/icon-menu-apps";
 import IconMenuComponents from "@/components/icon/menu/icon-menu-components";
 
 import React, { ReactNode } from "react";
+import IconSquareRotated from "../icon/icon-square-rotated";
 
 const Header = () => {
   const pathname = usePathname();
@@ -110,6 +111,16 @@ const Header = () => {
               </span>
             </Link>
           </div>
+
+          <p className="flex items-center text-success">
+            <button
+              type="button"
+              className={`flex h-10 cursor-default items-center rounded-md font-medium text-success duration-300`}
+            >
+              <IconSquareRotated className="shrink-0 fill-success" />
+            </button>
+            <span className="ml-2">AGC</span>
+          </p>
 
           <div className="flex items-center space-x-1.5 dark:text-[#d0d2d6] sm:flex-1 lg:space-x-2 ltr:ml-auto ltr:sm:ml-0 rtl:mr-auto rtl:space-x-reverse sm:rtl:mr-0">
             <div className="sm:ltr:mr-auto sm:rtl:ml-auto">
@@ -227,14 +238,14 @@ const Header = () => {
                         <h4 className="text-base">
                           DIOMANDE Yacine
                           <span className="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">
-                            INGENIEUR
+                            AGC
                           </span>
                         </h4>
                         <button
                           type="button"
                           className="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white"
                         >
-                          habdoulyacinedev27@gmail.com
+                          diomande.yacine@example.com
                         </button>
                       </div>
                     </div>

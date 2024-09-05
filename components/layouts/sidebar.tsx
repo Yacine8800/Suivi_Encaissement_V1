@@ -19,6 +19,9 @@ import IconPencilPaper from "../icon/icon-pencil-paper";
 import IconInfoCircle from "../icon/icon-info-circle";
 import IconNotesEdit from "../icon/icon-notes-edit";
 import IconMessagesDot from "../icon/icon-messages-dot";
+import IconMenuCharts from "../icon/menu/icon-menu-charts";
+import IconMenuFontIcons from "../icon/menu/icon-menu-font-icons";
+import IconMenuWidgets from "../icon/menu/icon-menu-widgets";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -179,6 +182,45 @@ const Sidebar = () => {
                 </AnimateHeight>
               </li>
             </ul>
+
+            <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
+              <IconMinus className="hidden h-5 w-4 flex-none" />
+              <span>{t("Administration")}</span>
+            </h2>
+
+            <li className="menu nav-item">
+              <Link href="/charts" className="group">
+                <div className="flex items-center">
+                  <IconMenuCharts className="shrink-0 group-hover:!text-primary" />
+                  <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                    {t("Profils")}
+                  </span>
+                </div>
+              </Link>
+            </li>
+
+            <li className="menu nav-item">
+              <Link href="/user" className="group">
+                <div className="flex items-center">
+                  <IconMenuWidgets className="shrink-0 group-hover:!text-primary" />
+                  <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                    {t("Utilisateurs")}
+                  </span>
+                </div>
+              </Link>
+            </li>
+
+            <li className="menu nav-item">
+              <Link href="/font-icons" className="group">
+                <div className="flex items-center">
+                  <IconMenuFontIcons className="shrink-0 group-hover:!text-primary" />
+                  <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                    {t("Roles")}
+                  </span>
+                </div>
+              </Link>
+            </li>
+
             <div className="mt-auto p-4">
               <img
                 className="w-[220px] flex-none"

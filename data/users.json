@@ -1,0 +1,96 @@
+[
+  {
+    "name": "DIOMANDE",
+    "prenom": "HABDOUL YACINE",
+    "email": "habdoulyacinedev27@gmail.com",
+    "number": "0788007929",
+    "matricule": "123FCRMA",
+    "profil": "Comptable",
+    "dr": [
+      {
+        "value": "02-DRAS",
+        "label": "02-DRAS"
+      }
+    ],
+    "secteur": [
+      {
+        "value": "KOUMASSI",
+        "label": "KOUMASSI"
+      }
+    ]
+  },
+  {
+    "name": "DIARRASSOUBA",
+    "prenom": "CHACOUL",
+    "email": "doulifaye27@gmail.com",
+    "number": "0788007920",
+    "matricule": "0099A",
+    "profil": "AGC",
+    "dr": [
+      {
+        "value": "22-DRABO",
+        "label": "22-DRABO"
+      }
+    ],
+    "secteur": [
+      {
+        "value": "ABOBO",
+        "label": "ABOBO"
+      }
+    ]
+  },
+  {
+    "name": "ANO",
+    "prenom": "RAYMOND",
+    "email": "koffiherbertdonatien@gmail.com",
+    "number": "0102030405",
+    "matricule": "1234H",
+    "profil": "DR",
+    "dr": [],
+    "secteur": []
+  },
+  {
+    "name": "KADIO",
+    "prenom": "VENANCE",
+    "email": "kadio@cie.ci",
+    "number": "0203043233",
+    "matricule": "3456Z",
+    "profil": "RC",
+    "dr": [],
+    "secteur": []
+  },
+  {
+    "name": "WILSON",
+    "prenom": "Yoan",
+    "email": "Yoan@cie.ci",
+    "number": "0909080807",
+    "matricule": "98989D",
+    "profil": "DFC",
+    "dr": [],
+    "secteur": []
+  },
+  {
+    "name": "TEST",
+    "prenom": "DSTD",
+    "email": "dstd@cie.ci",
+    "number": "0000000000",
+    "matricule": "0000A",
+    "profil": "Comptable",
+    "dr": [
+      {
+        "value": "02-DRAS",
+        "label": "02-DRAS"
+      }
+    ],
+    "secteur": [
+      {
+        "value": "KOUMASSI",
+        "label": "KOUMASSI"
+      },
+      {
+        "value": "PLATEAU",
+        "label": "PLATEAU"
+      }
+    ]
+  }
+]

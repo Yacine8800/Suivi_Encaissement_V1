@@ -28,7 +28,136 @@ interface RowData {
 }
 
 const rowData: RowData[] = [
-  // Remplacez cette section par vos données initiales
+  {
+    id: 1,
+    "Date Encais": "2024-07-20",
+    "Caisse mode": "2 -1<br/>Espèces",
+    Banque: "BNP Paribas",
+    "Montant caisse": 25000000,
+    "Montant bordereau": 2500000,
+    "Date cloture": "2024-07-21",
+    Bordereau: "12345",
+    "Date revelé": "2024-07-22",
+    "Montant revelé": 2500000,
+    validated: false,
+  },
+  {
+    id: 2,
+    "Date Encais": "2024-07-21",
+    "Caisse mode": "2 -1<br/>Carte",
+    Banque: "Crédit Agricole",
+    "Montant caisse": 180000,
+    "Montant bordereau": 1800000,
+    "Date cloture": "2024-07-22",
+    Bordereau: "67890",
+    "Date revelé": "2024-07-23",
+    "Montant revelé": 1800000,
+    validated: false,
+  },
+  {
+    id: 3,
+    "Date Encais": "2024-07-22",
+    "Caisse mode": "2 -1<br/>Virement",
+    Banque: "BNP Paribas",
+    "Montant caisse": 30020000,
+    "Montant bordereau": 3000000,
+    "Date cloture": "2024-07-23",
+    Bordereau: "54321",
+    "Date revelé": "2024-07-24",
+    "Montant revelé": 3000000,
+    validated: false,
+  },
+  {
+    id: 4,
+    "Date Encais": "2024-07-23",
+    "Caisse mode": "2 -1<br/>Espèces",
+    Banque: "Société Générale",
+    "Montant caisse": 2000000,
+    "Montant bordereau": 200870000,
+    "Date cloture": "2024-07-24",
+    Bordereau: "11223",
+    "Date revelé": "2024-07-25",
+    "Montant revelé": 2000000,
+    validated: false,
+  },
+  {
+    id: 5,
+    "Date Encais": "2024-07-24",
+    "Caisse mode": "2 -1<br/>Chèque",
+    Banque: "Crédit Agricole",
+    "Montant caisse": 150004300,
+    "Montant bordereau": 1500000,
+    "Date cloture": "2024-07-25",
+    Bordereau: "33445",
+    "Date revelé": "2024-07-26",
+    "Montant revelé": 1500000,
+    validated: false,
+  },
+  {
+    id: 6,
+    "Date Encais": "2024-07-25",
+    "Caisse mode": "2 -1<br/>Virement",
+    Banque: "Société Générale",
+    "Montant caisse": 3200000,
+    "Montant bordereau": 3200000,
+    "Date cloture": "2024-07-26",
+    Bordereau: "99887",
+    "Date revelé": "2024-07-27",
+    "Montant revelé": 3200000,
+    validated: false,
+  },
+  {
+    id: 7,
+    "Date Encais": "2024-07-26",
+    "Caisse mode": "2 -1<br/>Carte",
+    Banque: "BNP Paribas",
+    "Montant caisse": 2100000,
+    "Montant bordereau": 2100000,
+    "Date cloture": "2024-07-27",
+    Bordereau: "77665",
+    "Date revelé": "2024-07-28",
+    "Montant revelé": 2100000,
+    validated: false,
+  },
+  {
+    id: 8,
+    "Date Encais": "2024-07-27",
+    "Caisse mode": "2 -1<br/>Chèque",
+    Banque: "Crédit Lyonnais",
+    "Montant caisse": 1900000,
+    "Montant bordereau": 19300000,
+    "Date cloture": "2024-07-28",
+    Bordereau: "55667",
+    "Date revelé": "2024-07-29",
+    "Montant revelé": 1900000,
+    validated: false,
+  },
+  {
+    id: 9,
+    "Date Encais": "2024-07-28",
+    "Caisse mode": "2 -1<br/>Espèces",
+    Banque: "BNP Paribas",
+    "Montant caisse": 22004000,
+    "Montant bordereau": 2200000,
+    "Date cloture": "2024-07-29",
+    Bordereau: "44556",
+    "Date revelé": "2024-07-30",
+    "Montant revelé": 2200000,
+    validated: false,
+  },
+  {
+    id: 10,
+    "Date Encais": "2024-07-29",
+    "Caisse mode": "2 -1<br/>Carte",
+    Banque: "Crédit Lyonnais",
+    "Montant caisse": 2500000,
+    "Montant bordereau": 2500000,
+    "Date cloture": "2024-07-30",
+    Bordereau: "66778",
+    "Date revelé": "2024-07-31",
+    "Montant revelé": 2500000,
+    validated: false,
+  },
 ];
 
 const formatNumber = (num: number | undefined): string => {
@@ -423,6 +552,27 @@ const ComponentsDatatablesColumnChooser = () => {
               </div>
 
               <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
+                <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
+                  <h5 className="mb-1 text-base leading-none dark:text-white">
+                    Date
+                  </h5>
+                  <p className="text-xs text-white-dark">**********</p>
+                  <div className="mt-3 flex gap-2">
+                    <div>
+                      <input
+                        id="montant"
+                        type="date"
+                        name="montant"
+                        className="form-input w-[480px]"
+                        placeholder="Montant"
+                        // value={selectedRow["Montant revelé"] || ""}
+                        // onChange={(e) =>
+                        //   handleAmountChange(e, "Montant revelé")
+                        // }
+                      />
+                    </div>
+                  </div>
+                </div>
                 <h5 className="mb-1 text-base leading-none dark:text-white">
                   <p className="font-normal">
                     Journée du <span className="font-bold"> {today}</span>
