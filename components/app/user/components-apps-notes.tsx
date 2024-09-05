@@ -10,6 +10,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import Select from "react-select"; // Sélecteurs multiples
 import axios from "axios";
 import IconUser from "@/components/icon/icon-user"; // Assuming you have an IconUser component for the grid view
+import Swal from "sweetalert2";
 
 const ComponentsAppsUsers = () => {
   const [addUserModal, setAddUserModal] = useState<any>(false);
@@ -129,6 +130,21 @@ const ComponentsAppsUsers = () => {
     setAddUserModal(true);
   };
 
+  const showMessage = (msg = "", type = "success") => {
+    const toast: any = Swal.mixin({
+      toast: true,
+      position: "top",
+      showConfirmButton: false,
+      timer: 3000,
+      customClass: { container: "toast" },
+    });
+    toast.fire({
+      icon: type,
+      title: msg,
+      padding: "10px 20px",
+    });
+  };
+
   const confirmDeleteUser = async () => {
     try {
       await axios.delete(`/api/deleteUsers`, {
@@ -139,8 +155,9 @@ const ComponentsAppsUsers = () => {
       );
       setIsDeleteUserModal(false); // Close the modal after deletion
       setSelectedUserToDelete(null); // Reset selected user
+      showMessage("L'utilisateur a été supprimer avec succes");
     } catch (error) {
-      console.error("Erreur lors de la suppression de l'utilisateur", error);
+      showMessage("Erreur lors de la suppression de l'utilisateur");
     }
   };
 
@@ -154,8 +171,9 @@ const ComponentsAppsUsers = () => {
       await axios.post("/api/updateUsers", params);
       setAddUserModal(false);
       fetchUsersAndData(); // Recharger après mise à jour
+      showMessage("L'utilisateur a été modifier avec succes");
     } catch (error) {
-      console.error("Erreur lors de la mise à jour de l'utilisateur", error);
+      showMessage("Erreur lors de la mise à jour de l'utilisateur");
     }
   };
 

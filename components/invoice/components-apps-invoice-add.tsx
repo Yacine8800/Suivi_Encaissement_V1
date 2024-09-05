@@ -5,6 +5,7 @@ import Select, { MultiValue, ActionMeta } from "react-select";
 import IconSave from "@/components/icon/icon-save";
 import IconArrowBackward from "../icon/icon-arrow-backward";
 import IconSquareRotated from "../icon/icon-square-rotated";
+import Swal from "sweetalert2";
 
 // Définition des types pour les options des sélecteurs
 interface Option {
@@ -136,6 +137,21 @@ const ComponentsAppsInvoiceAdd = () => {
     return isValid;
   };
 
+  const showMessage = (msg = "", type = "success") => {
+    const toast: any = Swal.mixin({
+      toast: true,
+      position: "top",
+      showConfirmButton: false,
+      timer: 3000,
+      customClass: { container: "toast" },
+    });
+    toast.fire({
+      icon: type,
+      title: msg,
+      padding: "10px 20px",
+    });
+  };
+
   // Gestion de la soumission du formulaire
   const handleSubmit = async () => {
     if (validateFields()) {
@@ -161,13 +177,14 @@ const ComponentsAppsInvoiceAdd = () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data.message); // Afficher un message de succès
+          showMessage("L'utilisateur a été créer avec succes");
+          // Afficher un message de succès
         } else {
           const errorData = await response.json();
           console.error(errorData.message); // Afficher un message d'erreur
         }
       } catch (error) {
-        console.error("Erreur lors de la soumission", error);
+        showMessage("Erreur lors de la soumission");
       }
     }
   };
@@ -258,12 +275,12 @@ const ComponentsAppsInvoiceAdd = () => {
             Ajouter un utilisateur
           </span>
         </p>
-        <hr className="dark:border-[#1b2e4b] my-6 border-white-light" />
+        <hr className="my-6 border-white-light dark:border-[#1b2e4b]" />
 
         <div className="mt-8 px-4">
           <div className="flex flex-col justify-between lg:flex-row">
             {/* Information Personnelle */}
-            <div className="lg:w-1/2 mb-6 w-full ltr:lg:mr-6 rtl:lg:ml-6">
+            <div className="mb-6 w-full lg:w-1/2 ltr:lg:mr-6 rtl:lg:ml-6">
               <div className="text-lg">Information personnelle :</div>
 
               <div className="mt-4 flex items-center">
@@ -340,7 +357,7 @@ const ComponentsAppsInvoiceAdd = () => {
             </div>
 
             {/* Information Compte */}
-            <div className="lg:w-1/2 w-full">
+            <div className="w-full lg:w-1/2">
               <div className="text-lg">Information Compte :</div>
 
               <div className="mt-4 flex items-center">
@@ -437,7 +454,7 @@ const ComponentsAppsInvoiceAdd = () => {
       {/* Récapitulatif */}
       <div className="mt-6 w-full xl:mt-0 xl:w-96">
         <div className="panel mb-5 h-full">
-          <hr className="dark:border-[#1b2e4b] my-6 border-white-light" />
+          <hr className="my-6 border-white-light dark:border-[#1b2e4b]" />
 
           <p className="flex items-center justify-center text-center">
             <button

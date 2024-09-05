@@ -11,17 +11,9 @@
       {
         "value": "02-DRAS",
         "label": "02-DRAS"
-      },
-      {
-        "value": "03-DRYOP",
-        "label": "03-DRYOP"
       }
     ],
     "secteur": [
-      {
-        "value": "YOPOUGON",
-        "label": "YOPOUGON"
-      },
       {
         "value": "PLATEAU",
         "label": "PLATEAU"
@@ -61,17 +53,6 @@
     "secteur": []
   },
   {
-    "id": 4,
-    "name": "KADIO",
-    "prenom": "VENANCE",
-    "email": "kadio@cie.ci",
-    "number": "0203043233",
-    "matricule": "3456Z",
-    "profil": "RC",
-    "dr": [],
-    "secteur": []
-  },
-  {
     "id": 5,
     "name": "WILSON",
     "prenom": "Yoan",
@@ -79,6 +60,16 @@
     "number": "0909080807",
     "matricule": "98989D",
     "profil": "DFC",
+    "dr": [],
+    "secteur": []
+  },
+  {
+    "name": "KADIO",
+    "prenom": "VENANCE",
+    "email": "kadio@cie.ci",
+    "number": "0102030400",
+    "matricule": "123FCRAA",
+    "profil": "RC",
     "dr": [],
     "secteur": []
   }
