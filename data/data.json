@@ -1,0 +1,18 @@
+{
+  "profils": [
+    { "value": "Comptable", "label": "Comptable" },
+    { "value": "AGC", "label": "AGC" },
+    { "value": "DR", "label": "DR" },
+    { "value": "RC", "label": "RC" },
+    { "value": "DFC", "label": "DFC" }
+  ],
+  "dr_secteurs": {
+    "02-DRAS": [
+      { "value": "KOUMASSI", "label": "KOUMASSI" },
+      { "value": "PLATEAU", "label": "PLATEAU" }
+    ],
+    "04-DRAN": [{ "value": "MARCORY", "label": "MARCORY" }],
+    "22-DRABO": [{ "value": "ABOBO", "label": "ABOBO" }],
+    "03-DRYOP": [{ "value": "YOPOUGON", "label": "YOPOUGON" }]
+  }
+}
