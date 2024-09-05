@@ -1,16 +1,14 @@
 "use client";
 
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Link from "next/link";
 import { toggleSidebar } from "@/store/themeConfigSlice";
 import AnimateHeight from "react-animate-height";
-import { IRootState } from "@/store";
 import { useState, useEffect } from "react";
 import IconCaretsDown from "@/components/icon/icon-carets-down";
 import IconMenuDashboard from "@/components/icon/menu/icon-menu-dashboard";
 import IconMinus from "@/components/icon/icon-minus";
-import IconMenuTables from "@/components/icon/menu/icon-menu-tables";
 import { usePathname } from "next/navigation";
 import { getTranslation } from "@/i18n";
 import React from "react";
