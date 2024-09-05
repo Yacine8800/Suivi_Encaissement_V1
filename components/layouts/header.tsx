@@ -131,7 +131,7 @@ const Header = () => {
                 onSubmit={() => setSearch(false)}
               ></form>
             </div>
-            <div>
+            {/* <div>
               {themeConfig.theme === "light" ? (
                 <button
                   className={`${
@@ -167,7 +167,7 @@ const Header = () => {
                   <IconLaptop />
                 </button>
               )}
-            </div>
+            </div> */}
             <div className="dropdown shrink-0">
               <Dropdown
                 offset={[0, 8]}
@@ -260,7 +260,7 @@ const Header = () => {
                     </Link>
                   </li>
 
-                  <li className="border-t border-white-light dark:border-white-light/10">
+                  {/* <li className="border-t border-white-light dark:border-white-light/10">
                     <Link href="" className="dark:hover:text-white">
                       <div className="dark:hover:text-whit mt-5 text-black">
                         <label className="mb-0 inline-flex">
@@ -276,7 +276,7 @@ const Header = () => {
                         </label>
                       </div>
                     </Link>
-                  </li>
+                  </li> */}
 
                   <li className="border-t border-white-light dark:border-white-light/10">
                     <Link href="/" className="!py-3 text-danger">
