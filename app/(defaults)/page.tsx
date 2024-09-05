@@ -1,14 +1,10 @@
-import BoxedSignIn from "@/components/auth/login/login";
-import ComponentsDashboardSales from "@/components/dashboard/components-dashboard-sales";
 import { Metadata } from "next";
 import React from "react";
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: " CONNEXION",
 };
 
-const Sales = () => {
-  return <BoxedSignIn />;
-};
 
-export default Sales;
+

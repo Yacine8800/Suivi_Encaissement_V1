@@ -21,7 +21,7 @@ export default function DefaultLayout({
 
   return (
     <>
-      <div className="relative">
+      <div className="">
         <Overlay />
         <ScrollToTop />
 

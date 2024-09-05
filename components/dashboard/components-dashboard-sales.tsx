@@ -270,7 +270,7 @@ const ComponentsDashboardSales = () => {
                   ) {
                     return a + b;
                   },
-                  0);
+                    0);
                 },
               },
             },
@@ -358,7 +358,7 @@ const ComponentsDashboardSales = () => {
                   ) {
                     return a + b;
                   },
-                  0);
+                    0);
                 },
               },
             },
@@ -447,7 +447,7 @@ const ComponentsDashboardSales = () => {
                   ) {
                     return a + b;
                   },
-                  0);
+                    0);
                 },
               },
             },
