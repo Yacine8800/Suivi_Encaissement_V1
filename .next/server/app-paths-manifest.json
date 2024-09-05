@@ -1,4 +1,7 @@
 {
-  "/(defaults)/dashboard/page": "app/(defaults)/dashboard/page.js",
-  "/(defaults)/user/page": "app/(defaults)/user/page.js"
+  "/icon.png/route": "app/icon.png/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(defaults)/user/page": "app/(defaults)/user/page.js",
+  "/(defaults)/profil/page": "app/(defaults)/profil/page.js",
+  "/(defaults)/utilisateur/add/page": "app/(defaults)/utilisateur/add/page.js"
 }
