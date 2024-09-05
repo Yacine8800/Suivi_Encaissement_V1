@@ -25,7 +25,7 @@ const NotFound = () => {
             Une erreur s'est produite!
           </p>
           <Link
-            href="/"
+            href="/dashboard"
             className="btn btn-gradient mx-auto !mt-7 w-max border-0 uppercase shadow-none"
           >
             Dashboard
