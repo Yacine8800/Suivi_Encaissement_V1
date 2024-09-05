@@ -172,19 +172,18 @@ const ComponentsAppsInvoiceAdd = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ user: newUser }),
+          body: JSON.stringify({ user: newUser }), // Only send user data, without the id
         });
 
         if (response.ok) {
           const data = await response.json();
-          showMessage("L'utilisateur a été créer avec succes");
-          // Afficher un message de succès
+          showMessage("L'utilisateur a été créé avec succès", "success");
         } else {
           const errorData = await response.json();
-          console.error(errorData.message); // Afficher un message d'erreur
+          showMessage(errorData.message, "error");
         }
       } catch (error) {
-        showMessage("Erreur lors de la soumission");
+        showMessage("Erreur lors de la soumission", "error");
       }
     }
   };

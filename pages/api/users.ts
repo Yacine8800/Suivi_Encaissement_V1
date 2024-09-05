@@ -7,6 +7,7 @@ const FILE_PATH = path.join(process.cwd(), "data", "users.json");
 
 // Définir le type User
 interface User {
+  id: number;
   name: string;
   prenom: string;
   email: string;
@@ -26,7 +27,7 @@ export default function handler(
   res: NextApiResponse<UserResponse>
 ) {
   if (req.method === "POST") {
-    const { user }: { user: User } = req.body;
+    const { user }: { user: Omit<User, "id"> } = req.body; // Ne pas inclure l'id dans la requête de création d'utilisateur
 
     try {
       // Vérifier si le fichier JSON existe, sinon le créer
@@ -59,8 +60,13 @@ export default function handler(
         });
       }
 
-      // Ajouter le nouvel utilisateur
-      users.push(user);
+      // Trouver l'ID le plus élevé et ajouter 1 pour le nouvel utilisateur
+      const maxId = users.length ? Math.max(...users.map((u) => u.id)) : 5;
+      const newId = maxId + 1;
+
+      // Ajouter le nouvel utilisateur avec un ID unique
+      const newUser = { id: newId, ...user };
+      users.push(newUser);
 
       // Sauvegarder les utilisateurs mis à jour dans le fichier JSON
       fs.writeFileSync(FILE_PATH, JSON.stringify(users, null, 2));

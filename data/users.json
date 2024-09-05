@@ -32,12 +32,20 @@
       {
         "value": "22-DRABO",
         "label": "22-DRABO"
+      },
+      {
+        "value": "04-DRAN",
+        "label": "04-DRAN"
       }
     ],
     "secteur": [
       {
         "value": "ABOBO",
         "label": "ABOBO"
+      },
+      {
+        "value": "MARCORY",
+        "label": "MARCORY"
       }
     ]
   },
@@ -72,5 +80,30 @@
     "profil": "RC",
     "dr": [],
     "secteur": []
+  },
+  {
+    "id": null,
+    "name": "TEST",
+    "prenom": "DSTD",
+    "email": "dstd@cie.ci",
+    "number": "0102230405",
+    "matricule": "123FCRA1",
+    "profil": "Comptable",
+    "dr": [
+      {
+        "value": "02-DRAS",
+        "label": "02-DRAS"
+      }
+    ],
+    "secteur": [
+      {
+        "value": "KOUMASSI",
+        "label": "KOUMASSI"
+      },
+      {
+        "value": "PLATEAU",
+        "label": "PLATEAU"
+      }
+    ]
   }
 ]

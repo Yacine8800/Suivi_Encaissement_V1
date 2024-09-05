@@ -22,9 +22,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       // Save the updated users back to users.json
       fs.writeFileSync(filePath, JSON.stringify(updatedUsers, null, 2));
 
-      return res.status(200).json({ message: "User deleted successfully" });
+      return res
+        .status(200)
+        .json({ message: "Utilisateur supprimer avec succes" });
     } catch (error) {
-      return res.status(500).json({ error: "Failed to delete user" });
+      return res.status(500).json({ error: "FErreur lors de la suppression" });
     }
   } else {
     res.setHeader("Allow", ["DELETE"]);
