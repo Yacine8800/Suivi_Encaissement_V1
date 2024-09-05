@@ -1,4 +1,5 @@
 "use client";
+
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
@@ -15,12 +16,9 @@ import { getTranslation } from "@/i18n";
 import React from "react";
 import IconCaretDown from "../icon/icon-caret-down";
 import IconDesktop from "../icon/icon-desktop";
-import IconPencilPaper from "../icon/icon-pencil-paper";
-import IconInfoCircle from "../icon/icon-info-circle";
 import IconNotesEdit from "../icon/icon-notes-edit";
 import IconMessagesDot from "../icon/icon-messages-dot";
 import IconMenuCharts from "../icon/menu/icon-menu-charts";
-import IconMenuFontIcons from "../icon/menu/icon-menu-font-icons";
 import IconMenuWidgets from "../icon/menu/icon-menu-widgets";
 
 const Sidebar = () => {
@@ -29,10 +27,10 @@ const Sidebar = () => {
   const pathname = usePathname();
   const [currentMenu, setCurrentMenu] = useState<string>("");
   const [errorSubMenu, setErrorSubMenu] = useState(false);
-  const themeConfig = useSelector((state: IRootState) => state.themeConfig);
-  const semidark = useSelector(
-    (state: IRootState) => state.themeConfig.semidark
-  );
+
+  // Définit le mode semidark comme actif par défaut
+  const semidark = true; // Mode sombre par défaut
+
   const toggleMenu = (value: string) => {
     setCurrentMenu((oldValue) => {
       return oldValue === value ? "" : value;
@@ -61,7 +59,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     setActiveRoute();
-    if (window.innerWidth < 1024 && themeConfig.sidebar) {
+    if (window.innerWidth < 1024) {
       dispatch(toggleSidebar());
     }
   }, [pathname]);
@@ -79,13 +77,11 @@ const Sidebar = () => {
   };
 
   return (
-    <div className={semidark ? "dark" : ""}>
+    <div className="dark">
       <nav
-        className={`sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300 ${
-          semidark ? "text-white-dark" : ""
-        }`}
+        className={`sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] text-white-dark shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300`}
       >
-        <div className="h-full bg-white dark:bg-black">
+        <div className="h-full bg-black">
           <br />
           <img
             className="ml-[70px] w-[120px] flex-none"
@@ -96,11 +92,7 @@ const Sidebar = () => {
             <Link
               href="/"
               className="main-logo mx-auto flex shrink-0 items-center justify-center"
-            >
-              {/* <span className="ml-4 text-center align-middle text-sm font-semibold text-[#EF7D00]  lg:inline">
-                SUIVI ENCAISSEMENT
-              </span> */}
-            </Link>
+            ></Link>
 
             <button
               type="button"
@@ -125,7 +117,7 @@ const Sidebar = () => {
                 >
                   <div className="flex items-center">
                     <IconMenuDashboard className="shrink-0 group-hover:!text-primary" />
-                    <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                    <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
                       {t("Menu")}
                     </span>
                   </div>
@@ -150,7 +142,7 @@ const Sidebar = () => {
                       <Link href="/dashboard" className="group">
                         <div className="flex items-center">
                           <IconDesktop className="shrink-0 group-hover:!text-primary" />
-                          <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                          <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
                             {t("Mon Tableau de board")}
                           </span>
                         </div>
@@ -161,7 +153,7 @@ const Sidebar = () => {
                       <Link href="/encaissement" className="group">
                         <div className="flex items-center">
                           <IconNotesEdit className="shrink-0 group-hover:!text-primary" />
-                          <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                          <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
                             {t("Mes Encaissements")}
                           </span>
                         </div>
@@ -172,7 +164,7 @@ const Sidebar = () => {
                       <Link href="/valider" className="group">
                         <div className="flex items-center">
                           <IconMessagesDot className="shrink-0 group-hover:!text-primary" />
-                          <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                          <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
                             {t("Encaissement Valider")}
                           </span>
                         </div>
@@ -192,7 +184,7 @@ const Sidebar = () => {
               <Link href="/profil" className="group">
                 <div className="flex items-center">
                   <IconMenuCharts className="shrink-0 group-hover:!text-primary" />
-                  <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                  <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
                     {t("Habilitations")}
                   </span>
                 </div>
@@ -203,23 +195,12 @@ const Sidebar = () => {
               <Link href="/user" className="group">
                 <div className="flex items-center">
                   <IconMenuWidgets className="shrink-0 group-hover:!text-primary" />
-                  <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                  <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
                     {t("Utilisateurs")}
                   </span>
                 </div>
               </Link>
             </li>
-
-            {/* <li className="menu nav-item">
-              <Link href="/font-icons" className="group">
-                <div className="flex items-center">
-                  <IconMenuFontIcons className="shrink-0 group-hover:!text-primary" />
-                  <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
-                    {t("Roles")}
-                  </span>
-                </div>
-              </Link>
-            </li> */}
 
             <div className="mt-auto p-4">
               <img
