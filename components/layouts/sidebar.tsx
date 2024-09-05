@@ -193,7 +193,7 @@ const Sidebar = () => {
                 <div className="flex items-center">
                   <IconMenuCharts className="shrink-0 group-hover:!text-primary" />
                   <span className="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
-                    {t("Profils")}
+                    {t("Habilitations")}
                   </span>
                 </div>
               </Link>
@@ -210,7 +210,7 @@ const Sidebar = () => {
               </Link>
             </li>
 
-            <li className="menu nav-item">
+            {/* <li className="menu nav-item">
               <Link href="/font-icons" className="group">
                 <div className="flex items-center">
                   <IconMenuFontIcons className="shrink-0 group-hover:!text-primary" />
@@ -219,7 +219,7 @@ const Sidebar = () => {
                   </span>
                 </div>
               </Link>
-            </li>
+            </li> */}
 
             <div className="mt-auto p-4">
               <img
