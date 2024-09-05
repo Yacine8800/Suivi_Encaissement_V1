@@ -1,6 +1,4 @@
 {
-  "/icon.png/route": "app/icon.png/route.js",
-  "/(defaults)/profil/page": "app/(defaults)/profil/page.js",
   "/(defaults)/dashboard/page": "app/(defaults)/dashboard/page.js",
   "/(defaults)/user/page": "app/(defaults)/user/page.js"
 }
