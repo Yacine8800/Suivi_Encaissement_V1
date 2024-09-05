@@ -26,7 +26,7 @@ const config: Config = {
           "dark-light": "rgb(128 93 202 / 15%)",
         },
         success: {
-          DEFAULT: "#00ab55",
+          DEFAULT: "#008F75",
           light: "#ddf5f0",
           "dark-light": "rgba(0,171,85,.15)",
         },

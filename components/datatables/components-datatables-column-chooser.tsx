@@ -552,6 +552,27 @@ const ComponentsDatatablesColumnChooser = () => {
               </div>
 
               <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
+                <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
+                  <h5 className="mb-1 text-base leading-none dark:text-white">
+                    Date
+                  </h5>
+                  <p className="text-xs text-white-dark">**********</p>
+                  <div className="mt-3 flex gap-2">
+                    <div>
+                      <input
+                        id="montant"
+                        type="date"
+                        name="montant"
+                        className="form-input w-[480px]"
+                        placeholder="Montant"
+                        // value={selectedRow["Montant revelé"] || ""}
+                        // onChange={(e) =>
+                        //   handleAmountChange(e, "Montant revelé")
+                        // }
+                      />
+                    </div>
+                  </div>
+                </div>
                 <h5 className="mb-1 text-base leading-none dark:text-white">
                   <p className="font-normal">
                     Journée du <span className="font-bold"> {today}</span>
