@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Image from "next/image";
 import ForgotPasswordModal from "../components/modals/ForgotPasswordModal";
+import IconEyeClose from "@/components/icon/icon-eyeClose";
 
-const ComponentsAuthLoginForm = () => {
+const Login = () => {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
@@ -118,9 +119,12 @@ const ComponentsAuthLoginForm = () => {
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
                                 onClick={togglePasswordVisibility}
                             >
-                                <IconEye
+                                {showPassword ? <IconEye
                                     className={showPassword ? "text-orange-500" : "text-gray-500"}
-                                />
+                                /> : <IconEyeClose
+                                    className={showPassword ? "text-orange-500" : "text-gray-500"}
+                                />}
+
                             </span>
                         </div>
                     </div>
@@ -137,7 +141,7 @@ const ComponentsAuthLoginForm = () => {
                         type="submit"
                         className="w-full py-3 px-4 text-white bg-orange-500 hover:bg-orange-600 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
                     >
-                        Sign in
+                        Connexion
                     </button>
                 </form>
             </div>
@@ -148,4 +152,4 @@ const ComponentsAuthLoginForm = () => {
     );
 };
 
-export default ComponentsAuthLoginForm;
+export default Login;
