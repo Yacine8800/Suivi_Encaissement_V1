@@ -5,9 +5,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    serverActions: true,
-  },
+  // Supprimez l'option 'experimental.serverActions'
 };
 
 export default nextConfig;
