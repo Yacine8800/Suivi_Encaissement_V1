@@ -3,11 +3,13 @@ import IconEye from "@/components/icon/icon-eye";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Image from "next/image";
+import ForgotPasswordModal from "../components/modals/ForgotPasswordModal";
 
-const Login = () => {
+const ComponentsAuthLoginForm = () => {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // State for the modal
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -18,7 +20,7 @@ const Login = () => {
             setIsSmallScreen(window.innerWidth <= 768);
         };
 
-        handleResize(); // Appel initial pour définir correctement l'état
+        handleResize(); // Initial call to set the state correctly
         window.addEventListener("resize", handleResize);
 
         return () => {
@@ -31,35 +33,43 @@ const Login = () => {
         router.push("/dashboard");
     };
 
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <div className="flex h-screen items-center justify-center relative overflow-hidden">
-            {/* Divisant la page en deux sections */}
+            {/* Dividing the page into two sections */}
             <div className="absolute inset-0 flex">
                 <div className="w-1/2 bg-[#FFDFBD] flex items-center justify-center relative">
-                    {/* SVG ou images animées à gauche */}
+                    {/* Left animated SVGs or images */}
                 </div>
                 <div className="w-1/2 bg-[#F07D00] flex items-center justify-center relative">
-                    {/* SVG ou images animées à droite */}
+                    {/* Right animated SVGs or images */}
                 </div>
             </div>
 
-            {/* Logo en haut à gauche */}
+            {/* Logo at the top left */}
             <div className="absolute top-5 left-5 z-10">
                 <Image
                     width={181}
                     height={82}
-                    src="/assets/images/auth/logo.png" // Chemin vers le logo
+                    src="/assets/images/auth/logo.png" // Path to the logo
                     alt="Logo"
                     className="h-12 w-auto"
                 />
             </div>
 
-            {/* Box de connexion avec padding conditionnel */}
+            {/* Login box with conditional padding */}
             <div
                 className={`relative z-20 w-full max-w-lg bg-white rounded-[30px] shadow-xl p-8 ${isSmallScreen ? "mx-4" : ""
                     }`} // Adding 'mx-4' padding on small screens
             >
-                {/* Titre et logo dans le formulaire */}
+                {/* Title and logo in the form */}
                 <div className="flex justify-between items-center">
                     <h2 className="text-3xl font-bold text-gray-900">Login</h2>
                     <Image
@@ -108,28 +118,34 @@ const Login = () => {
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
                                 onClick={togglePasswordVisibility}
                             >
-                                <IconEye className={showPassword ? "text-orange-500" : "text-gray-500"} />
+                                <IconEye
+                                    className={showPassword ? "text-orange-500" : "text-gray-500"}
+                                />
                             </span>
                         </div>
                     </div>
                     <div className="flex justify-end">
-                        <a
-                            href="/forgot-password"
+                        <button
+                            type="button"
                             className="text-sm text-gray-500 hover:text-orange-500"
+                            onClick={openModal} // Open the modal when clicked
                         >
                             Mot de passe oublié?
-                        </a>
+                        </button>
                     </div>
                     <button
                         type="submit"
                         className="w-full py-3 px-4 text-white bg-orange-500 hover:bg-orange-600 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
                     >
-                        Connexion
+                        Sign in
                     </button>
                 </form>
             </div>
+
+            {/* Modal */}
+            {isModalOpen && <ForgotPasswordModal closeModal={closeModal} />}
         </div>
     );
 };
 
-export default Login;
+export default ComponentsAuthLoginForm;
