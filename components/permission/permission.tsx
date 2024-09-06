@@ -8,7 +8,6 @@ import IconCaretDown from "@/components/icon/icon-caret-down";
 import IconFolder from "@/components/icon/icon-folder";
 import IconVideo from "@/components/icon/icon-video";
 import IconEdit from "@/components/icon/icon-edit";
-import IconDroplet from "@/components/icon/icon-droplet";
 import AnimateHeight from "react-animate-height";
 import IconTxtFile from "../icon/icon-txt-file";
 import IconTrashLines from "../icon/icon-trash-lines";
