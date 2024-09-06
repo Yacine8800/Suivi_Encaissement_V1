@@ -1,13 +1,7 @@
 "use client";
 import Dropdown from "@/components/dropdown";
-
-import IconBolt from "@/components/icon/icon-bolt";
 import IconCashBanknotes from "@/components/icon/icon-cash-banknotes";
 import IconHorizontalDots from "@/components/icon/icon-horizontal-dots";
-
-import IconNetflix from "@/components/icon/icon-netflix";
-
-import IconUser from "@/components/icon/icon-user";
 import { IRootState } from "@/store";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
