@@ -526,10 +526,10 @@ const ComponentsDatatablesColumnValider = () => {
                 </button>
 
                 <h1 className="mb-1 text-[20px] dark:text-white">
-                  Formulaire d'édition
+                  Formulaire de visualisation
                 </h1>
                 <p className="text-white-dark">
-                  Modifiez vos encaissements s'ils ne sont pas terminés.
+                  Vous permet de voir vos encaissements terminés.
                 </p>
               </div>
 

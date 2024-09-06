@@ -9,7 +9,7 @@ import IconPencil from "@/components/icon/icon-pencil";
 import IconX from "../icon/icon-x";
 import Dropdown from "@/components/dropdown";
 import { IRootState } from "@/store";
-import IconUsersGroup from "../icon/icon-users-group";
+import ImageUploading, { ImageListType } from "react-images-uploading";
 
 interface RowData {
   id: number;
@@ -432,6 +432,16 @@ const ComponentsDatatablesColumnChooser = () => {
 
   const validatedRecordsExist = recordsData.some((record) => record.validated);
 
+  const [images2, setImages2] = useState<any>([]);
+  const maxNumber = 69;
+
+  const onChange2 = (
+    imageList: ImageListType,
+    addUpdateIndex: number[] | undefined
+  ) => {
+    setImages2(imageList as never[]);
+  };
+
   return (
     <div className="panel mt-6">
       <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
@@ -552,27 +562,6 @@ const ComponentsDatatablesColumnChooser = () => {
               </div>
 
               <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
-                <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
-                  <h5 className="mb-1 text-base leading-none dark:text-white">
-                    Date
-                  </h5>
-                  <p className="text-xs text-white-dark">**********</p>
-                  <div className="mt-3 flex gap-2">
-                    <div>
-                      <input
-                        id="montant"
-                        type="date"
-                        name="montant"
-                        className="form-input w-[480px]"
-                        placeholder="Montant"
-                        // value={selectedRow["Montant revelé"] || ""}
-                        // onChange={(e) =>
-                        //   handleAmountChange(e, "Montant revelé")
-                        // }
-                      />
-                    </div>
-                  </div>
-                </div>
                 <h5 className="mb-1 text-base leading-none dark:text-white">
                   <p className="font-normal">
                     Journée du <span className="font-bold"> {today}</span>
@@ -665,6 +654,49 @@ const ComponentsDatatablesColumnChooser = () => {
                 </div>
               </div>
 
+              <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
+                <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
+                  <h5 className="mb-1 text-base leading-none dark:text-white">
+                    Date
+                  </h5>
+                  <p className="text-xs text-white-dark">**********</p>
+                  <div className="mt-3 flex gap-2">
+                    <div>
+                      <input
+                        id="montant"
+                        type="date"
+                        name="montant"
+                        className="form-input w-[480px]"
+                        placeholder="Montant"
+                        // value={selectedRow["Montant revelé"] || ""}
+                        // onChange={(e) =>
+                        //   handleAmountChange(e, "Montant revelé")
+                        // }
+                      />
+                    </div>
+                  </div>
+                </div>
+                <h5 className="mb-1 text-base leading-none dark:text-white">
+                  Montant Banque
+                </h5>
+                <p className="text-xs text-white-dark">
+                  Saisir le montant provenant de la banque.
+                </p>
+                <div className="mt-3 flex gap-2">
+                  <div>
+                    <input
+                      id="montant"
+                      type="text"
+                      name="montant"
+                      className="form-input w-[480px]"
+                      placeholder="Montant"
+                      value={selectedRow["Montant revelé"] || ""}
+                      onChange={(e) => handleAmountChange(e, "Montant revelé")}
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="mb-3 rounded-md border border-dashed border-[#ED6C03] bg-gray-300 p-3 dark:border-[#1b2e4b]">
                 <h5 className="mb-1 text-base leading-none dark:text-white">
                   Relevé du{" "}
@@ -734,28 +766,6 @@ const ComponentsDatatablesColumnChooser = () => {
 
               <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
                 <h5 className="mb-1 text-base leading-none dark:text-white">
-                  Montant Banque
-                </h5>
-                <p className="text-xs text-white-dark">
-                  Saisir le montant provenant de la banque.
-                </p>
-                <div className="mt-3 flex gap-2">
-                  <div>
-                    <input
-                      id="montant"
-                      type="text"
-                      name="montant"
-                      className="form-input w-[480px]"
-                      placeholder="Montant"
-                      value={selectedRow["Montant revelé"] || ""}
-                      onChange={(e) => handleAmountChange(e, "Montant revelé")}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
-                <h5 className="mb-1 text-base leading-none dark:text-white">
                   Observation
                 </h5>
                 <div className="flex items-center">
@@ -785,6 +795,91 @@ const ComponentsDatatablesColumnChooser = () => {
                     value={observationBanque}
                     onChange={(e) => setObservationBanque(e.target.value)}
                   ></textarea>
+                </div>
+              </div>
+              <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
+                <div
+                  className="custom-file-container"
+                  data-upload-id="mySecondImage"
+                >
+                  <div className="label-container">
+                    <label>Ajouter le(s) coupon(s) </label>
+                    <button
+                      type="button"
+                      className="custom-file-container__image-clear"
+                      title="Supprimer le coupon"
+                      onClick={() => {
+                        setImages2([]);
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <label className="custom-file-container__custom-file"></label>
+                  <input
+                    type="file"
+                    className="custom-file-container__custom-file__custom-file-input"
+                    accept="image/*"
+                  />
+                  <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+                  <ImageUploading
+                    multiple
+                    value={images2}
+                    onChange={onChange2}
+                    maxNumber={maxNumber}
+                  >
+                    {({
+                      imageList,
+                      onImageUpload,
+                      onImageRemoveAll,
+                      onImageUpdate,
+                      onImageRemove,
+                      isDragging,
+                      dragProps,
+                    }) => (
+                      <div className="upload__image-wrapper">
+                        <button
+                          className="custom-file-container__custom-file__custom-file-control"
+                          onClick={onImageUpload}
+                        >
+                          Choisir les images...
+                        </button>
+                        &nbsp;
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                          {imageList.map((image, index) => (
+                            <div
+                              key={index}
+                              className="custom-file-container__image-preview relative"
+                            >
+                              <button
+                                type="button"
+                                className="custom-file-container__image-clear"
+                                title="Supprimer le coupon"
+                                onClick={() => onImageRemove(index)}
+                              >
+                                ×
+                              </button>
+
+                              <img
+                                src={image.dataURL}
+                                alt="img"
+                                className="!max-h-48 w-full rounded object-cover shadow"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </ImageUploading>
+                  {images2.length === 0 ? (
+                    <img
+                      src="/assets/images/file-preview.svg"
+                      className="m-auto w-full max-w-md"
+                      alt=""
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
 

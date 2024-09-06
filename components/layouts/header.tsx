@@ -119,7 +119,7 @@ const Header = () => {
             >
               <IconSquareRotated className="shrink-0 fill-success" />
             </button>
-            <span className="ml-2">AGC</span>
+            <span className="ml-2">Administrateur système</span>
           </p>
 
           <div className="flex items-center space-x-1.5 dark:text-[#d0d2d6] sm:flex-1 lg:space-x-2 ltr:ml-auto ltr:sm:ml-0 rtl:mr-auto rtl:space-x-reverse sm:rtl:mr-0">
@@ -238,7 +238,7 @@ const Header = () => {
                         <h4 className="text-base">
                           DIOMANDE Yacine
                           <span className="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">
-                            AGC
+                            Administrateur système
                           </span>
                         </h4>
                         <button

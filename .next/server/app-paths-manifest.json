@@ -1,6 +1,6 @@
 {
-  "/icon.png/route": "app/icon.png/route.js",
-  "/(defaults)/profil/page": "app/(defaults)/profil/page.js",
-  "/(defaults)/user/page": "app/(defaults)/user/page.js",
-  "/(defaults)/utilisateur/add/page": "app/(defaults)/utilisateur/add/page.js"
+  "/page": "app/page.js",
+  "/(defaults)/encaissement/page": "app/(defaults)/encaissement/page.js",
+  "/(defaults)/dashboard/page": "app/(defaults)/dashboard/page.js",
+  "/(defaults)/valider/page": "app/(defaults)/valider/page.js"
 }
