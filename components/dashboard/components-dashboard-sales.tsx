@@ -1,18 +1,12 @@
 "use client";
 import Dropdown from "@/components/dropdown";
-import IconArrowLeft from "@/components/icon/icon-arrow-left";
+
 import IconBolt from "@/components/icon/icon-bolt";
-import IconCaretDown from "@/components/icon/icon-caret-down";
 import IconCashBanknotes from "@/components/icon/icon-cash-banknotes";
-import IconCreditCard from "@/components/icon/icon-credit-card";
-import IconDollarSign from "@/components/icon/icon-dollar-sign";
 import IconHorizontalDots from "@/components/icon/icon-horizontal-dots";
-import IconInbox from "@/components/icon/icon-inbox";
-import IconMultipleForwardRight from "@/components/icon/icon-multiple-forward-right";
+
 import IconNetflix from "@/components/icon/icon-netflix";
-import IconPlus from "@/components/icon/icon-plus";
-import IconShoppingCart from "@/components/icon/icon-shopping-cart";
-import IconTag from "@/components/icon/icon-tag";
+
 import IconUser from "@/components/icon/icon-user";
 import { IRootState } from "@/store";
 import Link from "next/link";
@@ -479,6 +473,73 @@ const ComponentsDashboardSales = () => {
     { value: "purple", label: "Purple" },
   ];
 
+  const encaissements = [
+    { date: "12/12/2023", status: "En cours" },
+    { date: "10/12/2023", status: "Terminé" },
+    { date: "08/12/2023", status: "En retard" },
+    { date: "07/12/2023", status: "Terminé" },
+    { date: "05/12/2023", status: "En cours" },
+    { date: "02/12/2023", status: "En retard" },
+    { date: "01/12/2023", status: "En cours" },
+    { date: "28/11/2023", status: "Terminé" },
+    { date: "25/11/2023", status: "En retard" },
+    { date: "20/11/2023", status: "En cours" },
+  ];
+
+  const getStatusClass = (status: any) => {
+    switch (status) {
+      case "En cours":
+        return "bg-orange-500"; // Orange for "En cours"
+      case "Terminé":
+        return "bg-green-500"; // Green for "Terminé"
+      case "En retard":
+        return "bg-red-500"; // Red for "En retard"
+      default:
+        return "bg-gray-500";
+    }
+  };
+
+  const getBadgeClass = (status: any) => {
+    switch (status) {
+      case "En cours":
+        return "badge-outline-warning"; // Badge class for "En cours"
+      case "Terminé":
+        return "badge-outline-success"; // Badge class for "Terminé"
+      case "En retard":
+        return "badge-outline-danger"; // Badge class for "En retard"
+      default:
+        return "badge-outline-secondary";
+    }
+  };
+
+  const ecarts = [
+    { name: "Ecart (A-B)", date: "12/12/2023", valeur: 5000, icon: "green" },
+    { name: "Ecart (B-C)", date: "10/12/2023", valeur: -2000, icon: "yellow" },
+    { name: "Ecart (A-B)", date: "08/12/2023", valeur: 3000, icon: "green" },
+    { name: "Ecart (B-C)", date: "06/12/2023", valeur: 1500, icon: "yellow" },
+    { name: "Ecart (A-B)", date: "04/12/2023", valeur: -1000, icon: "green" },
+    { name: "Ecart (B-C)", date: "02/12/2023", valeur: 2500, icon: "yellow" },
+  ];
+
+  const getEcartColor = (valeur: any) => {
+    return valeur >= 0 ? "text-green-500" : "text-red-500"; // Vert si positif, rouge si négatif
+  };
+
+  const getEcartIcon = (iconType: any) => {
+    if (iconType === "yellow") {
+      return (
+        <span className="grid h-9 w-9 shrink-0 place-content-center rounded-md bg-warning-light text-warning dark:bg-warning dark:text-warning-light">
+          <IconCashBanknotes />
+        </span>
+      );
+    }
+    return (
+      <span className="grid h-9 w-9 shrink-0 place-content-center rounded-md bg-success-light text-success dark:bg-success dark:text-success-light">
+        <IconCashBanknotes />
+      </span>
+    );
+  };
+
   return (
     <>
       <div>
@@ -650,168 +711,28 @@ const ComponentsDashboardSales = () => {
               options={{ suppressScrollX: true }}
             >
               <div className="cursor-pointer text-sm">
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-primary ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">Updated Server Logs</div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    Just Now
+                {encaissements.map((encaissement, index) => (
+                  <div
+                    key={index}
+                    className="group relative mb-4 flex items-center py-1.5" // Ajout de 'mb-4' pour espacer les encaissements
+                  >
+                    <div
+                      className={`h-2.5 w-2.5 rounded-full ltr:mr-2 rtl:ml-2 ${getStatusClass(
+                        encaissement.status
+                      )}`}
+                    ></div>
+                    <div className="flex-1">
+                      Encaissement du {encaissement.date}
+                    </div>
+                    <span
+                      className={`badge ${getBadgeClass(
+                        encaissement.status
+                      )} absolute rounded bg-opacity-80 p-1 text-xs group-hover:opacity-100 ltr:right-0 rtl:left-0`}
+                    >
+                      {encaissement.status}
+                    </span>
                   </div>
-
-                  <span className="badge badge-outline-primary absolute bg-primary-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Pending
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-success ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">Send Mail to HR and Admin</div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    2 min ago
-                  </div>
-
-                  <span className="badge badge-outline-success absolute bg-success-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Completed
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-danger ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">Backup Files EOD</div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    14:00
-                  </div>
-
-                  <span className="badge badge-outline-danger absolute bg-danger-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Pending
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-black ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">Collect documents from Sara</div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    16:00
-                  </div>
-
-                  <span className="badge badge-outline-dark absolute bg-dark-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Completed
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-warning ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">
-                    Conference call with Marketing Manager.
-                  </div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    17:00
-                  </div>
-
-                  <span className="badge badge-outline-warning absolute bg-warning-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    In progress
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-info ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">Rebooted Server</div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    17:00
-                  </div>
-
-                  <span className="badge badge-outline-info absolute bg-info-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Completed
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-secondary ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">
-                    Send contract details to Freelancer
-                  </div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    18:00
-                  </div>
-
-                  <span className="badge badge-outline-secondary absolute bg-secondary-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Pending
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-primary ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">Updated Server Logs</div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    Just Now
-                  </div>
-
-                  <span className="badge badge-outline-primary absolute bg-primary-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Pending
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-success ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">Send Mail to HR and Admin</div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    2 min ago
-                  </div>
-
-                  <span className="badge badge-outline-success absolute bg-success-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Completed
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-danger ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">Backup Files EOD</div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    14:00
-                  </div>
-
-                  <span className="badge badge-outline-danger absolute bg-danger-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Pending
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-black ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">Collect documents from Sara</div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    16:00
-                  </div>
-
-                  <span className="badge badge-outline-dark absolute bg-dark-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Completed
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-warning ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">
-                    Conference call with Marketing Manager.
-                  </div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    17:00
-                  </div>
-
-                  <span className="badge badge-outline-warning absolute bg-warning-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    In progress
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-info ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">Rebooted Server</div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    17:00
-                  </div>
-
-                  <span className="badge badge-outline-info absolute bg-info-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Completed
-                  </span>
-                </div>
-                <div className="group relative flex items-center py-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-secondary ltr:mr-1 rtl:ml-1.5"></div>
-                  <div className="flex-1">
-                    Send contract details to Freelancer
-                  </div>
-                  <div className="text-xs text-white-dark dark:text-gray-500 ltr:ml-auto rtl:mr-auto">
-                    18:00
-                  </div>
-
-                  <span className="badge badge-outline-secondary absolute bg-secondary-light text-xs opacity-0 group-hover:opacity-100 dark:bg-black ltr:right-0 rtl:left-0">
-                    Pending
-                  </span>
-                </div>
+                ))}
               </div>
             </PerfectScrollbar>
           </div>
@@ -843,90 +764,25 @@ const ComponentsDashboardSales = () => {
             </div>
             <div>
               <div className="space-y-6">
-                <div className="flex">
-                  <span className="grid h-9 w-9 shrink-0 place-content-center rounded-md bg-success-light text-base text-success dark:bg-success dark:text-success-light">
-                    SP
-                  </span>
-                  <div className="flex-1 px-3">
-                    <div>Shaun Park</div>
-                    <div className="text-xs text-white-dark dark:text-gray-500">
-                      10 Jan 1:00PM
+                {ecarts.map((ecart, index) => (
+                  <div key={index} className="flex">
+                    {getEcartIcon(ecart.icon)}
+                    <div className="flex-1 px-3">
+                      <div>{ecart.name}</div>
+                      <div className="text-xs text-white-dark dark:text-gray-500">
+                        {ecart.date}
+                      </div>
                     </div>
+                    <span
+                      className={`whitespace-pre px-1 text-base ltr:ml-auto rtl:mr-auto ${getEcartColor(
+                        ecart.valeur
+                      )}`}
+                    >
+                      {ecart.valeur >= 0 ? "+" : ""}
+                      {ecart.valeur.toLocaleString()} FCFA
+                    </span>
                   </div>
-                  <span className="whitespace-pre px-1 text-base text-success ltr:ml-auto rtl:mr-auto">
-                    +$36.11
-                  </span>
-                </div>
-                <div className="flex">
-                  <span className="grid h-9 w-9 shrink-0 place-content-center rounded-md bg-warning-light text-warning dark:bg-warning dark:text-warning-light">
-                    <IconCashBanknotes />
-                  </span>
-                  <div className="flex-1 px-3">
-                    <div>Cash withdrawal</div>
-                    <div className="text-xs text-white-dark dark:text-gray-500">
-                      04 Jan 1:00PM
-                    </div>
-                  </div>
-                  <span className="whitespace-pre px-1 text-base text-danger ltr:ml-auto rtl:mr-auto">
-                    -$16.44
-                  </span>
-                </div>
-                <div className="flex">
-                  <span className="grid h-9 w-9 shrink-0 place-content-center rounded-md bg-danger-light text-danger dark:bg-danger dark:text-danger-light">
-                    <IconUser className="h-6 w-6" />
-                  </span>
-                  <div className="flex-1 px-3">
-                    <div>Amy Diaz</div>
-                    <div className="text-xs text-white-dark dark:text-gray-500">
-                      10 Jan 1:00PM
-                    </div>
-                  </div>
-                  <span className="whitespace-pre px-1 text-base text-success ltr:ml-auto rtl:mr-auto">
-                    +$66.44
-                  </span>
-                </div>
-                <div className="flex">
-                  <span className="grid h-9 w-9 shrink-0 place-content-center rounded-md bg-secondary-light text-secondary dark:bg-secondary dark:text-secondary-light">
-                    <IconNetflix />
-                  </span>
-                  <div className="flex-1 px-3">
-                    <div>Netflix</div>
-                    <div className="text-xs text-white-dark dark:text-gray-500">
-                      04 Jan 1:00PM
-                    </div>
-                  </div>
-                  <span className="whitespace-pre px-1 text-base text-danger ltr:ml-auto rtl:mr-auto">
-                    -$32.00
-                  </span>
-                </div>
-                <div className="flex">
-                  <span className="grid h-9 w-9 shrink-0 place-content-center rounded-md bg-info-light text-base text-info dark:bg-info dark:text-info-light">
-                    DA
-                  </span>
-                  <div className="flex-1 px-3">
-                    <div>Daisy Anderson</div>
-                    <div className="text-xs text-white-dark dark:text-gray-500">
-                      10 Jan 1:00PM
-                    </div>
-                  </div>
-                  <span className="whitespace-pre px-1 text-base text-success ltr:ml-auto rtl:mr-auto">
-                    +$10.08
-                  </span>
-                </div>
-                <div className="flex">
-                  <span className="grid h-9 w-9 shrink-0 place-content-center rounded-md bg-primary-light text-primary dark:bg-primary dark:text-primary-light">
-                    <IconBolt />
-                  </span>
-                  <div className="flex-1 px-3">
-                    <div>Electricity Bill</div>
-                    <div className="text-xs text-white-dark dark:text-gray-500">
-                      04 Jan 1:00PM
-                    </div>
-                  </div>
-                  <span className="whitespace-pre px-1 text-base text-danger ltr:ml-auto rtl:mr-auto">
-                    -$22.00
-                  </span>
-                </div>
+                ))}
               </div>
             </div>
           </div>
