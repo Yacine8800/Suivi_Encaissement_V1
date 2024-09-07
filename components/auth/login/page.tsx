@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import ForgotPasswordModal from "../components/modals/ForgotPasswordModal";
 import IconEyeClose from "@/components/icon/icon-eyeClose";
+import IconBolt from "@/components/icon/icon-bolt";
 
 const Login = () => {
     const router = useRouter();
@@ -44,16 +45,6 @@ const Login = () => {
 
     return (
         <div className="flex h-screen items-center justify-center relative overflow-hidden">
-            {/* Dividing the page into two sections */}
-            <div className="absolute inset-0 flex">
-                <div className="w-1/2 bg-[#FFDFBD] flex items-center justify-center relative">
-                    {/* Left animated SVGs or images */}
-                </div>
-                <div className="w-1/2 bg-[#F07D00] flex items-center justify-center relative">
-                    {/* Right animated SVGs or images */}
-                </div>
-            </div>
-
             {/* Logo at the top left */}
             <div className="absolute top-5 left-5 z-10">
                 <Image
@@ -64,10 +55,40 @@ const Login = () => {
                     className="h-12 w-auto"
                 />
             </div>
+            {/* Dividing the page into two sections */}
+            <div className="absolute inset-0 flex">
+                <div className="w-1/2 bg-[#FFDFBD] flex items-center justify-center relative">
+                    <IconBolt></IconBolt>
+                    <div className="flex flex-col mb-8">
+                        <Image
+                            width={300}
+                            height={300}
+                            src="/assets/images/auth/envole.png" // Path to the logo
+                            alt="Logo"
+                        />
+                        <Image
+                            width={269}
+                            height={256}
+                            src="/assets/images/auth/scooter.png" // Path to the logo
+                            alt="Logo"
+                        />
+                    </div>
+
+                </div>
+                <div className="w-1/2 bg-[#FFFEF9] flex items-center justify-center relative">
+                    <Image
+                        width={450}
+                        height={450}
+                        src="/assets/images/auth/float.png" // Path to the logo
+                        alt="Logo"
+                    />
+                    {/* <IconBolt></IconBolt> */}
+                </div>
+            </div>
 
             {/* Login box with conditional padding */}
             <div
-                className={`relative z-20 w-full max-w-lg bg-white rounded-[30px] shadow-xl p-8 ${isSmallScreen ? "mx-4" : ""
+                className={`relative z-20 w-full max-w-md bg-white rounded-[30px] shadow-xl p-8 ${isSmallScreen ? "mx-4" : ""
                     }`} // Adding 'mx-4' padding on small screens
             >
                 {/* Title and logo in the form */}
