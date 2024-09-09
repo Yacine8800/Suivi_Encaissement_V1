@@ -192,8 +192,9 @@ const ComponentsAppsUsers = () => {
             <div>
               <button
                 type="button"
-                className={`btn btn-outline-primary p-2 ${value === "list" && "bg-primary text-white"
-                  }`}
+                className={`btn btn-outline-primary p-2 ${
+                  value === "list" && "bg-primary text-white"
+                }`}
                 onClick={() => setValue("list")}
               >
                 <IconListCheck />
@@ -202,8 +203,9 @@ const ComponentsAppsUsers = () => {
             <div>
               <button
                 type="button"
-                className={`btn btn-outline-primary p-2 ${value === "grid" && "bg-primary text-white"
-                  }`}
+                className={`btn btn-outline-primary p-2 ${
+                  value === "grid" && "bg-primary text-white"
+                }`}
                 onClick={() => setValue("grid")}
               >
                 <IconLayoutGrid />
@@ -231,8 +233,9 @@ const ComponentsAppsUsers = () => {
       <div className="mt-4 flex gap-4">
         <button
           onClick={() => setSelectedTag("all")}
-          className={`btn ${selectedTag === "all" ? "btn-primary" : "btn-outline-primary"
-            }`}
+          className={`btn ${
+            selectedTag === "all" ? "btn-primary" : "btn-outline-primary"
+          }`}
         >
           Tous
         </button>
@@ -242,10 +245,11 @@ const ComponentsAppsUsers = () => {
           <button
             key={profile.value}
             onClick={() => setSelectedTag(profile.value)}
-            className={`btn ${selectedTag === profile.value
+            className={`btn ${
+              selectedTag === profile.value
                 ? "btn-primary"
                 : "btn-outline-primary"
-              }`}
+            }`}
           >
             {profile.label}
           </button>

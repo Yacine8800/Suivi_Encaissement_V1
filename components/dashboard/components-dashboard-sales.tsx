@@ -29,14 +29,14 @@ const ComponentsDashboardSales = () => {
   const revenueChart: any = {
     series: [
       {
-        name: "Montant Bordereau",
+        name: "Encaissements Crédités",
         data: [
           16800, 16800, 15500, 17800, 15500, 17000, 19000, 16000, 15000, 17000,
           14000, 17000,
         ],
       },
       {
-        name: "Montant relevé",
+        name: "Encaissements Non Crédités",
         data: [
           16500, 17500, 16200, 17300, 16000, 19500, 16000, 17000, 16000, 19000,
           18000, 19000,
@@ -266,7 +266,7 @@ const ComponentsDashboardSales = () => {
           },
         },
       },
-      labels: ["Lignes complètes", "Lignes incomplètes"],
+      labels: ["Crédité", "Non-crédité"],
       states: {
         hover: {
           filter: {
@@ -354,7 +354,7 @@ const ComponentsDashboardSales = () => {
           },
         },
       },
-      labels: ["Lignes complètes", "Lignes incomplètes"],
+      labels: ["Cloturé", "Non-Cloturé"],
       states: {
         hover: {
           filter: {
@@ -443,7 +443,7 @@ const ComponentsDashboardSales = () => {
           },
         },
       },
-      labels: ["Lignes complètes", "Lignes incomplètes"],
+      labels: ["Crédité", "Non - Crédité"],
       states: {
         hover: {
           filter: {
@@ -462,9 +462,14 @@ const ComponentsDashboardSales = () => {
   };
 
   const options5 = [
-    { value: "orange", label: "Orange" },
-    { value: "white", label: "White" },
-    { value: "purple", label: "Purple" },
+    { value: "DRAN", label: "DRAN" },
+    { value: "DRABO", label: "DRABO" },
+    { value: "DRYOP", label: "DRYOP" },
+  ];
+  const options6 = [
+    { value: "SECTEUR 1", label: "SECTEUR 1" },
+    { value: "SECTEUR 2", label: "SECTEUR 2" },
+    { value: "SECTEUR 3", label: "SECTEUR 3" },
   ];
 
   const encaissements = [
@@ -478,6 +483,12 @@ const ComponentsDashboardSales = () => {
     { date: "28/11/2023", status: "Terminé" },
     { date: "25/11/2023", status: "En retard" },
     { date: "20/11/2023", status: "En cours" },
+  ];
+
+  const caissesNonCloturees = [
+    { agence: "Agence 1", date: "12/12/2023", status: "Non clôturée" },
+    { agence: "Agence 2", date: "10/12/2023", status: "Non clôturée" },
+    { agence: "Agence 3", date: "08/12/2023", status: "Non clôturée" },
   ];
 
   const getStatusClass = (status: any) => {
@@ -558,14 +569,14 @@ const ComponentsDashboardSales = () => {
               placeholder="Filtrer par DR"
               options={options5}
               isMulti
-              isSearchable={false}
+              isSearchable={true}
             />
 
             <Select
               placeholder="Filtrer par Secteurs"
-              options={options5}
+              options={options6}
               isMulti
-              isSearchable={false}
+              isSearchable={true}
             />
           </div>
         </ol>
@@ -698,7 +709,7 @@ const ComponentsDashboardSales = () => {
         <div className="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-2">
           <div className="panel h-full pb-0 sm:col-span-2 xl:col-span-1">
             <h5 className="mb-5 text-lg font-semibold dark:text-white-light">
-              Les 10 derniers Encaissements
+              Écarts Non Justifiés
             </h5>
             <PerfectScrollbar
               className="relative mb-4 h-[290px] ltr:-mr-3 ltr:pr-3 rtl:-ml-3 rtl:pl-3"
