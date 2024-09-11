@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   suivi_encaissement_web:
-    image: dstdcie17/suivi_encaissement_web:latest
+    image: dstdcie17/suivi_encaissement_web:1.0.0
     container_name: suivi_encaissement_web
     ports:
       - '2403:2403'

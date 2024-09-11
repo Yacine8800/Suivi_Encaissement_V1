@@ -17,18 +17,12 @@ RUN yarn build
 # Production stage
 FROM node:18.17.0-alpine
 WORKDIR /app
-
-# Copy only necessary files from the builder stage
-COPY --from=builder /app/next.config.mjs ./
+COPY --from=builder /app/next.config.mjs ./next.config.mjs
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
+COPY --from=builder /app/package.json ./package.json
 
-# Set environment variables
-ENV NODE_ENV production
-
-# Run the application
 CMD ["yarn", "start"]
 
 
