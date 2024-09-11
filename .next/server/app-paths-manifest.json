@@ -1,0 +1,7 @@
+{
+  "/(defaults)/valider/page": "app/(defaults)/valider/page.js",
+  "/(defaults)/encaissement/page": "app/(defaults)/encaissement/page.js",
+  "/(defaults)/user/page": "app/(defaults)/user/page.js",
+  "/(defaults)/dashboard/page": "app/(defaults)/dashboard/page.js",
+  "/(defaults)/litiges/page": "app/(defaults)/litiges/page.js"
+}

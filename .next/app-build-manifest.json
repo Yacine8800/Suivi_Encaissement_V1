@@ -1,0 +1,73 @@
+{
+  "pages": {
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
+    ],
+    "/loading": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/loading.js"
+    ],
+    "/not-found": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/not-found.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
+    ],
+    "/(defaults)/dashboard/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(defaults)/dashboard/page.js"
+    ],
+    "/(defaults)/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(defaults)/layout.js"
+    ],
+    "/(defaults)/encaissement/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(defaults)/encaissement/page.css",
+      "static/chunks/app/(defaults)/encaissement/page.js"
+    ],
+    "/(defaults)/valider/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(defaults)/valider/page.css",
+      "static/chunks/app/(defaults)/valider/page.js"
+    ],
+    "/(defaults)/profil/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(defaults)/profil/page.js"
+    ],
+    "/(defaults)/user/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(defaults)/user/page.js"
+    ],
+    "/(defaults)/valider/voir/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(defaults)/valider/voir/page.js"
+    ],
+    "/(defaults)/litiges/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(defaults)/litiges/page.css",
+      "static/chunks/app/(defaults)/litiges/page.js"
+    ]
+  }
+}
