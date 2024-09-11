@@ -1,3 +1,20 @@
 {
+<<<<<<< HEAD
   "/(defaults)/litiges/page": "app/(defaults)/litiges/page.js"
+=======
+  "/page": "app/page.js",
+  "/icon.png/route": "app/icon.png/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(defaults)/profil/page": "app/(defaults)/profil/page.js",
+  "/(defaults)/litiges/page": "app/(defaults)/litiges/page.js",
+  "/(defaults)/dashboard/page": "app/(defaults)/dashboard/page.js",
+  "/(defaults)/permission/page": "app/(defaults)/permission/page.js",
+  "/(defaults)/encaissement/page": "app/(defaults)/encaissement/page.js",
+  "/(defaults)/valider/page": "app/(defaults)/valider/page.js",
+  "/(defaults)/role/add/page": "app/(defaults)/role/add/page.js",
+  "/(defaults)/valider/voir/page": "app/(defaults)/valider/voir/page.js",
+  "/(defaults)/page": "app/(defaults)/page.js",
+  "/(defaults)/user/page": "app/(defaults)/user/page.js",
+  "/(defaults)/utilisateur/add/page": "app/(defaults)/utilisateur/add/page.js"
+>>>>>>> 2639e56 (fix:deploiement1)
 }
