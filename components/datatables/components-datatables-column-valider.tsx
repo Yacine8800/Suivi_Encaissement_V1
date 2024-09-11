@@ -436,7 +436,6 @@ const ComponentsDatatablesColumnValider = () => {
   };
 
   const validatedRecordsExist = validatedRecords.length > 0;
-
   const showAlert = async () => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -446,30 +445,61 @@ const ComponentsDatatablesColumnValider = () => {
       },
       buttonsStyling: false,
     });
+
     swalWithBootstrapButtons
       .fire({
-        title: "Etes vous sur de passer en litige?",
-        text: "Cette action mettre l'encaissement en litige",
+        title: "Êtes-vous sûr de passer en litige?",
+        text: "Cette action mettra l'encaissement en litige",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Confirmer",
         cancelButtonText: "Annuler",
         reverseButtons: true,
         padding: "2em",
+        html: `
+          <div>
+            <input id="titre" class="form-input" placeholder="Titre..." required />
+          </div>
+          <br />
+          <div>
+            <textarea id="ctnTextarea" rows="3" class="form-textarea" placeholder="Description..." required></textarea>
+          </div>
+        `,
+        preConfirm: () => {
+          const titreElement = document.getElementById(
+            "titre"
+          ) as HTMLInputElement | null;
+          const textareaElement = document.getElementById(
+            "ctnTextarea"
+          ) as HTMLTextAreaElement | null;
+
+          if (!titreElement || !titreElement.value) {
+            Swal.showValidationMessage("Le titre ne doit pas être vide");
+            return false; // Annule la confirmation si le titre est vide
+          }
+
+          if (!textareaElement || !textareaElement.value) {
+            Swal.showValidationMessage("La description ne doit pas être vide");
+            return false; // Annule la confirmation si la description est vide
+          }
+
+          return {
+            titre: titreElement.value,
+            description: textareaElement.value,
+          };
+        },
       })
       .then((result) => {
-        if (result.value) {
+        if (result.isConfirmed) {
+          const { titre } = result.value;
+
           swalWithBootstrapButtons.fire(
             "Confirmer",
-            "Votre encaissement est passer en litige",
+            `Votre encaissement est passé en litige avec le titre : ${titre}`,
             "success"
           );
         } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire(
-            "Annuler",
-            "Vous avez annuler",
-            "error"
-          );
+          swalWithBootstrapButtons.fire("Annuler", "Vous avez annulé", "error");
         }
       });
   };

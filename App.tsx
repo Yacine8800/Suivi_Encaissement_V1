@@ -1,7 +1,7 @@
 "use client";
 import { PropsWithChildren, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { IRootState } from "@/store";
+
 import {
   toggleRTL,
   toggleTheme,
@@ -13,6 +13,8 @@ import {
 } from "@/store/themeConfigSlice";
 import Loading from "@/components/layouts/loading";
 import { getTranslation } from "@/i18n";
+
+import { IRootState } from "./store";
 
 function App({ children }: PropsWithChildren) {
   const themeConfig = useSelector((state: IRootState) => state.themeConfig);

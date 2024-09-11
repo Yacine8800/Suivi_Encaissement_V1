@@ -1,7 +1,1 @@
-{
-  "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/page": "app/page.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/(defaults)/litiges/page": "app/(defaults)/litiges/page.js",
-  "/(defaults)/dashboard/page": "app/(defaults)/dashboard/page.js"
-}
+{}
