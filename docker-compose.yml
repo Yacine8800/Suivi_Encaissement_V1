@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   suivi_encaissement_web:
@@ -6,3 +6,9 @@ services:
     container_name: suivi_encaissement_web
     ports:
       - '2403:2403'
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    # Uncomment and modify if you need to persist data
+    # volumes:
+    #   - ./data:/app/data

@@ -1,22 +1,34 @@
 # Build stage
 FROM node:18.17.0-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
-COPY yarn.lock ./
 
-RUN yarn install
+# Copy only package.json and yarn.lock first to leverage Docker cache
+COPY package.json yarn.lock ./
+
+# Install dependencies
+RUN yarn install --frozen-lockfile --production
+
+# Copy the rest of the application code
 COPY . .
+
+# Build the application
 RUN yarn build
 
 # Production stage
 FROM node:18.17.0-alpine
 WORKDIR /app
-COPY --from=builder /app/next.config.mjs ./next.config.mjs
+
+# Copy only necessary files from the builder stage
+COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package.json ./
 
+# Set environment variables
+ENV NODE_ENV production
+
+# Run the application
 CMD ["yarn", "start"]
 
 
