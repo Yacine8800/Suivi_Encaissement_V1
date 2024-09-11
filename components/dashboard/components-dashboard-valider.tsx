@@ -1,6 +1,5 @@
 "use client";
 
-import { IRootState } from "@/store";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -22,12 +21,6 @@ type RecordType = {
 };
 
 const ComponentsDashboardAnalytics = () => {
-  const isDark = useSelector(
-    (state: IRootState) =>
-      state.themeConfig.theme === "dark" || state.themeConfig.isDarkMode
-  );
-  const isRtl =
-    useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl";
   const [completionRate, setCompletionRate] = useState(0);
   const [expensesPercentage, setExpensesPercentage] = useState(0);
   const [validatedRecords, setValidatedRecords] = useState(0);

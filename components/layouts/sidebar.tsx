@@ -14,6 +14,10 @@ import IconNotesEdit from "../icon/icon-notes-edit";
 import IconMessagesDot from "../icon/icon-messages-dot";
 import IconMenuCharts from "../icon/menu/icon-menu-charts";
 import IconMenuWidgets from "../icon/menu/icon-menu-widgets";
+import IconBellBing from "../icon/icon-bell-bing";
+import IconListCheck from "../icon/icon-list-check";
+import IconLink from "../icon/icon-link";
+import IconUsersGroup from "../icon/icon-users-group";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -115,7 +119,7 @@ const Sidebar = () => {
 
               <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
                 <IconMinus className="hidden h-5 w-4 flex-none" />
-                <span>{t("Encaissement")}</span>
+                <span>{t("Encaissements")}</span>
               </h2>
 
               <li className="sub-menu nav-item">
@@ -132,9 +136,30 @@ const Sidebar = () => {
               <li className="sub-menu nav-item">
                 <Link href="/valider" className="group">
                   <div className="flex items-center">
-                    <IconMessagesDot className="shrink-0 group-hover:!text-primary" />
+                    <IconListCheck className="shrink-0 group-hover:!text-primary" />
                     <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
                       {t("Encaissement Valider")}
+                    </span>
+                  </div>
+                </Link>
+              </li>
+              <li className="sub-menu nav-item">
+                <Link href="" className="group">
+                  <div className="flex items-center">
+                    <IconLink className="shrink-0 group-hover:!text-primary" />
+                    <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
+                      {t("Rapprochements")}
+                    </span>
+                  </div>
+                </Link>
+              </li>
+
+              <li className="menu nav-item">
+                <Link href="/litiges" className="group">
+                  <div className="flex items-center">
+                    <IconBellBing className="shrink-0 group-hover:!text-primary" />
+                    <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
+                      {t("Litiges")}
                     </span>
                   </div>
                 </Link>
@@ -159,7 +184,7 @@ const Sidebar = () => {
               <li className="menu nav-item">
                 <Link href="/user" className="group">
                   <div className="flex items-center">
-                    <IconMenuWidgets className="shrink-0 group-hover:!text-primary" />
+                    <IconUsersGroup className="shrink-0 group-hover:!text-primary" />
                     <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
                       {t("Utilisateurs")}
                     </span>

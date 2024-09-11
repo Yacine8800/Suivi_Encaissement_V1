@@ -30,19 +30,11 @@
     "profil": "AGC",
     "dr": [
       {
-        "value": "22-DRABO",
-        "label": "22-DRABO"
-      },
-      {
         "value": "04-DRAN",
         "label": "04-DRAN"
       }
     ],
     "secteur": [
-      {
-        "value": "ABOBO",
-        "label": "ABOBO"
-      },
       {
         "value": "MARCORY",
         "label": "MARCORY"

@@ -1,10 +1,5 @@
 "use client";
-import React, {
-  ReactNode,
-  PropsWithChildren,
-  useEffect,
-  useState,
-} from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IRootState } from "@/store";
 import {
@@ -16,10 +11,10 @@ import {
   toggleNavbar,
   toggleSemidark,
 } from "@/store/themeConfigSlice";
-import Loading from "./components/layouts/loading";
-import { getTranslation } from "./i18n";
+import Loading from "@/components/layouts/loading";
+import { getTranslation } from "@/i18n";
 
-function App({ children }: PropsWithChildren<{}>): JSX.Element {
+function App({ children }: PropsWithChildren) {
   const themeConfig = useSelector((state: IRootState) => state.themeConfig);
   const dispatch = useDispatch();
   const { initLocale } = getTranslation();

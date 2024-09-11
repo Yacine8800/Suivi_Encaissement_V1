@@ -8,23 +8,37 @@ import IconCaretDown from "@/components/icon/icon-caret-down";
 import IconPencil from "@/components/icon/icon-pencil";
 import IconX from "../icon/icon-x";
 import Dropdown from "@/components/dropdown";
-import { IRootState } from "@/store";
+
 import ImageUploading, { ImageListType } from "react-images-uploading";
+import IconDownload from "../icon/icon-download";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/flatpickr.css";
+import { French } from "flatpickr/dist/l10n/fr.js";
+import Link from "next/link";
+import IconEdit from "../icon/icon-edit";
+import IconPlus from "../icon/icon-plus";
+import IconPrinter from "../icon/icon-printer";
+import IconSend from "../icon/icon-send";
+import IconExcel from "../icon/excel";
+import IconPaperclip from "../icon/icon-paperclip";
 
 interface RowData {
   id: number;
   "Date Encais": string;
   "Caisse mode": string;
   Banque: string;
-  "Montant caisse": number;
-  "Montant bordereau": number;
+  "Montant caisse (A)": number;
+  "Montant bordereau (B)": number;
   "Date cloture": string;
   Bordereau: string;
   "Date revelé": string;
-  "Montant revelé": number;
+  "Montant revelé (C)": number;
   validated: boolean;
   "Observation caisse"?: string;
   "Observation banque"?: string;
+  DR?: string;
+  EXP?: string;
+  Produit?: string;
 }
 
 const rowData: RowData[] = [
@@ -32,131 +46,161 @@ const rowData: RowData[] = [
     id: 1,
     "Date Encais": "2024-07-20",
     "Caisse mode": "2 -1<br/>Espèces",
-    Banque: "BNP Paribas",
-    "Montant caisse": 25000000,
-    "Montant bordereau": 2500000,
+    Banque: "SGBCI",
+    "Montant caisse (A)": 25000000,
+    "Montant bordereau (B)": 2500000,
     "Date cloture": "2024-07-21",
     Bordereau: "12345",
     "Date revelé": "2024-07-22",
-    "Montant revelé": 2500000,
+    "Montant revelé (C)": 2500000,
     validated: false,
+    DR: "DRAN",
+    EXP: "021",
+    Produit: "V2",
   },
   {
     id: 2,
     "Date Encais": "2024-07-21",
     "Caisse mode": "2 -1<br/>Carte",
-    Banque: "Crédit Agricole",
-    "Montant caisse": 180000,
-    "Montant bordereau": 1800000,
+    Banque: "NSIA",
+    "Montant caisse (A)": 180000,
+    "Montant bordereau (B)": 1800000,
     "Date cloture": "2024-07-22",
     Bordereau: "67890",
     "Date revelé": "2024-07-23",
-    "Montant revelé": 1800000,
+    "Montant revelé (C)": 1800000,
     validated: false,
+    DR: "DRABO",
+    EXP: "022",
+    Produit: "V3",
   },
   {
     id: 3,
     "Date Encais": "2024-07-22",
     "Caisse mode": "2 -1<br/>Virement",
-    Banque: "BNP Paribas",
-    "Montant caisse": 30020000,
-    "Montant bordereau": 3000000,
+    Banque: "SGBCI",
+    "Montant caisse (A)": 30020000,
+    "Montant bordereau (B)": 3000000,
     "Date cloture": "2024-07-23",
     Bordereau: "54321",
     "Date revelé": "2024-07-24",
-    "Montant revelé": 3000000,
+    "Montant revelé (C)": 3000000,
     validated: false,
+    DR: "DRYOP",
+    EXP: "023",
+    Produit: "SMART",
   },
   {
     id: 4,
     "Date Encais": "2024-07-23",
     "Caisse mode": "2 -1<br/>Espèces",
-    Banque: "Société Générale",
-    "Montant caisse": 2000000,
-    "Montant bordereau": 200870000,
+    Banque: "SIB",
+    "Montant caisse (A)": 2000000,
+    "Montant bordereau (B)": 200870000,
     "Date cloture": "2024-07-24",
     Bordereau: "11223",
     "Date revelé": "2024-07-25",
-    "Montant revelé": 2000000,
+    "Montant revelé (C)": 2000000,
     validated: false,
+    DR: "DRYOP1",
+    EXP: "024",
+    Produit: "SMART",
   },
   {
     id: 5,
     "Date Encais": "2024-07-24",
     "Caisse mode": "2 -1<br/>Chèque",
-    Banque: "Crédit Agricole",
-    "Montant caisse": 150004300,
-    "Montant bordereau": 1500000,
+    Banque: "NSIA",
+    "Montant caisse (A)": 150004300,
+    "Montant bordereau (B)": 1500000,
     "Date cloture": "2024-07-25",
     Bordereau: "33445",
     "Date revelé": "2024-07-26",
-    "Montant revelé": 1500000,
+    "Montant revelé (C)": 1500000,
     validated: false,
+    DR: "DRAN2",
+    EXP: "025",
+    Produit: "V2",
   },
   {
     id: 6,
     "Date Encais": "2024-07-25",
     "Caisse mode": "2 -1<br/>Virement",
-    Banque: "Société Générale",
-    "Montant caisse": 3200000,
-    "Montant bordereau": 3200000,
+    Banque: "SIB",
+    "Montant caisse (A)": 3200000,
+    "Montant bordereau (B)": 3200000,
     "Date cloture": "2024-07-26",
     Bordereau: "99887",
     "Date revelé": "2024-07-27",
-    "Montant revelé": 3200000,
+    "Montant revelé (C)": 3200000,
     validated: false,
+    DR: "DRAS",
+    EXP: "026",
+    Produit: "V2",
   },
   {
     id: 7,
     "Date Encais": "2024-07-26",
     "Caisse mode": "2 -1<br/>Carte",
-    Banque: "BNP Paribas",
-    "Montant caisse": 2100000,
-    "Montant bordereau": 2100000,
+    Banque: "SGBCI",
+    "Montant caisse (A)": 2100000,
+    "Montant bordereau (B)": 2100000,
     "Date cloture": "2024-07-27",
     Bordereau: "77665",
     "Date revelé": "2024-07-28",
-    "Montant revelé": 2100000,
+    "Montant revelé (C)": 2100000,
     validated: false,
+    DR: "DRAS2",
+    EXP: "027",
+    Produit: "SMART",
   },
   {
     id: 8,
     "Date Encais": "2024-07-27",
     "Caisse mode": "2 -1<br/>Chèque",
-    Banque: "Crédit Lyonnais",
-    "Montant caisse": 1900000,
-    "Montant bordereau": 19300000,
+    Banque: "ECOBANK",
+    "Montant caisse (A)": 1900000,
+    "Montant bordereau (B)": 19300000,
     "Date cloture": "2024-07-28",
     Bordereau: "55667",
     "Date revelé": "2024-07-29",
-    "Montant revelé": 1900000,
+    "Montant revelé (C)": 1900000,
     validated: false,
+    DR: "DRAN3",
+    EXP: "028",
+    Produit: "V3",
   },
   {
     id: 9,
     "Date Encais": "2024-07-28",
     "Caisse mode": "2 -1<br/>Espèces",
-    Banque: "BNP Paribas",
-    "Montant caisse": 22004000,
-    "Montant bordereau": 2200000,
+    Banque: "SGBCI",
+    "Montant caisse (A)": 22004000,
+    "Montant bordereau (B)": 2200000,
     "Date cloture": "2024-07-29",
     Bordereau: "44556",
     "Date revelé": "2024-07-30",
-    "Montant revelé": 2200000,
+    "Montant revelé (C)": 2200000,
     validated: false,
+    DR: "DRSE",
+    EXP: "029",
+    Produit: "SMART",
   },
   {
     id: 10,
     "Date Encais": "2024-07-29",
     "Caisse mode": "2 -1<br/>Carte",
-    Banque: "Crédit Lyonnais",
-    "Montant caisse": 2500000,
-    "Montant bordereau": 2500000,
+    Banque: "ECOBANK",
+    "Montant caisse (A)": 2500000,
+    "Montant bordereau (B)": 2500000,
     "Date cloture": "2024-07-30",
     Bordereau: "66778",
     "Date revelé": "2024-07-31",
-    "Montant revelé": 2500000,
+    "Montant revelé (C)": 2500000,
     validated: false,
+    DR: "DRSE",
+    EXP: "029",
+    Produit: "V2",
   },
 ];
 
@@ -176,12 +220,9 @@ const formatDate = (date: string): string => {
 };
 
 const ComponentsDatatablesColumnChooser = () => {
-  const themeConfig = useSelector((state: IRootState) => state.themeConfig);
   const dispatch = useDispatch();
 
   const [showSettingModal, setShowSettingModal] = useState(false);
-  const isRtl =
-    useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl";
 
   const [initialLoad, setInitialLoad] = useState(true);
   const [savedRecords, setSavedRecords] = useState<RowData[]>([]);
@@ -206,8 +247,8 @@ const ComponentsDatatablesColumnChooser = () => {
 
   const totalUnvalidatedRecords = unvalidatedRecords.length;
   const encaissementText = ` Encaissement${
-    totalUnvalidatedRecords > 1 ? "s" : ""
-  }`;
+    totalUnvalidatedRecords > 1 ? "s " : " "
+  } `;
 
   const [page, setPage] = useState(1);
   const PAGE_SIZES = [10, 20, 30, 50, 100];
@@ -270,6 +311,13 @@ const ComponentsDatatablesColumnChooser = () => {
   };
 
   const cols = [
+    { accessor: "DR", title: "DR", sortable: true },
+    {
+      accessor: "EXP",
+      title: "EXP",
+      sortable: true,
+    },
+    { accessor: "Produit", title: "Produit", sortable: true },
     { accessor: "Date Encais", title: "Date Encais", sortable: true },
     {
       accessor: "Caisse mode",
@@ -281,30 +329,30 @@ const ComponentsDatatablesColumnChooser = () => {
     },
     { accessor: "Banque", title: "Banque", sortable: true },
     {
-      accessor: "Montant caisse",
-      title: "Montant caisse",
+      accessor: "Montant caisse (A)",
+      title: "Montant caisse (A)",
       sortable: true,
-      render: ({ "Montant caisse": montantCaisse }: RowData) =>
-        `${formatNumber(montantCaisse)} F CFA`,
+      render: ({ "Montant caisse (A)": montantCaisse }: RowData) =>
+        `${formatNumber(montantCaisse ?? 0)} F CFA`,
     },
     {
-      accessor: "Montant bordereau",
-      title: "Montant bordereau",
+      accessor: "Montant bordereau (B)",
+      title: "Montant bordereau (B)",
       sortable: true,
-      render: ({ "Montant bordereau": montantBordereau }: RowData) =>
-        `${formatNumber(montantBordereau)} F CFA`,
+      render: ({ "Montant bordereau (B)": montantBordereau }: RowData) =>
+        `${formatNumber(montantBordereau ?? 0)} F CFA`,
     },
     { accessor: "Date cloture", title: "Date cloture", sortable: true },
     { accessor: "Bordereau", title: "Bordereau", sortable: true },
     {
-      accessor: "Ecart1",
-      title: "Ecart 1",
+      accessor: "Ecart(A-B)",
+      title: "Ecart (A-B)",
       sortable: true,
       render: ({
-        "Montant caisse": montantCaisse,
-        "Montant bordereau": montantBordereau,
+        "Montant caisse (A)": montantCaisse,
+        "Montant bordereau (B)": montantBordereau,
       }: RowData) => {
-        const ecart1 = montantCaisse - montantBordereau;
+        const ecart1 = (montantCaisse ?? 0) - (montantBordereau ?? 0);
         return (
           <div
             className={
@@ -322,14 +370,14 @@ const ComponentsDatatablesColumnChooser = () => {
       },
     },
     {
-      accessor: "Ecart2",
-      title: "Ecart 2",
+      accessor: "Ecart(B-C)",
+      title: "Ecart (B-C)",
       sortable: true,
       render: ({
-        "Montant bordereau": montantBordereau,
-        "Montant revelé": montantRevele,
+        "Montant bordereau (B)": montantBordereau,
+        "Montant revelé (C)": montantRevele,
       }: RowData) => {
-        const ecart2 = montantBordereau - montantRevele;
+        const ecart2 = (montantBordereau ?? 0) - (montantRevele ?? 0);
         return (
           <div
             className={
@@ -348,11 +396,11 @@ const ComponentsDatatablesColumnChooser = () => {
     },
     { accessor: "Date revelé", title: "Date revelé", sortable: true },
     {
-      accessor: "Montant revelé",
-      title: "Montant revelé",
+      accessor: "Montant revelé (C)",
+      title: "Montant revelé (C)",
       sortable: true,
-      render: ({ "Montant revelé": montantRevele }: RowData) =>
-        `${formatNumber(montantRevele)} F CFA`,
+      render: ({ "Montant revelé (C)": montantRevele }: RowData) =>
+        `${formatNumber(montantRevele ?? 0)} F CFA`,
     },
     {
       accessor: "Actions",
@@ -385,8 +433,10 @@ const ComponentsDatatablesColumnChooser = () => {
           item["Date Encais"].toString().includes(search.toLowerCase()) ||
           item["Caisse mode"].toLowerCase().includes(search.toLowerCase()) ||
           item.Banque.toLowerCase().includes(search.toLowerCase()) ||
-          item["Montant caisse"].toString().includes(search.toLowerCase()) ||
-          item["Montant bordereau"]
+          item["Montant caisse (A)"]
+            .toString()
+            .includes(search.toLowerCase()) ||
+          item["Montant bordereau (B)"]
             .toString()
             .toLowerCase()
             .includes(search.toLowerCase()) ||
@@ -395,7 +445,7 @@ const ComponentsDatatablesColumnChooser = () => {
             .toLowerCase()
             .includes(search.toLowerCase()) ||
           item.Bordereau.toLowerCase().includes(search.toLowerCase()) ||
-          item["Montant revelé"]
+          item["Montant revelé (C)"]
             .toString()
             .toLowerCase()
             .includes(search.toLowerCase())
@@ -442,18 +492,67 @@ const ComponentsDatatablesColumnChooser = () => {
     setImages2(imageList as never[]);
   };
 
+  const jour = new Date();
+  const lendemain = new Date();
+  lendemain.setDate(jour.getDate() + 1);
+
+  const formatDate = (date: Date) => {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  console.log(today);
+
+  const [dateRange, setDateRange] = useState<Date[]>([jour, lendemain]);
+
+  const [formattedRange, setFormattedRange] = useState<string>(
+    `De ${formatDate(jour)} à ${formatDate(lendemain)}`
+  );
+
+  useEffect(() => {
+    // Met à jour l'affichage formaté quand la plage de dates change
+    if (dateRange.length === 2) {
+      setFormattedRange(
+        ` De ${formatDate(dateRange[0])} à ${formatDate(dateRange[1])}`
+      );
+    }
+  }, [dateRange]);
+
   return (
     <div className="panel mt-6">
+      <div className="mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end">
+        <button type="button" className="btn btn-success w-[100px] gap-2">
+          <IconExcel className="" />
+          XLS
+        </button>
+        {/* <button type="button" className="btn btn-dark gap-2">
+          <IconDownload />
+          CSV
+        </button> */}
+      </div>
       <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
-        <h5 className="text-lg font-semibold dark:text-white-light">
+        <h5 className="-mt-12 flex text-lg font-semibold dark:text-white-light">
           {totalUnvalidatedRecords}
-          {encaissementText}
+          {encaissementText}{" "}
         </h5>
         <div className="flex items-center gap-5 ltr:ml-auto rtl:mr-auto">
           <div className="flex flex-col gap-5 md:flex-row md:items-center">
+            <Flatpickr
+              options={{
+                mode: "range",
+                dateFormat: "d-m-Y", // Format "DD-MM-YYYY" pour le calendrier
+                locale: French, // Affichage en français
+                defaultDate: dateRange, // Initialisation des dates
+              }}
+              className="form-input w-[220px]"
+              onChange={(selectedDates: Date[]) => {
+                setDateRange(selectedDates); // Mettre à jour la plage de dates
+              }}
+            />
             <div className="dropdown">
               <Dropdown
-                placement={`${isRtl ? "bottom-end" : "bottom-start"}`}
                 btnClassName="!flex items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
                 button={
                   <>
@@ -493,7 +592,7 @@ const ComponentsDatatablesColumnChooser = () => {
             <input
               type="text"
               className="form-input w-[400px]"
-              placeholder="Search..."
+              placeholder="Recherche..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -571,7 +670,7 @@ const ComponentsDatatablesColumnChooser = () => {
                 <div className="mt-3 grid grid-cols-3 gap-2">
                   <div>
                     <p className="font-bold">
-                      {formatNumber(selectedRow["Montant caisse"])} F CFA
+                      {formatNumber(selectedRow["Montant caisse (A)"])} F CFA
                     </p>
                     <label className="font-normal text-white-dark">
                       Montant Caisses
@@ -579,7 +678,7 @@ const ComponentsDatatablesColumnChooser = () => {
                   </div>
                   <div className="font-bold">
                     <p>
-                      {formatNumber(selectedRow["Montant bordereau"])} F CFA
+                      {formatNumber(selectedRow["Montant bordereau (B)"])} F CFA
                     </p>
                     <label className="font-normal text-white-dark">
                       Montant Bordereaux
@@ -588,28 +687,28 @@ const ComponentsDatatablesColumnChooser = () => {
                   <div>
                     <p
                       className={
-                        selectedRow["Montant caisse"] -
-                          selectedRow["Montant bordereau"] <
+                        selectedRow["Montant caisse (A)"] -
+                          selectedRow["Montant bordereau (B)"] <
                         0
                           ? "text-danger"
-                          : selectedRow["Montant caisse"] -
-                              selectedRow["Montant bordereau"] >
+                          : selectedRow["Montant caisse (A)"] -
+                              selectedRow["Montant bordereau (B)"] >
                             0
                           ? "text-success"
                           : "font-bold"
                       }
                       style={{
                         color:
-                          selectedRow["Montant caisse"] -
-                            selectedRow["Montant bordereau"] ===
+                          selectedRow["Montant caisse (A)"] -
+                            selectedRow["Montant bordereau (B)"] ===
                           0
                             ? "black"
                             : undefined,
                       }}
                     >
                       {formatNumber(
-                        selectedRow["Montant caisse"] -
-                          selectedRow["Montant bordereau"]
+                        selectedRow["Montant caisse (A)"] -
+                          selectedRow["Montant bordereau (B)"]
                       )}{" "}
                       F CFA
                     </p>
@@ -690,8 +789,10 @@ const ComponentsDatatablesColumnChooser = () => {
                       name="montant"
                       className="form-input w-[480px]"
                       placeholder="Montant"
-                      value={selectedRow["Montant revelé"] || ""}
-                      onChange={(e) => handleAmountChange(e, "Montant revelé")}
+                      value={selectedRow["Montant revelé (C)"] || ""}
+                      onChange={(e) =>
+                        handleAmountChange(e, "Montant revelé (C)")
+                      }
                     />
                   </div>
                 </div>
@@ -711,7 +812,7 @@ const ComponentsDatatablesColumnChooser = () => {
                 <div className="mt-3 grid grid-cols-3 gap-2">
                   <div>
                     <p className="font-bold">
-                      {formatNumber(selectedRow["Montant bordereau"])} F CFA
+                      {formatNumber(selectedRow["Montant bordereau (B)"])} F CFA
                     </p>
                     <label className="font-normal text-white-dark">
                       Montant Bordereaux
@@ -724,7 +825,9 @@ const ComponentsDatatablesColumnChooser = () => {
                     </label>
                   </div>
                   <div className="font-bold">
-                    <p>{formatNumber(selectedRow["Montant revelé"])} F CFA</p>
+                    <p>
+                      {formatNumber(selectedRow["Montant revelé (C)"])} F CFA
+                    </p>
                     <label className="font-normal text-white-dark">
                       Montant Banque
                     </label>
@@ -732,28 +835,28 @@ const ComponentsDatatablesColumnChooser = () => {
                   <div>
                     <p
                       className={
-                        selectedRow["Montant bordereau"] -
-                          selectedRow["Montant revelé"] <
+                        selectedRow["Montant bordereau (B)"] -
+                          selectedRow["Montant revelé (C)"] <
                         0
                           ? "text-danger"
-                          : selectedRow["Montant bordereau"] -
-                              selectedRow["Montant revelé"] >
+                          : selectedRow["Montant bordereau (B)"] -
+                              selectedRow["Montant revelé (C)"] >
                             0
                           ? "text-success"
                           : "font-bold"
                       }
                       style={{
                         color:
-                          selectedRow["Montant bordereau"] -
-                            selectedRow["Montant revelé"] ===
+                          selectedRow["Montant bordereau (B)"] -
+                            selectedRow["Montant revelé (C)"] ===
                           0
                             ? "black"
                             : undefined,
                       }}
                     >
                       {formatNumber(
-                        selectedRow["Montant bordereau"] -
-                          selectedRow["Montant revelé"]
+                        selectedRow["Montant bordereau (B)"] -
+                          selectedRow["Montant revelé (C)"]
                       )}{" "}
                       F CFA
                     </p>
@@ -797,90 +900,84 @@ const ComponentsDatatablesColumnChooser = () => {
                   ></textarea>
                 </div>
               </div>
-              <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
-                <div
-                  className="custom-file-container"
-                  data-upload-id="mySecondImage"
-                >
-                  <div className="label-container">
-                    <label>Ajouter le(s) coupon(s) </label>
-                    <button
-                      type="button"
-                      className="custom-file-container__image-clear"
-                      title="Supprimer le coupon"
-                      onClick={() => {
-                        setImages2([]);
-                      }}
-                    >
-                      ×
-                    </button>
-                  </div>
-                  <label className="custom-file-container__custom-file"></label>
-                  <input
-                    type="file"
-                    className="custom-file-container__custom-file__custom-file-input"
-                    accept="image/*"
-                  />
-                  <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
-                  <ImageUploading
-                    multiple
-                    value={images2}
-                    onChange={onChange2}
-                    maxNumber={maxNumber}
-                  >
-                    {({
-                      imageList,
-                      onImageUpload,
-                      onImageRemoveAll,
-                      onImageUpdate,
-                      onImageRemove,
-                      isDragging,
-                      dragProps,
-                    }) => (
-                      <div className="upload__image-wrapper">
-                        <button
-                          className="custom-file-container__custom-file__custom-file-control"
-                          onClick={onImageUpload}
-                        >
-                          Choisir les images...
-                        </button>
-                        &nbsp;
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                          {imageList.map((image, index) => (
-                            <div
-                              key={index}
-                              className="custom-file-container__image-preview relative"
-                            >
-                              <button
-                                type="button"
-                                className="custom-file-container__image-clear"
-                                title="Supprimer le coupon"
-                                onClick={() => onImageRemove(index)}
-                              >
-                                ×
-                              </button>
 
-                              <img
-                                src={image.dataURL}
-                                alt="img"
-                                className="!max-h-48 w-full rounded object-cover shadow"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </ImageUploading>
-                  {images2.length === 0 ? (
-                    <img
-                      src="/assets/images/file-preview.svg"
-                      className="m-auto w-full max-w-md"
-                      alt=""
-                    />
-                  ) : (
-                    ""
-                  )}
+              <div
+                className="custom-file-container"
+                data-upload-id="mySecondImage"
+              >
+                <div className="label-container">
+                  <label>Importer le coupon </label>
+                  <button
+                    type="button"
+                    className="custom-file-container__image-clear"
+                    title="Supprimer l'mage"
+                    onClick={() => {
+                      setImages2([]);
+                    }}
+                  >
+                    ×
+                  </button>
                 </div>
+                <label className="custom-file-container__custom-file"></label>
+                <input
+                  type="file"
+                  className="custom-file-container__custom-file__custom-file-input"
+                  accept="image/*"
+                />
+                <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+                <ImageUploading
+                  multiple
+                  value={images2}
+                  onChange={onChange2}
+                  maxNumber={maxNumber}
+                >
+                  {({
+                    imageList,
+                    onImageUpload,
+                    onImageRemoveAll,
+                    onImageUpdate,
+                    onImageRemove,
+                    isDragging,
+                    dragProps,
+                  }) => (
+                    <div className="upload__image-wrapper ">
+                      <button
+                        className="custom-file-container__custom-file__custom-file-control flex gap-4"
+                        onClick={onImageUpload}
+                      >
+                        <IconPaperclip className="h-5 w-5" />
+
+                        <p>Cliquez ici pour importer vos coupons</p>
+                      </button>
+                      &nbsp;
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        {imageList.map((image, index) => (
+                          <div
+                            key={index}
+                            className="custom-file-container__image-preview relative"
+                            onClick={() => onImageRemove(index)}
+                          >
+                            <IconX className="h-6 w-6 cursor-pointer" />
+                            <img
+                              src={image.dataURL}
+                              alt="img"
+                              className="!max-h-48 w-full rounded object-cover shadow"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </ImageUploading>
+                {images2.length === 0 ? (
+                  <img
+                    src="/assets/images/file-preview.svg"
+                    className="m-auto w-[170px] max-w-md"
+                    alt=""
+                  />
+                ) : (
+                  ""
+                )}
               </div>
 
               <div className="mb-4 mt-10">

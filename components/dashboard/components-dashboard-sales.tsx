@@ -2,7 +2,7 @@
 import Dropdown from "@/components/dropdown";
 import IconCashBanknotes from "@/components/icon/icon-cash-banknotes";
 import IconHorizontalDots from "@/components/icon/icon-horizontal-dots";
-import { IRootState } from "@/store";
+
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
@@ -11,6 +11,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import IconHome from "../icon/icon-home";
 import IconBox from "../icon/icon-box";
 import Select from "react-select";
+import { IRootState } from "@/store";
 
 const ComponentsDashboardSales = () => {
   const isDark = useSelector(
@@ -472,32 +473,74 @@ const ComponentsDashboardSales = () => {
     { value: "SECTEUR 3", label: "SECTEUR 3" },
   ];
 
-  const encaissements = [
-    { date: "12/12/2023", status: "En cours" },
-    { date: "10/12/2023", status: "Terminé" },
-    { date: "08/12/2023", status: "En retard" },
-    { date: "07/12/2023", status: "Terminé" },
-    { date: "05/12/2023", status: "En cours" },
-    { date: "02/12/2023", status: "En retard" },
-    { date: "01/12/2023", status: "En cours" },
-    { date: "28/11/2023", status: "Terminé" },
-    { date: "25/11/2023", status: "En retard" },
-    { date: "20/11/2023", status: "En cours" },
-  ];
-
   const caissesNonCloturees = [
-    { agence: "Agence 1", date: "12/12/2023", status: "Non clôturée" },
-    { agence: "Agence 2", date: "10/12/2023", status: "Non clôturée" },
-    { agence: "Agence 3", date: "08/12/2023", status: "Non clôturée" },
+    {
+      Bordereau: "12345",
+      "Date Encais": "2024-07-20",
+      Banque: "SGBCI",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "67890",
+      "Date Encais": "2024-07-21",
+      Banque: "NSIA",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "54321",
+      "Date Encais": "2024-07-22",
+      Banque: "SGBCI",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "11223",
+      "Date Encais": "2024-07-23",
+      Banque: "SIB",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "33445",
+      "Date Encais": "2024-07-24",
+      Banque: "NSIA",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "99887",
+      "Date Encais": "2024-07-25",
+      Banque: "SIB",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "77665",
+      "Date Encais": "2024-07-26",
+      Banque: "SGBCI",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "55667",
+      "Date Encais": "2024-07-27",
+      Banque: "ECOBANK",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "44556",
+      "Date Encais": "2024-07-28",
+      Banque: "SGBCI",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "66778",
+      "Date Encais": "2024-07-29",
+      Banque: "ECOBANK",
+      Statut: "Non-Clôturé",
+    },
   ];
 
   const getStatusClass = (status: any) => {
     switch (status) {
-      case "En cours":
-        return "bg-orange-500"; // Orange for "En cours"
-      case "Terminé":
+      case "Clôturée":
         return "bg-green-500"; // Green for "Terminé"
-      case "En retard":
+      case "Non clôturée":
         return "bg-red-500"; // Red for "En retard"
       default:
         return "bg-gray-500";
@@ -506,11 +549,9 @@ const ComponentsDashboardSales = () => {
 
   const getBadgeClass = (status: any) => {
     switch (status) {
-      case "En cours":
-        return "badge-outline-warning"; // Badge class for "En cours"
-      case "Terminé":
+      case "Clôturée":
         return "badge-outline-success"; // Badge class for "Terminé"
-      case "En retard":
+      case "Non Clôturée":
         return "badge-outline-danger"; // Badge class for "En retard"
       default:
         return "badge-outline-secondary";
@@ -518,28 +559,61 @@ const ComponentsDashboardSales = () => {
   };
 
   const ecarts = [
-    { name: "Ecart (A-B)", date: "12/12/2023", valeur: 5000, icon: "green" },
-    { name: "Ecart (B-C)", date: "10/12/2023", valeur: -2000, icon: "yellow" },
-    { name: "Ecart (A-B)", date: "08/12/2023", valeur: 3000, icon: "green" },
-    { name: "Ecart (B-C)", date: "06/12/2023", valeur: 1500, icon: "yellow" },
-    { name: "Ecart (A-B)", date: "04/12/2023", valeur: -1000, icon: "green" },
-    { name: "Ecart (B-C)", date: "02/12/2023", valeur: 2500, icon: "yellow" },
+    {
+      name: "Ecart (A-B)",
+      date: "12/12/2023",
+      valeur: 5000,
+      icon: "green",
+      dr: "DRAN",
+    },
+    {
+      name: "Ecart (B-C)",
+      date: "10/12/2023",
+      valeur: -2000,
+      icon: "yellow",
+      dr: "DRABO",
+    },
+    {
+      name: "Ecart (A-B)",
+      date: "08/12/2023",
+      valeur: 3000,
+      icon: "green",
+      dr: "DRYOP",
+    },
+    {
+      name: "Ecart (B-C)",
+      date: "06/12/2023",
+      valeur: 1500,
+      icon: "yellow",
+      dr: "DRAN",
+    },
+    {
+      name: "Ecart (A-B)",
+      date: "04/12/2023",
+      valeur: -1000,
+      icon: "green",
+      dr: "DRABO",
+    },
+    {
+      name: "Ecart (B-C)",
+      date: "02/12/2023",
+      valeur: 2500,
+      icon: "yellow",
+      dr: "DRYOP",
+    },
   ];
 
   const getEcartColor = (valeur: any) => {
-    return valeur >= 0 ? "text-green-500" : "text-red-500"; // Vert si positif, rouge si négatif
+    return valeur >= 0 ? "text-green-500" : "text-red-500";
   };
 
   const getEcartIcon = (iconType: any) => {
-    if (iconType === "yellow") {
-      return (
-        <span className="grid h-9 w-9 shrink-0 place-content-center rounded-md bg-warning-light text-warning dark:bg-warning dark:text-warning-light">
-          <IconCashBanknotes />
-        </span>
-      );
-    }
     return (
-      <span className="grid h-9 w-9 shrink-0 place-content-center rounded-md bg-success-light text-success dark:bg-success dark:text-success-light">
+      <span
+        className={`grid h-9 w-9 shrink-0 place-content-center rounded-md bg-${
+          iconType === "yellow" ? "warning" : "success"
+        }-light`}
+      >
         <IconCashBanknotes />
       </span>
     );
@@ -708,87 +782,103 @@ const ComponentsDashboardSales = () => {
 
         <div className="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-2">
           <div className="panel h-full pb-0 sm:col-span-2 xl:col-span-1">
-            <h5 className="mb-5 text-lg font-semibold dark:text-white-light">
-              Écarts Non Justifiés
-            </h5>
-            <PerfectScrollbar
-              className="relative mb-4 h-[290px] ltr:-mr-3 ltr:pr-3 rtl:-ml-3 rtl:pl-3"
-              options={{ suppressScrollX: true }}
-            >
-              <div className="cursor-pointer text-sm">
-                {encaissements.map((encaissement, index) => (
-                  <div
-                    key={index}
-                    className="group relative mb-4 flex items-center py-1.5" // Ajout de 'mb-4' pour espacer les encaissements
-                  >
-                    <div
-                      className={`h-2.5 w-2.5 rounded-full ltr:mr-2 rtl:ml-2 ${getStatusClass(
-                        encaissement.status
-                      )}`}
-                    ></div>
-                    <div className="flex-1">
-                      Encaissement du {encaissement.date}
-                    </div>
-                    <span
-                      className={`badge ${getBadgeClass(
-                        encaissement.status
-                      )} absolute rounded bg-opacity-80 p-1 text-xs group-hover:opacity-100 ltr:right-0 rtl:left-0`}
-                    >
-                      {encaissement.status}
-                    </span>
-                  </div>
-                ))}
+            <div className="panel h-full w-full">
+              <div className="mb-5 flex items-center justify-between">
+                <h5 className="text-lg font-semibold dark:text-white-light">
+                  Caisses Non Cloturé
+                </h5>
               </div>
-            </PerfectScrollbar>
-          </div>
-          <div className="panel h-full">
-            <div className="mb-5 flex items-center justify-between dark:text-white-light">
-              <h5 className="text-lg font-semibold">
-                Les Ecarts les plus importants
-              </h5>
-              <div className="dropdown">
-                <Dropdown
-                  placement={`${isRtl ? "bottom-start" : "bottom-end"}`}
-                  button={
-                    <IconHorizontalDots className="text-black/70 hover:!text-primary dark:text-white/70" />
-                  }
-                >
-                  <ul>
-                    <li>
-                      <button type="button">View Report</button>
-                    </li>
-                    <li>
-                      <button type="button">Edit Report</button>
-                    </li>
-                    <li>
-                      <button type="button">Mark as Done</button>
-                    </li>
-                  </ul>
-                </Dropdown>
+              <div className="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th className="ltr:rounded-l-md rtl:rounded-r-md">
+                        Numéro de la Caisse
+                      </th>
+                      <th>Date de la Caisse</th>
+                      <th>Banque</th>
+                      <th className="ltr:rounded-r-md rtl:rounded-l-md">
+                        Statut
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {caissesNonCloturees.map((record, index) => (
+                      <tr
+                        key={index}
+                        className="group text-white-dark hover:text-black dark:hover:text-white-light/90"
+                      >
+                        <td className="min-w-[150px] text-black dark:text-white">
+                          <div className="flex items-center">
+                            <span className="whitespace-nowrap">
+                              {record.Bordereau}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="text-black dark:text-white">
+                          {record["Date Encais"]}
+                        </td>
+                        <td className="text-black dark:text-white">
+                          {record.Banque}
+                        </td>
+                        <td>
+                          <span className="badge bg-danger shadow-md dark:group-hover:bg-transparent">
+                            {record.Statut}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div>
-              <div className="space-y-6">
-                {ecarts.map((ecart, index) => (
-                  <div key={index} className="flex">
-                    {getEcartIcon(ecart.icon)}
-                    <div className="flex-1 px-3">
-                      <div>{ecart.name}</div>
-                      <div className="text-xs text-white-dark dark:text-gray-500">
-                        {ecart.date}
-                      </div>
-                    </div>
-                    <span
-                      className={`whitespace-pre px-1 text-base ltr:ml-auto rtl:mr-auto ${getEcartColor(
-                        ecart.valeur
-                      )}`}
+          </div>
+          <div className="panel h-full w-full">
+            <div className="mb-5 flex items-center justify-between">
+              <h5 className="mb-5 text-lg font-semibold dark:text-white-light">
+                Les Ecarts les plus importants
+              </h5>
+            </div>
+
+            <div className="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th className="ltr:rounded-l-md rtl:rounded-r-md">
+                      Direction Régionale (DR)
+                    </th>
+                    <th>Date</th>
+                    <th>Type d'Ecart</th>
+                    <th>Valeur</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ecarts.map((ecart, index) => (
+                    <tr
+                      key={index}
+                      className="group text-white-dark hover:text-black dark:hover:text-white-light/90"
                     >
-                      {ecart.valeur >= 0 ? "+" : ""}
-                      {ecart.valeur.toLocaleString()} FCFA
-                    </span>
-                  </div>
-                ))}
-              </div>
+                      <td className="min-w-[150px] text-black dark:text-white">
+                        {ecart.dr}
+                      </td>
+                      <td className="text-black dark:text-white">
+                        {ecart.date}
+                      </td>
+                      <td className="text-black dark:text-white">
+                        {ecart.name}
+                      </td>
+                      <td
+                        className={`text-black dark:text-white ${getEcartColor(
+                          ecart.valeur
+                        )}`}
+                      >
+                        {ecart.valeur >= 0 ? "+" : ""}
+                        {ecart.valeur.toLocaleString()} FCFA
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

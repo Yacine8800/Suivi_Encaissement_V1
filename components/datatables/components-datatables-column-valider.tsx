@@ -8,9 +8,12 @@ import IconCaretDown from "@/components/icon/icon-caret-down";
 import IconPencil from "@/components/icon/icon-pencil";
 import IconX from "../icon/icon-x";
 import Dropdown from "@/components/dropdown";
-import { IRootState } from "@/store";
+
 import IconUsersGroup from "../icon/icon-users-group";
 import IconEye from "../icon/icon-eye";
+import Link from "next/link";
+import PanelCodeHighlight from "../panel-code-highlight";
+import Swal from "sweetalert2";
 
 interface RowData {
   id: number;
@@ -26,6 +29,7 @@ interface RowData {
   validated: boolean;
   "Observation caisse"?: string;
   "Observation banque"?: string;
+  caisse: string;
 }
 
 const rowData: RowData[] = [
@@ -40,6 +44,7 @@ const rowData: RowData[] = [
     Bordereau: "12345",
     "Date revelé": "2024-07-22",
     "Montant revelé": 2500000,
+    caisse: "11111",
     validated: false,
   },
   {
@@ -53,6 +58,7 @@ const rowData: RowData[] = [
     Bordereau: "67890",
     "Date revelé": "2024-07-23",
     "Montant revelé": 1800000,
+    caisse: "11112",
     validated: false,
   },
   {
@@ -66,6 +72,7 @@ const rowData: RowData[] = [
     Bordereau: "54321",
     "Date revelé": "2024-07-24",
     "Montant revelé": 3000000,
+    caisse: "11113",
     validated: false,
   },
   {
@@ -79,6 +86,7 @@ const rowData: RowData[] = [
     Bordereau: "11223",
     "Date revelé": "2024-07-25",
     "Montant revelé": 2000000,
+    caisse: "11114",
     validated: false,
   },
   {
@@ -92,6 +100,7 @@ const rowData: RowData[] = [
     Bordereau: "33445",
     "Date revelé": "2024-07-26",
     "Montant revelé": 1500000,
+    caisse: "11115",
     validated: false,
   },
   {
@@ -105,6 +114,7 @@ const rowData: RowData[] = [
     Bordereau: "99887",
     "Date revelé": "2024-07-27",
     "Montant revelé": 3200000,
+    caisse: "11116",
     validated: false,
   },
   {
@@ -118,6 +128,7 @@ const rowData: RowData[] = [
     Bordereau: "77665",
     "Date revelé": "2024-07-28",
     "Montant revelé": 2100000,
+    caisse: "11117",
     validated: false,
   },
   {
@@ -131,6 +142,7 @@ const rowData: RowData[] = [
     Bordereau: "55667",
     "Date revelé": "2024-07-29",
     "Montant revelé": 1900000,
+    caisse: "1111333",
     validated: false,
   },
   {
@@ -144,6 +156,7 @@ const rowData: RowData[] = [
     Bordereau: "44556",
     "Date revelé": "2024-07-30",
     "Montant revelé": 2200000,
+    caisse: "2223",
     validated: false,
   },
   {
@@ -157,6 +170,7 @@ const rowData: RowData[] = [
     Bordereau: "66778",
     "Date revelé": "2024-07-31",
     "Montant revelé": 2500000,
+    caisse: "111132",
     validated: false,
   },
 ];
@@ -177,12 +191,9 @@ const formatDate = (date: string): string => {
 };
 
 const ComponentsDatatablesColumnValider = () => {
-  const themeConfig = useSelector((state: IRootState) => state.themeConfig);
   const dispatch = useDispatch();
 
   const [showSettingModal, setShowSettingModal] = useState(false);
-  const isRtl =
-    useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl";
 
   const [initialLoad, setInitialLoad] = useState(true);
   const [savedRecords, setSavedRecords] = useState<RowData[]>([]);
@@ -256,6 +267,14 @@ const ComponentsDatatablesColumnValider = () => {
   };
 
   const cols = [
+    {
+      accessor: "caisse",
+      title: "Caisse",
+      sortable: true,
+      render: ({ caisse }: { caisse: string }) => (
+        <div className="cursor-pointer font-semibold text-primary underline hover:no-underline">{`#${caisse}`}</div>
+      ),
+    },
     { accessor: "Date Encais", title: "Date Encais", sortable: true },
     {
       accessor: "Caisse mode",
@@ -418,6 +437,43 @@ const ComponentsDatatablesColumnValider = () => {
 
   const validatedRecordsExist = validatedRecords.length > 0;
 
+  const showAlert = async () => {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-primary",
+        cancelButton: "btn btn-dark ltr:mr-3 rtl:ml-3",
+        popup: "sweet-alerts",
+      },
+      buttonsStyling: false,
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "Etes vous sur de passer en litige?",
+        text: "Cette action mettre l'encaissement en litige",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Confirmer",
+        cancelButtonText: "Annuler",
+        reverseButtons: true,
+        padding: "2em",
+      })
+      .then((result) => {
+        if (result.value) {
+          swalWithBootstrapButtons.fire(
+            "Confirmer",
+            "Votre encaissement est passer en litige",
+            "success"
+          );
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire(
+            "Annuler",
+            "Vous avez annuler",
+            "error"
+          );
+        }
+      });
+  };
+
   return (
     <div className="panel mt-6">
       <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
@@ -429,7 +485,6 @@ const ComponentsDatatablesColumnValider = () => {
           <div className="flex flex-col gap-5 md:flex-row md:items-center">
             <div className="dropdown">
               <Dropdown
-                placement={`${isRtl ? "bottom-end" : "bottom-start"}`}
                 btnClassName="!flex items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
                 button={
                   <>
@@ -479,7 +534,7 @@ const ComponentsDatatablesColumnValider = () => {
       <div className="datatables">
         <DataTable
           className="table-hover whitespace-nowrap"
-          records={validatedRecords}
+          records={rowData}
           columns={cols.map((col) => ({
             ...col,
             hidden: hideCols.includes(col.accessor),
@@ -531,6 +586,17 @@ const ComponentsDatatablesColumnValider = () => {
                 <p className="text-white-dark">
                   Vous permet de voir vos encaissements terminés.
                 </p>
+              </div>
+              <div className="mb-5">
+                <div className="flex ">
+                  <button
+                    type="button"
+                    className="btn btn-danger w-full"
+                    onClick={() => showAlert()}
+                  >
+                    {"Passer en litige"}
+                  </button>
+                </div>
               </div>
 
               <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
@@ -751,18 +817,6 @@ const ComponentsDatatablesColumnValider = () => {
                   ></textarea>
                 </div>
               </div>
-
-              {/* <div className="mb-4 mt-10">
-                <div className="flex flex-col gap-4">
-                  <button
-                    type="button"
-                    className="btn btn-success h-[50px] w-full border-none bg-[#ED6C03] shadow-sm"
-                    onClick={handleValidate}
-                  >
-                    VALIDER
-                  </button>
-                </div>
-              </div> */}
             </div>
           </nav>
         </div>

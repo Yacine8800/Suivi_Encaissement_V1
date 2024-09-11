@@ -24,7 +24,7 @@ interface DataResponse {
   dr_secteurs: { [key: string]: Option[] };
 }
 
-const Permission = () => {
+const Role = () => {
   const [personalInfo, setPersonalInfo] = useState({
     libelle: "",
     description: "",
@@ -203,7 +203,7 @@ const Permission = () => {
             <IconSquareRotated className="shrink-0 fill-primary" />
           </button>
           <span className="ml-2 text-xl font-thin text-black">
-            Modifier un profil
+            Ajouter un profil
           </span>
         </p>
         <hr className="my-6 border-white-light dark:border-[#1b2e4b]" />
@@ -371,4 +371,4 @@ const Permission = () => {
   );
 };
 
-export default Permission;
+export default Role;

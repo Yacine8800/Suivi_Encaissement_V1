@@ -2,6 +2,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { ReactSortable } from "react-sortablejs";
+import IconPlus from "../icon/icon-plus";
 
 const items1 = [
   {
@@ -37,6 +38,14 @@ const ComponentsDragndropSortable = () => {
   return (
     <div className="panel">
       <div className="mb-5 text-lg font-semibold">Rôle et Permission</div>
+      <div className="flex gap-3">
+        <div className="absolute right-0 -mt-[50px]">
+          <Link href="/role/add" className="btn btn-primary -left-5 gap-2">
+            <IconPlus />
+            Ajouter un rôle
+          </Link>
+        </div>
+      </div>
       <div className="grid w-full grid-cols-1 gap-6 px-4 sm:grid-cols-2">
         {" "}
         {/* Added px-4 for equal padding */}
