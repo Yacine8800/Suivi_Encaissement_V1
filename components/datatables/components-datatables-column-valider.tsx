@@ -446,6 +446,7 @@ const ComponentsDatatablesColumnValider = () => {
       },
       buttonsStyling: false,
     });
+
     swalWithBootstrapButtons
       .fire({
         title: "Etes vous sur de passer en litige?",
@@ -456,20 +457,33 @@ const ComponentsDatatablesColumnValider = () => {
         cancelButtonText: "Annuler",
         reverseButtons: true,
         padding: "2em",
+        html: `
+          <div>
+            <label htmlFor="ctnTextarea">Example textarea</label>
+            <textarea id="ctnTextarea" rows="3" class="form-textarea" placeholder="Enter Address" required></textarea>
+          </div>
+        `,
+        preConfirm: () => {
+          const textareaElement = document.getElementById(
+            "ctnTextarea"
+          ) as HTMLTextAreaElement | null;
+          if (!textareaElement || !textareaElement.value) {
+            Swal.showValidationMessage("Le champ ne doit pas être vide");
+            return false; // Annule la confirmation si l'élément n'existe pas ou si la valeur est vide
+          }
+          return textareaElement.value;
+        },
       })
       .then((result) => {
-        if (result.value) {
+        if (result.isConfirmed) {
           swalWithBootstrapButtons.fire(
             "Confirmer",
-            "Votre encaissement est passer en litige",
+            "Votre encaissement est passé en litige avec l'adresse : " +
+              result.value,
             "success"
           );
         } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire(
-            "Annuler",
-            "Vous avez annuler",
-            "error"
-          );
+          swalWithBootstrapButtons.fire("Annuler", "Vous avez annulé", "error");
         }
       });
   };

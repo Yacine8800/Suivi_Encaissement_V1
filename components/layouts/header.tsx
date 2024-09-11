@@ -279,7 +279,7 @@ const Header = () => {
                   </li> */}
 
                   <li className="border-t border-white-light dark:border-white-light/10">
-                    <Link href="/" className="!py-3 text-danger">
+                    <Link href="/login" className="!py-3 text-danger">
                       <IconLogout className="h-4.5 w-4.5 shrink-0 rotate-90 ltr:mr-2 rtl:ml-2" />
                       Sign Out
                     </Link>
