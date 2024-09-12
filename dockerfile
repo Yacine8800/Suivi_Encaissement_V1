@@ -8,16 +8,16 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 
 # Install dependencies
-RUN yarn install --frozen-lockfile
+RUN npm install --frozen-lockfile
 
 # Copy all project files to the container
 COPY . .
 
 # Build the Next.js application
-RUN yarn build
+RUN npm run build
 
 # Remove development dependencies
-RUN yarn install --production --ignore-scripts --prefer-offline
+RUN npm install --production --ignore-scripts --prefer-offline
 
 # Stage 2: Setup production image with a minimal base
 FROM node:18-alpine AS runner
@@ -40,4 +40,4 @@ ENV PORT=2403
 EXPOSE 2403
 
 # Start the application
-CMD ["yarn", "start"]
+CMD ["npm", "run" ,"dev"]
