@@ -32,8 +32,6 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.mjs ./next.config.mjs
 
-# Set environment variables for production
-ENV NODE_ENV=production
 ENV PORT=2403
 
 # Expose the port that the app runs on

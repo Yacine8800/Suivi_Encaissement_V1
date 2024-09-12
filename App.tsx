@@ -1,19 +1,21 @@
 "use client";
-import { PropsWithChildren, useEffect, useState } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
 
 import {
-  toggleRTL,
-  toggleTheme,
-  toggleMenu,
-  toggleLayout,
   toggleAnimation,
+  toggleLayout,
+  toggleMenu,
   toggleNavbar,
+  toggleRTL,
   toggleSemidark,
+  toggleTheme,
 } from "@/store/themeConfigSlice";
-import Loading from "@/components/layouts/loading";
+
 import { getTranslation } from "@/i18n";
 
+import { PropsWithChildren, useEffect, useState } from "react";
+import Loading from "./components/layouts/loading";
 import { IRootState } from "./store";
 
 function App({ children }: PropsWithChildren) {
