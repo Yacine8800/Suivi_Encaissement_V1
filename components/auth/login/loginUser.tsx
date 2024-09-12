@@ -1,8 +1,8 @@
 "use client";
 import IconEye from "@/components/icon/icon-eye";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import Image from "next/image";
 import ForgotPasswordModal from "../components/modals/ForgotPasswordModal";
 
 const ComponentsAuthLoginForm = () => {

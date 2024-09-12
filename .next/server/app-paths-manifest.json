@@ -1,8 +1,0 @@
-{
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/(defaults)/dashboard/page": "app/(defaults)/dashboard/page.js",
-  "/(defaults)/litiges/page": "app/(defaults)/litiges/page.js",
-  "/(defaults)/encaissement/page": "app/(defaults)/encaissement/page.js",
-  "/(defaults)/valider/page": "app/(defaults)/valider/page.js"
-}
