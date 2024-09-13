@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import ForgotPasswordModal from "../components/modals/ForgotPasswordModal";
+import { useEffect } from "react";
 
 const ComponentsAuthLoginForm = () => {
   const router = useRouter();
@@ -14,6 +15,10 @@ const ComponentsAuthLoginForm = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  useEffect(() => {
+    router.push("/login");
+  }, [router]);
 
   React.useEffect(() => {
     const handleResize = () => {
