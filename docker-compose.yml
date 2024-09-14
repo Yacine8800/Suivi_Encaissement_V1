@@ -1,6 +1,6 @@
 services:
   suivi-encaissement_web:
-    image: dstdcie17/suivi_encaissement_web:1.0.3
+    image: dstdcie17/suivi_encaissement_web:1.0.4
     container_name: suivi_encaissement_web
     ports:
       - "2403:2403"
