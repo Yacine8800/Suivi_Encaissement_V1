@@ -51,7 +51,7 @@ const ComponentsAppsMailbox = () => {
       type: "Message",
       isImportant: false,
       isStar: true,
-      group: "Termine",
+      group: "En cours",
       attachments: [
         {
           name: "Confirm File.txt",
@@ -331,7 +331,11 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
       res = mailList.filter((d) => d.isImportant);
     } else if (selectedTab === "star") {
       res = mailList.filter((d) => d.isStar);
-    } else if (selectedTab === "En cours" || selectedTab === "Transmis") {
+    } else if (
+      selectedTab === "En cours" ||
+      selectedTab === "Transmis" ||
+      selectedTab === "Terminer"
+    ) {
       res = mailList.filter((d) => d.group === selectedTab);
     } else {
       res = mailList.filter((d) => d.type === selectedTab);
@@ -703,7 +707,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                       <input
                         type="text"
                         className="peer form-input ltr:pr-8 rtl:pl-8"
-                        placeholder="Rechercher un litige"
+                        placeholder="Rechercher un litige..."
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
                         onKeyUp={() => searchMails()}
@@ -735,8 +739,8 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                   </button>
                   <button
                     type="button"
-                    className={`btn btn-outline-success flex ${
-                      selectedTab === "En cours" ? "bg-success text-white" : ""
+                    className={`btn btn-outline-primary flex ${
+                      selectedTab === "En cours" ? "bg-primary text-white" : ""
                     }`}
                     onClick={() => {
                       setSelectedTab("En cours");
@@ -745,6 +749,19 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                   >
                     <IconUsers className="ltr:mr-2 rtl:ml-2" />
                     En cours
+                  </button>
+                  <button
+                    type="button"
+                    className={`btn btn-outline-success flex ${
+                      selectedTab === "Terminer" ? "bg-success text-white" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedTab("Terminer");
+                      tabChanged("Terminer");
+                    }}
+                  >
+                    <IconUsers className="ltr:mr-2 rtl:ml-2" />
+                    Terminer
                   </button>
                 </div>
 
@@ -848,12 +865,12 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                                 <div
                                   className={`h-2 w-2 rounded-full ${
                                     (mail.group === "Transmis" &&
-                                      "bg-primary") ||
+                                      "bg-danger") ||
                                     (mail.group === "Transmis" &&
-                                      "bg-warning") ||
+                                      "bg-danger") ||
                                     (mail.group === "Termine" &&
                                       "bg-success") ||
-                                    (mail.group === "private" && "bg-danger")
+                                    (mail.group === "En cours" && "bg-primary")
                                   }`}
                                 ></div>
                                 {/* {mail.attachments && (
@@ -933,7 +950,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                                   "bg-primary") ||
                                 (selectedMail.group === "Transmis" &&
                                   "bg-warning") ||
-                                (selectedMail.group === "Termine" &&
+                                (selectedMail.group === "Terminer" &&
                                   "bg-success") ||
                                 (selectedMail.group === "private" &&
                                   "bg-danger")

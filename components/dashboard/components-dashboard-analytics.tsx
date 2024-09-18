@@ -79,7 +79,7 @@ const ComponentsDashboardValider = () => {
                         : ""
                     }relative -mb-[1px] flex items-center p-5 py-3 before:absolute before:bottom-0 before:left-0 before:right-0 before:m-auto before:inline-block before:h-[1px] before:w-0 before:bg-primary before:transition-all before:duration-700 hover:text-primary hover:before:w-full`}
                   >
-                    <IconCircleCheck className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
+                    <IconChecks className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
                     Encaissements Traités
                   </button>
                 )}
@@ -93,7 +93,7 @@ const ComponentsDashboardValider = () => {
                         : ""
                     }relative -mb-[1px] flex items-center p-5 py-3 before:absolute before:bottom-0 before:left-0 before:right-0 before:m-auto before:inline-block before:h-[1px] before:w-0 before:bg-primary before:transition-all before:duration-700 hover:text-primary hover:before:w-full`}
                   >
-                    <IconChecks className="ltr:mr-2 rtl:ml-2" />
+                    <IconCircleCheck className="ltr:mr-2 rtl:ml-2" />
                     Encaissements Validés
                   </button>
                 )}
