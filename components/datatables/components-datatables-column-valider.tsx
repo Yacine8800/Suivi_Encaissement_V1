@@ -14,6 +14,12 @@ import IconEye from "../icon/icon-eye";
 import Link from "next/link";
 import PanelCodeHighlight from "../panel-code-highlight";
 import Swal from "sweetalert2";
+import Csv from "../icon/csv";
+import IconExcel from "../icon/excel";
+import Pdf from "../icon/pdf";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/flatpickr.css";
+import { French } from "flatpickr/dist/l10n/fr.js";
 
 interface RowData {
   id: number;
@@ -474,8 +480,51 @@ const ComponentsDatatablesColumnValider = () => {
       });
   };
 
+  const jour = new Date();
+  const lendemain = new Date();
+  lendemain.setDate(jour.getDate() + 1);
+
+  const formatDate = (date: Date) => {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const [dateRange, setDateRange] = useState<Date[]>([jour, lendemain]);
+
+  const [formattedRange, setFormattedRange] = useState<string>(
+    `De ${formatDate(jour)} à ${formatDate(lendemain)}`
+  );
+
+  useEffect(() => {
+    // Met à jour l'affichage formaté quand la plage de dates change
+    if (dateRange.length === 2) {
+      setFormattedRange(
+        ` De ${formatDate(dateRange[0])} à ${formatDate(dateRange[1])}`
+      );
+    }
+  }, [dateRange]);
+
   return (
-    <div className="panel mt-6">
+    <div className="mt-6">
+      <div className="mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end">
+        <button type="button" className="btn btn-success w-[100px] gap-2">
+          <IconExcel className="" />
+          XLS
+        </button>
+        <button
+          type="button"
+          className="btn w-[100px] gap-2 bg-black text-white"
+        >
+          <Csv className="" />
+          CSV
+        </button>
+        <button type="button" className="btn btn-danger w-[100px] gap-2">
+          <Pdf className="" />
+          PDF
+        </button>
+      </div>
       <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
         <h5 className="text-lg font-semibold dark:text-white-light">
           {totalValidatedRecords}
@@ -483,6 +532,18 @@ const ComponentsDatatablesColumnValider = () => {
         </h5>
         <div className="flex items-center gap-5 ltr:ml-auto rtl:mr-auto">
           <div className="flex flex-col gap-5 md:flex-row md:items-center">
+            <Flatpickr
+              options={{
+                mode: "range",
+                dateFormat: "d-m-Y", // Format "DD-MM-YYYY" pour le calendrier
+                locale: French, // Affichage en français
+                defaultDate: dateRange, // Initialisation des dates
+              }}
+              className="form-input w-[220px]"
+              onChange={(selectedDates: Date[]) => {
+                setDateRange(selectedDates); // Mettre à jour la plage de dates
+              }}
+            />
             <div className="dropdown">
               <Dropdown
                 btnClassName="!flex items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"

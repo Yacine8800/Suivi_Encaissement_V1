@@ -21,6 +21,9 @@ import IconPrinter from "../icon/icon-printer";
 import IconSend from "../icon/icon-send";
 import IconExcel from "../icon/excel";
 import IconPaperclip from "../icon/icon-paperclip";
+import Csv from "../icon/csv";
+import Pdf from "../icon/pdf";
+import Select from "react-select";
 
 interface RowData {
   id: number;
@@ -39,6 +42,8 @@ interface RowData {
   DR?: string;
   EXP?: string;
   Produit?: string;
+  "Journee caisse"?: number;
+  "Compte banque Jade"?: string;
 }
 
 const rowData: RowData[] = [
@@ -57,6 +62,8 @@ const rowData: RowData[] = [
     DR: "DRAN",
     EXP: "021",
     Produit: "V2",
+    "Journee caisse": 1,
+    "Compte banque Jade": "21232XXX",
   },
   {
     id: 2,
@@ -73,6 +80,8 @@ const rowData: RowData[] = [
     DR: "DRABO",
     EXP: "022",
     Produit: "V3",
+    "Journee caisse": 1,
+    "Compte banque Jade": "21232XXX",
   },
   {
     id: 3,
@@ -89,6 +98,8 @@ const rowData: RowData[] = [
     DR: "DRYOP",
     EXP: "023",
     Produit: "SMART",
+    "Journee caisse": 2,
+    "Compte banque Jade": "21232AAA",
   },
   {
     id: 4,
@@ -105,6 +116,8 @@ const rowData: RowData[] = [
     DR: "DRYOP1",
     EXP: "024",
     Produit: "SMART",
+    "Journee caisse": 1,
+    "Compte banque Jade": "21232XXX",
   },
   {
     id: 5,
@@ -121,6 +134,8 @@ const rowData: RowData[] = [
     DR: "DRAN2",
     EXP: "025",
     Produit: "V2",
+    "Journee caisse": 3,
+    "Compte banque Jade": "2123SSS",
   },
   {
     id: 6,
@@ -137,6 +152,8 @@ const rowData: RowData[] = [
     DR: "DRAS",
     EXP: "026",
     Produit: "V2",
+    "Journee caisse": 2,
+    "Compte banque Jade": "21232AAA",
   },
   {
     id: 7,
@@ -153,6 +170,8 @@ const rowData: RowData[] = [
     DR: "DRAS2",
     EXP: "027",
     Produit: "SMART",
+    "Journee caisse": 7,
+    "Compte banque Jade": "21232LLL",
   },
   {
     id: 8,
@@ -169,6 +188,8 @@ const rowData: RowData[] = [
     DR: "DRAN3",
     EXP: "028",
     Produit: "V3",
+    "Journee caisse": 5,
+    "Compte banque Jade": "21232RRR",
   },
   {
     id: 9,
@@ -185,6 +206,8 @@ const rowData: RowData[] = [
     DR: "DRSE",
     EXP: "029",
     Produit: "SMART",
+    "Journee caisse": 2,
+    "Compte banque Jade": "21232GGG",
   },
   {
     id: 10,
@@ -201,6 +224,8 @@ const rowData: RowData[] = [
     DR: "DRSE",
     EXP: "029",
     Produit: "V2",
+    "Journee caisse": 1,
+    "Compte banque Jade": "21232XXX",
   },
 ];
 
@@ -208,20 +233,7 @@ const formatNumber = (num: number | undefined): string => {
   return num?.toLocaleString("fr-FR") || "";
 };
 
-const formatDate = (date: string): string => {
-  if (date) {
-    const dt = new Date(date);
-    const month =
-      dt.getMonth() + 1 < 10 ? "0" + (dt.getMonth() + 1) : dt.getMonth() + 1;
-    const day = dt.getDate() < 10 ? "0" + dt.getDate() : dt.getDate();
-    return day + "/" + month + "/" + dt.getFullYear();
-  }
-  return "";
-};
-
 const ComponentsDatatablesColumnChooser = () => {
-  const dispatch = useDispatch();
-
   const [showSettingModal, setShowSettingModal] = useState(false);
 
   const [initialLoad, setInitialLoad] = useState(true);
@@ -314,14 +326,24 @@ const ComponentsDatatablesColumnChooser = () => {
     { accessor: "DR", title: "DR", sortable: true },
     {
       accessor: "EXP",
-      title: "EXP",
+      title: "Code Exp",
       sortable: true,
     },
-    { accessor: "Produit", title: "Produit", sortable: true },
     { accessor: "Date Encais", title: "Date Encais", sortable: true },
+    { accessor: "Journee caisse", title: "Journee caisse", sortable: true },
+
+    { accessor: "Produit", title: "Produit", sortable: true },
+    {
+      accessor: "Montant caisse (A)",
+      title: "Montant Restitution Caisse (A)",
+      sortable: true,
+      render: ({ "Montant caisse (A)": montantCaisse }: RowData) =>
+        `${formatNumber(montantCaisse ?? 0)} F CFA`,
+    },
+
     {
       accessor: "Caisse mode",
-      title: "Caisse mode",
+      title: "Mode reglement",
       sortable: true,
       render: ({ "Caisse mode": caisseMode }: RowData) => (
         <div dangerouslySetInnerHTML={{ __html: caisseMode }} />
@@ -329,21 +351,20 @@ const ComponentsDatatablesColumnChooser = () => {
     },
     { accessor: "Banque", title: "Banque", sortable: true },
     {
-      accessor: "Montant caisse (A)",
-      title: "Montant caisse (A)",
+      accessor: "Compte banque Jade",
+      title: "Compte banque Jade",
       sortable: true,
-      render: ({ "Montant caisse (A)": montantCaisse }: RowData) =>
-        `${formatNumber(montantCaisse ?? 0)} F CFA`,
     },
+
     {
       accessor: "Montant bordereau (B)",
-      title: "Montant bordereau (B)",
+      title: "Montant bordereau banque (B)",
       sortable: true,
       render: ({ "Montant bordereau (B)": montantBordereau }: RowData) =>
         `${formatNumber(montantBordereau ?? 0)} F CFA`,
     },
-    { accessor: "Date cloture", title: "Date cloture", sortable: true },
-    { accessor: "Bordereau", title: "Bordereau", sortable: true },
+    { accessor: "Date cloture", title: "Date cachet banque", sortable: true },
+    { accessor: "Bordereau", title: "Numéro Bordereau", sortable: true },
     {
       accessor: "Ecart(A-B)",
       title: "Ecart (A-B)",
@@ -369,39 +390,39 @@ const ComponentsDatatablesColumnChooser = () => {
         );
       },
     },
-    {
-      accessor: "Ecart(B-C)",
-      title: "Ecart (B-C)",
-      sortable: true,
-      render: ({
-        "Montant bordereau (B)": montantBordereau,
-        "Montant revelé (C)": montantRevele,
-      }: RowData) => {
-        const ecart2 = (montantBordereau ?? 0) - (montantRevele ?? 0);
-        return (
-          <div
-            className={
-              ecart2 < 0
-                ? "text-danger"
-                : ecart2 > 0
-                ? "text-success"
-                : "font-bold"
-            }
-            style={{ color: ecart2 === 0 ? "black" : undefined }}
-          >
-            {formatNumber(ecart2)} F CFA
-          </div>
-        );
-      },
-    },
-    { accessor: "Date revelé", title: "Date revelé", sortable: true },
-    {
-      accessor: "Montant revelé (C)",
-      title: "Montant revelé (C)",
-      sortable: true,
-      render: ({ "Montant revelé (C)": montantRevele }: RowData) =>
-        `${formatNumber(montantRevele ?? 0)} F CFA`,
-    },
+    // {
+    //   accessor: "Ecart(B-C)",
+    //   title: "Ecart (B-C)",
+    //   sortable: true,
+    //   render: ({
+    //     "Montant bordereau (B)": montantBordereau,
+    //     "Montant revelé (C)": montantRevele,
+    //   }: RowData) => {
+    //     const ecart2 = (montantBordereau ?? 0) - (montantRevele ?? 0);
+    //     return (
+    //       <div
+    //         className={
+    //           ecart2 < 0
+    //             ? "text-danger"
+    //             : ecart2 > 0
+    //             ? "text-success"
+    //             : "font-bold"
+    //         }
+    //         style={{ color: ecart2 === 0 ? "black" : undefined }}
+    //       >
+    //         {formatNumber(ecart2)} F CFA
+    //       </div>
+    //     );
+    //   },
+    // },
+    { accessor: "Date revelé", title: "Date opération relevé", sortable: true },
+    // {
+    //   accessor: "Montant revelé (C)",
+    //   title: "Montant revelé (C)",
+    //   sortable: true,
+    //   render: ({ "Montant revelé (C)": montantRevele }: RowData) =>
+    //     `${formatNumber(montantRevele ?? 0)} F CFA`,
+    // },
     {
       accessor: "Actions",
       title: "Actions",
@@ -503,8 +524,6 @@ const ComponentsDatatablesColumnChooser = () => {
     return `${day}-${month}-${year}`;
   };
 
-  console.log(today);
-
   const [dateRange, setDateRange] = useState<Date[]>([jour, lendemain]);
 
   const [formattedRange, setFormattedRange] = useState<string>(
@@ -520,18 +539,47 @@ const ComponentsDatatablesColumnChooser = () => {
     }
   }, [dateRange]);
 
+  const DR = [
+    { value: "DRAN", label: "DRAN" },
+    { value: "DRAS", label: "DRAS" },
+    { value: "DRABO", label: "DRABO" },
+  ];
+  const exploitation = [
+    { value: "EXP 1", label: "EXP 1" },
+    { value: "EXP 2", label: "EXP 2" },
+    { value: "EXP 3", label: "EXP 3" },
+  ];
+  const banque = [
+    { value: "BANQ 1", label: "BANQ 1" },
+    { value: "BANQ 2", label: "BANQ 2" },
+    { value: "BANQ 3", label: "BANQ 3" },
+  ];
+  const caisse = [
+    { value: "CAISSE 1", label: "CAISSE 1" },
+    { value: "CAISSE 2", label: "CAISSE 2" },
+    { value: "CAISSE 3", label: "CAISSE 3" },
+  ];
+
   return (
-    <div className="panel mt-6">
+    <div className=" mt-6">
       <div className="mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end">
         <button type="button" className="btn btn-success w-[100px] gap-2">
           <IconExcel className="" />
           XLS
         </button>
-        {/* <button type="button" className="btn btn-dark gap-2">
-          <IconDownload />
+        <button
+          type="button"
+          className="btn w-[100px] gap-2 bg-black text-white"
+        >
+          <Csv className="" />
           CSV
-        </button> */}
+        </button>
+        <button type="button" className="btn btn-danger w-[100px] gap-2">
+          <Pdf className="" />
+          PDF
+        </button>
       </div>
+
       <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
         <h5 className="-mt-12 flex text-lg font-semibold dark:text-white-light">
           {totalUnvalidatedRecords}
@@ -551,6 +599,7 @@ const ComponentsDatatablesColumnChooser = () => {
                 setDateRange(selectedDates); // Mettre à jour la plage de dates
               }}
             />
+
             <div className="dropdown">
               <Dropdown
                 btnClassName="!flex items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
@@ -599,6 +648,7 @@ const ComponentsDatatablesColumnChooser = () => {
           </div>
         </div>
       </div>
+
       <div className="datatables">
         <DataTable
           className="table-hover whitespace-nowrap"
