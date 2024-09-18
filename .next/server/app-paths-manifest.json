@@ -1,4 +1,5 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/(defaults)/utilisateur/add/page": "app/(defaults)/utilisateur/add/page.js",
   "/(defaults)/encaissement/page": "app/(defaults)/encaissement/page.js",
   "/(defaults)/dashboard/page": "app/(defaults)/dashboard/page.js",

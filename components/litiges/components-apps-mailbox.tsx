@@ -4,42 +4,26 @@ import Iconcloture from "@/components/icon/icon-archive";
 import IconArrowBackward from "@/components/icon/icon-arrow-backward";
 import IconArrowForward from "@/components/icon/icon-arrow-forward";
 import IconArrowLeft from "@/components/icon/icon-arrow-left";
-import IconBook from "@/components/icon/icon-book";
 import IconBookmark from "@/components/icon/icon-bookmark";
 import IconCaretDown from "@/components/icon/icon-caret-down";
-import IconChartSquare from "@/components/icon/icon-chart-square";
 import IconDownload from "@/components/icon/icon-download";
-import IconFile from "@/components/icon/icon-file";
 import IconFolder from "@/components/icon/icon-folder";
 import IconGallery from "@/components/icon/icon-gallery";
-import IconHelpCircle from "@/components/icon/icon-help-circle";
-import IconHorizontalDots from "@/components/icon/icon-horizontal-dots";
 import IconInfoHexagon from "@/components/icon/icon-info-hexagon";
 import IconMail from "@/components/icon/icon-mail";
 import IconMenu from "@/components/icon/icon-menu";
-import IconMessage2 from "@/components/icon/icon-message2";
-import IconOpenBook from "@/components/icon/icon-open-book";
-import IconPaperclip from "@/components/icon/icon-paperclip";
-import IconPlus from "@/components/icon/icon-plus";
 import IconPrinter from "@/components/icon/icon-printer";
 import IconRefresh from "@/components/icon/icon-refresh";
 import IconRestore from "@/components/icon/icon-restore";
 import IconSearch from "@/components/icon/icon-search";
-import IconSend from "@/components/icon/icon-send";
-import IconSettings from "@/components/icon/icon-settings";
 import IconStar from "@/components/icon/icon-star";
 import IconTag from "@/components/icon/icon-tag";
 import IconTrash from "@/components/icon/icon-trash";
-import IconTrashLines from "@/components/icon/icon-trash-lines";
 import IconTxtFile from "@/components/icon/icon-txt-file";
 import IconUser from "@/components/icon/icon-user";
-import IconUserPlus from "@/components/icon/icon-user-plus";
 import IconUsers from "@/components/icon/icon-users";
-import IconVideo from "@/components/icon/icon-video";
-import IconWheel from "@/components/icon/icon-wheel";
 import IconZipFile from "@/components/icon/icon-zip-file";
 import { IRootState } from "@/store";
-import { Disclosure } from "@headlessui/react";
 import Tippy from "@tippyjs/react";
 import React, { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
@@ -48,25 +32,26 @@ import Swal from "sweetalert2";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "tippy.js/dist/tippy.css";
 import "react-quill/dist/quill.snow.css";
+import DayCounter from "@/utils/Daycounter";
 
 const ComponentsAppsMailbox = () => {
   const [mailList, setMailList] = useState([
     {
       id: 1,
       path: "profile-15.jpeg",
-      firstName: "Laurie",
-      lastName: "Fox",
+      titre: "Justificatif",
+      caisse: "Caisse",
+      nomCaisse: "Ano Raymond",
       email: "laurieFox@mail.com",
       date: new Date(),
-      time: "2:00 PM",
-      title: "Promotion Page",
+      time: "27-07-2024",
+      title: "234XXX...",
       displayDescription:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue.",
-      type: "inbox",
+        "La justification de l'ecart entre le montant banque et le montant relevé n'est pas cohérent j'ai besoin de plus d'eclairssiement a ce sujet",
+      type: "Message",
       isImportant: false,
       isStar: true,
       group: "Termine",
-      isUnread: false,
       attachments: [
         {
           name: "Confirm File.txt",
@@ -80,83 +65,33 @@ const ComponentsAppsMailbox = () => {
         },
       ],
       description: `
-                              <p class="mail-content"> Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. </p>
+                              <p class="mail-content">Montant sur le relevé bancaire : 1 500 000 FCFA
+                                Montant dans le système Saphir/Jade : 1 700 000 FCFA
+                                Bordereau joint : Mentionne deux virements :
+                                Virement 1 : 100 000 FCFA
+                                Virement 2 : 100 000 FCFA
+                                Écart :
+                                Le système comptable affiche un montant supérieur de 200 000 FCFA (1 700 000 - 1 500 000 FCFA).
+                                <br />
+
+Justification de l'écart :
+Dans ce cas, il apparaît que le système Saphir ou Jade a déjà comptabilisé deux virements, chacun de 100 000 FCFA (mentionnés sur le bordereau), qui n'ont pas encore été pris en compte par la banque. Ces virements sont encore en attente de traitement par la banque et ne figurent donc pas encore sur le relevé bancaire.
+
+Montant en banque : 1 500 000 FCFA
+Montant dans Saphir/Jade (y compris les virements en attente) : 1 700 000 FCFA
+Écart : 200 000 FCFA (qui correspond aux virements en attente)
+<br />
+L’écart de 200 000 FCFA s’explique par le fait que les virements figurant sur le bordereau n'ont pas encore été pris en compte sur le relevé bancaire. Ces virements sont enregistrés dans Saphir/Jade mais apparaîtront sur le relevé lors de leur traitement effectif par la banque.
+
+ </p>
                               <div class="gallery text-center">
-                                  <img alt="image-gallery" src="${"/assets/images/carousel3.jpeg"}" class="mb-4 mt-4" style="width: 250px; height: 180px;" />
-                                  <img alt="image-gallery" src="${"/assets/images/carousel2.jpeg"}" class="mb-4 mt-4" style="width: 250px; height: 180px;" />
-                                  <img alt="image-gallery" src="${"/assets/images/carousel1.jpeg"}" class="mb-4 mt-4" style="width: 250px; height: 180px;" />
+                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" class="mb-4 mt-4" style="width: 250px; height: 180px;" />
+                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" class="mb-4 mt-4" style="width: 250px; height: 180px;" />
+                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" class="mb-4 mt-4" style="width: 250px; height: 180px;" />
+                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" class="mb-4 mt-4" style="width: 250px; height: 180px;" />
+                        
                               </div>
-                              <p>Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
-                              `,
-    },
-    {
-      id: 2,
-      path: "profile-14.jpeg",
-      firstName: "Andy",
-      lastName: "King",
-      email: "kingAndy@mail.com",
-      date: new Date(),
-      time: "6:28 PM",
-      title: "Hosting Payment Reminder",
-      displayDescription:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue.",
-      type: "inbox",
-      isImportant: false,
-      isStar: false,
-      group: "",
-      isUnread: false,
-      description: `
-                              <p class="mail-content"> Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. </p>
-                              <p>Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
-                              `,
-    },
-    {
-      id: 3,
-      path: "",
-      firstName: "Kristen",
-      lastName: "Beck",
-      email: "kirsten.beck@mail.com",
-      date: new Date(),
-      time: "11:09 AM",
-      title: "Verification Link",
-      displayDescription:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue.",
-      type: "inbox",
-      isImportant: false,
-      isStar: false,
-      group: "Termine",
-      isUnread: true,
-      description: `
-                              <p class="mail-content"> Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. </p>
-                              <p>Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
-                              `,
-    },
-    {
-      id: 4,
-      path: "profile-16.jpeg",
-      firstName: "Christian",
-      lastName: "",
-      email: "christian@mail.com",
-      date: "11/30/2021",
-      time: "2:00 PM",
-      title: "New Updates",
-      displayDescription:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue.",
-      type: "inbox",
-      isImportant: false,
-      isStar: false,
-      group: "private",
-      isUnread: false,
-      attachments: [
-        {
-          name: "update.zip",
-          size: "1.38MB",
-          type: "zip",
-        },
-      ],
-      description: `
-                              <p class="mail-content"> Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS. </p>
-                              <p>Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
+                              <p>L’écart de 200 000 FCFA entre le montant en banque et le montant relevé dans Saphir/Jade est dû à deux virements de 100 000 FCFA chacun, mentionnés dans le bordereau joint. Ces virements sont en cours de traitement par la banque et ne figurent pas encore sur le relevé bancaire. Une fois ces virements encaissés, l’écart sera résorbé.</p>
                               `,
     },
   ]);
@@ -174,9 +109,9 @@ const ComponentsAppsMailbox = () => {
 
   const [isShowMailMenu, setIsShowMailMenu] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [selectedTab, setSelectedTab] = useState("inbox");
+  const [selectedTab, setSelectedTab] = useState("Message");
   const [filteredMailList, setFilteredMailList] = useState<any>(
-    mailList.filter((d) => d.type === "inbox")
+    mailList.filter((d) => d.type === "Message")
   );
   const [ids, setIds] = useState<any>([]);
   const [searchText, setSearchText] = useState<any>("");
@@ -210,7 +145,7 @@ const ComponentsAppsMailbox = () => {
     if (ids.length) {
       let items = filteredMailList.filter((d: any) => ids.includes(d.id));
       for (let item of items) {
-        item.type = item.type === "cloture" ? "inbox" : "cloture";
+        item.type = item.type === "cloture" ? "Message" : "cloture";
       }
       if (selectedTab === "cloture") {
         showMessage(ids.length + " Mail has been removed from cloture.");
@@ -225,7 +160,7 @@ const ComponentsAppsMailbox = () => {
     if (ids.length) {
       let items = filteredMailList.filter((d: any) => ids.includes(d.id));
       for (let item of items) {
-        item.type = item.type === "inapproprie" ? "inbox" : "inapproprie";
+        item.type = item.type === "inapproprie" ? "Message" : "inapproprie";
       }
       if (selectedTab === "inapproprie") {
         showMessage(ids.length + " Mail has been removed from inapproprie.");
@@ -233,23 +168,6 @@ const ComponentsAppsMailbox = () => {
         showMessage(ids.length + " Mail has been added to inapproprie.");
       }
       searchMails(false);
-    }
-  };
-
-  const setGroup = (group: any) => {
-    if (ids.length) {
-      let items = mailList.filter((d: any) => ids.includes(d.id));
-      for (let item of items) {
-        item.group = group;
-      }
-
-      showMessage(
-        ids.length + " Mail has been grouped as " + group.toUpperCase()
-      );
-      clearSelection();
-      setTimeout(() => {
-        searchMails(false);
-      });
     }
   };
 
@@ -283,7 +201,7 @@ const ComponentsAppsMailbox = () => {
         }
         //restore & permanent delete
         else if (type === "restore") {
-          item.type = "inbox";
+          item.type = "Message";
           showMessage(totalSelected + " Mail Restored.");
           searchMails(false);
         } else if (type === "delete") {
@@ -422,8 +340,8 @@ const ComponentsAppsMailbox = () => {
     let filteredRes = res.filter(
       (d) =>
         (d.title && d.title.toLowerCase().includes(searchText)) ||
-        (d.firstName && d.firstName.toLowerCase().includes(searchText)) ||
-        (d.lastName && d.lastName.toLowerCase().includes(searchText)) ||
+        (d.titre && d.titre.toLowerCase().includes(searchText)) ||
+        (d.caisse && d.caisse.toLowerCase().includes(searchText)) ||
         (d.displayDescription &&
           d.displayDescription.toLowerCase().includes(searchText))
     );
@@ -432,8 +350,8 @@ const ComponentsAppsMailbox = () => {
       ...res.filter(
         (d) =>
           (d.title && d.title.toLowerCase().includes(searchText)) ||
-          (d.firstName && d.firstName.toLowerCase().includes(searchText)) ||
-          (d.lastName && d.lastName.toLowerCase().includes(searchText)) ||
+          (d.titre && d.titre.toLowerCase().includes(searchText)) ||
+          (d.caisse && d.caisse.toLowerCase().includes(searchText)) ||
           (d.displayDescription &&
             d.displayDescription.toLowerCase().includes(searchText))
       ),
@@ -485,8 +403,8 @@ const ComponentsAppsMailbox = () => {
     let obj: any = {
       id: maxId + 1,
       path: "",
-      firstName: "",
-      lastName: "",
+      titre: "",
+      caisse: "",
       email: params.to,
       date: cDt.getMonth() + 1 + "/" + cDt.getDate() + "/" + cDt.getFullYear(),
       time: cDt.toLocaleTimeString(),
@@ -497,19 +415,8 @@ const ComponentsAppsMailbox = () => {
       group: "",
       isUnread: false,
       description: params.description,
-      attachments: null,
     };
-    if (params.file && params.file.length) {
-      obj.attachments = [];
-      for (let file of params.file) {
-        let flObj = {
-          name: file.name,
-          size: getFileSize(file.size),
-          type: getFileType(file.type),
-        };
-        obj.attachments.push(flObj);
-      }
-    }
+
     if (type === "save" || type === "save_reply" || type === "save_forward") {
       //saved to draft
       obj.type = "draft";
@@ -581,7 +488,7 @@ const ComponentsAppsMailbox = () => {
 
   const closeMsgPopUp = () => {
     setIsEdit(false);
-    setSelectedTab("inbox");
+    setSelectedTab("Message");
     searchMails();
   };
 
@@ -620,13 +527,13 @@ const ComponentsAppsMailbox = () => {
                 <button
                   type="button"
                   className={`flex h-10 w-full items-center justify-between rounded-md p-2 font-medium hover:bg-white-dark/10 hover:text-primary dark:hover:bg-[#181F32] dark:hover:text-primary ${
-                    !isEdit && selectedTab === "inbox"
+                    !isEdit && selectedTab === "Message"
                       ? "bg-gray-100 text-primary dark:bg-[#181F32] dark:text-primary"
                       : ""
                   }`}
                   onClick={() => {
-                    setSelectedTab("inbox");
-                    tabChanged("inbox");
+                    setSelectedTab("Message");
+                    tabChanged("Message");
                   }}
                 >
                   <div className="flex items-center">
@@ -635,7 +542,7 @@ const ComponentsAppsMailbox = () => {
                   </div>
                   <div className="whitespace-nowrap rounded-md bg-primary-light px-2 py-0.5 font-semibold dark:bg-[#060818]">
                     {mailList &&
-                      mailList.filter((d) => d.type === "inbox").length}
+                      mailList.filter((d) => d.type === "Message").length}
                   </div>
                 </button>
 
@@ -908,49 +815,7 @@ const ComponentsAppsMailbox = () => {
                                     className="form-checkbox"
                                   />
                                 </div>
-                                {/* <div className="ltr:mr-3 rtl:ml-3">
-                                  <Tippy content="Star">
-                                    <button
-                                      type="button"
-                                      className={`flex items-center enabled:hover:text-warning disabled:opacity-60 ${
-                                        mail.isStar ? "text-warning" : ""
-                                      }`}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setStar(mail.id);
-                                      }}
-                                      disabled={selectedTab === "trash"}
-                                    >
-                                      <IconStar
-                                        className={
-                                          mail.isStar ? "fill-warning" : ""
-                                        }
-                                      />
-                                    </button>
-                                  </Tippy>
-                                </div> */}
-                                {/* <div className="ltr:mr-3 rtl:ml-3">
-                                  <Tippy content="Important">
-                                    <button
-                                      type="button"
-                                      className={`flex rotate-90 items-center enabled:hover:text-primary disabled:opacity-60 ${
-                                        mail.isImportant ? "text-primary" : ""
-                                      }`}
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setImportant(mail.id);
-                                      }}
-                                      disabled={selectedTab === "trash"}
-                                    >
-                                      <IconBookmark
-                                        bookmark={false}
-                                        className={`h-4.5 w-4.5 ${
-                                          mail.isImportant && "fill-primary"
-                                        }`}
-                                      />
-                                    </button>
-                                  </Tippy>
-                                </div> */}
+
                                 <div
                                   className={`whitespace-nowrap font-semibold dark:text-gray-300 ${
                                     !mail.isUnread
@@ -958,8 +823,8 @@ const ComponentsAppsMailbox = () => {
                                       : ""
                                   }`}
                                 >
-                                  {mail.firstName
-                                    ? mail.firstName + " " + mail.lastName
+                                  {mail.titre
+                                    ? mail.titre + " " + mail.caisse
                                     : mail.email}
                                 </div>
                               </div>
@@ -1045,23 +910,15 @@ const ComponentsAppsMailbox = () => {
               <div className="relative p-4">
                 <div className="flex flex-wrap">
                   <div className="flex-shrink-0 ltr:mr-2 rtl:ml-2">
-                    {selectedMail.path ? (
-                      <img
-                        src={`/assets/images/${selectedMail.path}`}
-                        className="h-12 w-12 rounded-full object-cover"
-                        alt="avatar"
-                      />
-                    ) : (
-                      <div className="rounded-full border border-gray-300 p-3 dark:border-gray-800">
-                        <IconUser className="h-5 w-5" />
-                      </div>
-                    )}
+                    <div className="rounded-full border border-gray-300 p-3 dark:border-gray-800">
+                      <IconUser className="h-5 w-5" />
+                    </div>
                   </div>
                   <div className="flex-1 ltr:mr-2 rtl:ml-2">
                     <div className="flex items-center">
                       <div className="whitespace-nowrap text-lg ltr:mr-4 rtl:ml-4">
-                        {selectedMail.firstName
-                          ? selectedMail.firstName + " " + selectedMail.lastName
+                        {selectedMail.titre
+                          ? selectedMail.titre + " " + selectedMail.caisse
                           : selectedMail.email}
                       </div>
                       {selectedMail.group && (
@@ -1086,108 +943,20 @@ const ComponentsAppsMailbox = () => {
                         </div>
                       )}
                       <div className="whitespace-nowrap text-white-dark">
-                        1 days ago
+                        <DayCounter initialDays={0} />
                       </div>
                     </div>
                     <div className="flex items-center text-white-dark">
                       <div className="ltr:mr-1 rtl:ml-1">
                         {selectedMail.type === "sent_mail"
                           ? selectedMail.email
-                          : "to me"}
-                      </div>
-                      <div className="dropdown">
-                        <Dropdown
-                          offset={[0, 5]}
-                          placement={`${isRtl ? "bottom-start" : "bottom-end"}`}
-                          btnClassName="hover:text-primary flex items-center"
-                          button={<IconCaretDown className="h-5 w-5" />}
-                        >
-                          <ul className="sm:w-56">
-                            <li>
-                              <div className="flex items-center px-4 py-2">
-                                <div className="w-1/4 text-white-dark ltr:mr-2 rtl:ml-2">
-                                  From:
-                                </div>
-                                <div className="flex-1 truncate">
-                                  {selectedMail.type === "sent_mail"
-                                    ? "NOTARIAT@gmail.com"
-                                    : selectedMail.email}
-                                </div>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="flex items-center px-4 py-2">
-                                <div className="w-1/4 text-white-dark ltr:mr-2 rtl:ml-2">
-                                  To:
-                                </div>
-                                <div className="flex-1 truncate">
-                                  {selectedMail.type !== "sent_mail"
-                                    ? "NOTARIAT@gmail.com"
-                                    : selectedMail.email}
-                                </div>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="flex items-center px-4 py-2">
-                                <div className="w-1/4 text-white-dark ltr:mr-2 rtl:ml-2">
-                                  Date:
-                                </div>
-                                <div className="flex-1">
-                                  {selectedMail.date + ", " + selectedMail.time}
-                                </div>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="flex items-center px-4 py-2">
-                                <div className="w-1/4 text-white-dark ltr:mr-2 rtl:ml-2">
-                                  Subject:
-                                </div>
-                                <div className="flex-1">
-                                  {selectedMail.title}
-                                </div>
-                              </div>
-                            </li>
-                          </ul>
-                        </Dropdown>
+                          : selectedMail.nomCaisse}
                       </div>
                     </div>
                   </div>
 
                   <div>
                     <div className="flex items-center justify-center space-x-3 rtl:space-x-reverse">
-                      <Tippy content="Star">
-                        <button
-                          type="button"
-                          className={`enabled:hover:text-warning disabled:opacity-60 ${
-                            selectedMail.isStar ? "text-warning" : ""
-                          }`}
-                          onClick={() => setStar(selectedMail.id)}
-                          disabled={selectedTab === "trash"}
-                        >
-                          <IconStar
-                            className={
-                              selectedMail.isStar ? "fill-warning" : ""
-                            }
-                          />
-                        </button>
-                      </Tippy>
-                      <Tippy content="Important">
-                        <button
-                          type="button"
-                          className={`enabled:hover:text-primary disabled:opacity-60 ${
-                            selectedMail.isImportant ? "text-primary" : ""
-                          }`}
-                          onClick={() => setImportant(selectedMail.id)}
-                          disabled={selectedTab === "trash"}
-                        >
-                          <IconBookmark
-                            bookmark={false}
-                            className={`h-4.5 w-4.5 rotate-90 ${
-                              selectedMail.isImportant && "fill-primary"
-                            }`}
-                          />
-                        </button>
-                      </Tippy>
                       <Tippy content="Reply">
                         <button
                           type="button"
@@ -1216,50 +985,7 @@ const ComponentsAppsMailbox = () => {
                   className="prose mt-8 max-w-full prose-p:text-sm prose-img:m-0 prose-img:inline-block dark:prose-p:text-white md:prose-p:text-sm"
                   dangerouslySetInnerHTML={{ __html: selectedMail.description }}
                 ></div>
-                <p className="mt-4">Best Regards,</p>
-                <p>{selectedMail.firstName + " " + selectedMail.lastName}</p>
-
-                {selectedMail.attachments && (
-                  <div className="mt-8">
-                    <div className="mb-4 text-base">Attachments</div>
-                    <div className="h-px border-b border-white-light dark:border-[#1b2e4b]"></div>
-                    <div className="mt-6 flex flex-wrap items-center">
-                      {selectedMail.attachments.map(
-                        (attachment: any, i: number) => {
-                          return (
-                            <button
-                              key={i}
-                              type="button"
-                              className="group relative mb-4 flex items-center rounded-md border border-white-light px-4 py-2.5 transition-all duration-300 hover:border-primary hover:text-primary dark:border-[#1b2e4b] ltr:mr-4 rtl:ml-4"
-                            >
-                              {attachment.type === "image" && <IconGallery />}
-                              {attachment.type === "folder" && <IconFolder />}
-                              {attachment.type === "zip" && <IconZipFile />}
-                              {attachment.type !== "zip" &&
-                                attachment.type !== "image" &&
-                                attachment.type !== "folder" && (
-                                  <IconTxtFile className="h-5 w-5" />
-                                )}
-
-                              <div className="ltr:ml-3 rtl:mr-3">
-                                <p className="text-xs font-semibold text-primary">
-                                  {attachment.name}
-                                </p>
-                                <p className="text-[11px] text-gray-400 dark:text-gray-600">
-                                  {attachment.size}
-                                </p>
-                              </div>
-                              <div className="absolute top-0 z-[5] hidden h-full w-full rounded-md bg-dark-light/40 group-hover:block ltr:left-0 rtl:right-0"></div>
-                              <div className="btn btn-primary absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 rounded-full p-1 group-hover:block">
-                                <IconDownload className="h-4.5 w-4.5" />
-                              </div>
-                            </button>
-                          );
-                        }
-                      )}
-                    </div>
-                  </div>
-                )}
+                <p className="mt-4">Cordialement...</p>
               </div>
             </div>
           )}
@@ -1285,8 +1011,8 @@ const ComponentsAppsMailbox = () => {
                     id="to"
                     type="text"
                     className="form-input"
-                    placeholder="Enter To"
-                    defaultValue={params.to}
+                    placeholder="Entrer votre nom"
+                    // defaultValue={params.to}
                     onChange={(e) => {
                       changeValue(e);
                     }}
@@ -1298,8 +1024,8 @@ const ComponentsAppsMailbox = () => {
                     id="cc"
                     type="text"
                     className="form-input"
-                    placeholder="Enter Cc"
-                    defaultValue={params.cc}
+                    placeholder="Entrer votre numero de caisse"
+                    // defaultValue={params.cc}
                     onChange={(e) => changeValue(e)}
                   />
                 </div>
@@ -1309,8 +1035,8 @@ const ComponentsAppsMailbox = () => {
                     id="title"
                     type="text"
                     className="form-input"
-                    placeholder="Enter Subject"
-                    defaultValue={params.title}
+                    placeholder="Entrer le numero de borderau"
+                    // defaultValue={params.title}
                     onChange={(e) => changeValue(e)}
                   />
                 </div>
@@ -1346,22 +1072,22 @@ const ComponentsAppsMailbox = () => {
                     className="btn btn-outline-danger ltr:mr-3 rtl:ml-3"
                     onClick={closeMsgPopUp}
                   >
-                    Close
+                    Fermer
                   </button>
                   <button
                     type="button"
                     className="btn btn-success ltr:mr-3 rtl:ml-3"
                     onClick={() => saveMail("save", null)}
                   >
-                    Save
+                    Enregistrer
                   </button>
-                  <button
+                  {/* <button
                     type="button"
                     className="btn btn-primary"
                     onClick={() => saveMail("send", params.id)}
                   >
                     Send
-                  </button>
+                  </button> */}
                 </div>
               </form>
             </div>
