@@ -46,24 +46,12 @@ const ComponentsAppsMailbox = () => {
       date: new Date(),
       time: "27-07-2024",
       title: "234XXX...",
-      displayDescription:
+      detailTitre:
         "La justification de l'ecart entre le montant banque et le montant relevé n'est pas cohérent j'ai besoin de plus d'eclairssiement a ce sujet",
       type: "Message",
       isImportant: false,
       isStar: true,
       group: "En cours",
-      attachments: [
-        {
-          name: "Confirm File.txt",
-          size: "450KB",
-          type: "file",
-        },
-        {
-          name: "Important Docs.xml",
-          size: "2.1MB",
-          type: "file",
-        },
-      ],
       description: `
                               <p class="mail-content">Montant sur le relevé bancaire : 1 500 000 FCFA
                                 Montant dans le système Saphir/Jade : 1 700 000 FCFA
@@ -104,7 +92,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
     title: "",
     file: null,
     description: "",
-    displayDescription: "",
+    detailTitre: "",
   };
 
   const [isShowMailMenu, setIsShowMailMenu] = useState(false);
@@ -297,25 +285,25 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
         ...data,
         from: defaultParams.from,
         to: data.email,
-        displayDescription: data.email,
+        detailTitre: data.email,
       });
-    } else if (type === "reply") {
+    } else if (type === "Retour") {
       let data = JSON.parse(JSON.stringify(item));
       setParams({
         ...data,
         from: defaultParams.from,
         to: data.email,
         title: "Re: " + data.title,
-        displayDescription: "Re: " + data.title,
+        detailTitre: "Re: " + data.title,
       });
-    } else if (type === "forward") {
+    } else if (type === "Repondre") {
       let data = JSON.parse(JSON.stringify(item));
       setParams({
         ...data,
         from: defaultParams.from,
         to: data.email,
         title: "Fwd: " + data.title,
-        displayDescription: "Fwd: " + data.title,
+        detailTitre: "Fwd: " + data.title,
       });
     }
     setIsEdit(true);
@@ -346,8 +334,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
         (d.title && d.title.toLowerCase().includes(searchText)) ||
         (d.titre && d.titre.toLowerCase().includes(searchText)) ||
         (d.caisse && d.caisse.toLowerCase().includes(searchText)) ||
-        (d.displayDescription &&
-          d.displayDescription.toLowerCase().includes(searchText))
+        (d.detailTitre && d.detailTitre.toLowerCase().includes(searchText))
     );
 
     setFilteredMailList([
@@ -356,8 +343,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
           (d.title && d.title.toLowerCase().includes(searchText)) ||
           (d.titre && d.titre.toLowerCase().includes(searchText)) ||
           (d.caisse && d.caisse.toLowerCase().includes(searchText)) ||
-          (d.displayDescription &&
-            d.displayDescription.toLowerCase().includes(searchText))
+          (d.detailTitre && d.detailTitre.toLowerCase().includes(searchText))
       ),
     ]);
 
@@ -413,7 +399,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
       date: cDt.getMonth() + 1 + "/" + cDt.getDate() + "/" + cDt.getFullYear(),
       time: cDt.toLocaleTimeString(),
       title: params.title,
-      displayDescription: params.displayDescription,
+      detailTitre: params.detailTitre,
       type: "draft",
       isImportant: false,
       group: "",
@@ -421,13 +407,13 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
       description: params.description,
     };
 
-    if (type === "save" || type === "save_reply" || type === "save_forward") {
+    if (type === "save" || type === "save_Retour" || type === "save_Repondre") {
       //saved to draft
       obj.type = "draft";
       mailList.splice(0, 0, obj);
       searchMails();
       showMessage("Mail has been saved successfully to draft.");
-    } else if (type === "send" || type === "reply" || type === "forward") {
+    } else if (type === "send" || type === "Retour" || type === "Repondre") {
       //saved to sent mail
       obj.type = "sent_mail";
       mailList.splice(0, 0, obj);
@@ -856,7 +842,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                                   }`}
                                 >
                                   <span>{mail.title}</span> &minus;
-                                  <span> {mail.displayDescription}</span>
+                                  <span> {mail.detailTitre}</span>
                                 </span>
                               </div>
                             </td>
@@ -974,21 +960,21 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
 
                   <div>
                     <div className="flex items-center justify-center space-x-3 rtl:space-x-reverse">
-                      <Tippy content="Reply">
+                      <Tippy content="Retour">
                         <button
                           type="button"
                           className="hover:text-info"
-                          onClick={() => openMail("reply", selectedMail)}
+                          onClick={() => openMail("Retour", selectedMail)}
                         >
                           <IconArrowBackward className="rtl:hidden" />
                           <IconArrowForward className="ltr:hidden" />
                         </button>
                       </Tippy>
-                      <Tippy content="Forward">
+                      <Tippy content="Repondre">
                         <button
                           type="button"
                           className="hover:text-info"
-                          onClick={() => openMail("forward", selectedMail)}
+                          onClick={() => openMail("Repondre", selectedMail)}
                         >
                           <IconArrowBackward className="ltr:hidden" />
                           <IconArrowForward className="rtl:hidden" />
@@ -1065,7 +1051,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                     defaultValue={params.description || ""}
                     onChange={(content, delta, source, editor) => {
                       params.description = content;
-                      params.displayDescription = editor.getText();
+                      params.detailTitre = editor.getText();
                       setParams({
                         ...params,
                       });
@@ -1089,7 +1075,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                     className="btn btn-outline-danger ltr:mr-3 rtl:ml-3"
                     onClick={closeMsgPopUp}
                   >
-                    Fermer
+                    Retour
                   </button>
                   <button
                     type="button"
