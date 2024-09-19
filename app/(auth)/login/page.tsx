@@ -140,7 +140,7 @@ const ComponentsAuthLoginForm = () => {
             type="submit"
             className="w-full rounded-md bg-orange-500 px-4 py-3 text-white shadow-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
           >
-            Sign in
+            Connexion
           </button>
         </form>
       </div>
