@@ -1,5 +1,5 @@
 export const API_URL = process.env.REACT_API_EMS_URL as string;
-export const API_FCMS = process.env.REACT_API_FCMS_URL as string;
+export const API_FCMS = "https://fraudprod.smartcontrol-cie.com/api/v1";
 export const API_FCMS_PHOTO = process.env.REACT_API_FCMS_PHOTO_URL as string;
 export const API_AMS = process.env.REACT_API_AMS_URL as string;
 export const API_GATEWAY_EMS = process.env.REACT_API_GATEWAY_URL as string;
