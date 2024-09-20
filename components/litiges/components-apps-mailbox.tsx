@@ -777,16 +777,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
 								</div>
 								{/* ? ------------------------------------------------ */}
 								<div className="">
-									<div className="flex-row justify-end ">
-										<button
-											type="button"
-											onClick={() => setModal2(true)}
-											className="btn btn-info right-0 "
-											disabled={!msgchecked}
-										>
-											Voir Plus +
-										</button>
-									</div>
+									<div className="flex-row justify-end "></div>
 									{msgchecked && filteredMailList && (
 										<Transition appear show={modal2} as={Fragment}>
 											<Dialog
@@ -869,6 +860,14 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
 
 								<div className="mt-4 flex-1 md:flex-auto">
 									<div className="flex items-center justify-center md:justify-end">
+										<button
+											type="button"
+											onClick={() => setModal2(true)}
+											className="btn btn-info right-5"
+											disabled={!msgchecked}
+										>
+											Voir Plus +
+										</button>
 										<div className="ltr:mr-3 rtl:ml-3">
 											{pager.startIndex +
 												1 +
