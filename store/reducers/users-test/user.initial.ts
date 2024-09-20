@@ -14,5 +14,5 @@ export const initialStateMapCie: IUsersData = {
 
 	userData: [],
 	statutUser: "idle",
-	errorUser: null,
+	errorUser: "",
 };

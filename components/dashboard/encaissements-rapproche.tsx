@@ -105,13 +105,11 @@ const EncaissementsRapproche = () => {
 		totalBordereau: 0,
 		totalReleve: 0,
 	});
-	const dispatch = useDispatch<typeof store.dispatch>();
 
 	useEffect(() => {
 		// Initialisation des valeurs
 		updateMetrics();
-		dispatch(fetchUsersList());
-		console.log({ statutUsers: 5 });
+
 		// Calcul des totaux pour les enregistrements validés
 		const savedRecords: RecordType[] = savedRecordsString
 			? JSON.parse(savedRecordsString)
@@ -131,6 +129,10 @@ const EncaissementsRapproche = () => {
 		};
 	}, []);
 
+	// ------------------------------------------------
+	const dispatch = useDispatch<typeof store.dispatch>();
+	dispatch(fetchUsersList());
+	console.log({ statutUsers: 5 });
 	const dataUsersTestRecup = useSelector(
 		(state: TRootState) => state.user.userData
 	);
@@ -144,6 +146,8 @@ const EncaissementsRapproche = () => {
 	console.log("statutUsers", statutUsersTestRecup);
 	console.log("statutUsers + Data", dataUsersTestRecup);
 	console.log("statutUsers + ErreurData", errorUsersTestRecup);
+	// ------------------------------------------------
+
 	return (
 		<div>
 			<div className="grid pt-5">
