@@ -561,8 +561,8 @@ const ComponentsDatatablesColumnChooser = () => {
   ];
 
   return (
-    <div className=" mt-6">
-      <div className="mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end">
+    <div className=" mt-9">
+      <div className="mb-8 flex flex-wrap items-center justify-center gap-6 lg:justify-end">
         <button type="button" className="btn btn-success w-[100px] gap-2">
           <IconExcel className="" />
           XLS
@@ -578,27 +578,184 @@ const ComponentsDatatablesColumnChooser = () => {
           <Pdf className="" />
           PDF
         </button>
+
+        <div className="text-right">
+          <input
+            type="text"
+            className="form-input w-[400px]"
+            placeholder="Recherche..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
-      <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
-        <h5 className="-mt-12 flex text-lg font-semibold dark:text-white-light">
-          {totalUnvalidatedRecords}
-          {encaissementText}{" "}
-        </h5>
-        <div className="flex items-center gap-5 ltr:ml-auto rtl:mr-auto">
-          <div className="flex flex-col gap-5 md:flex-row md:items-center">
+      <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-center">
+        <div className="flex items-center gap-8 ltr:ml-auto rtl:mr-auto">
+          <h5 className="flex text-xl font-light text-primary ">
+            {totalUnvalidatedRecords}
+            {encaissementText}{" "}
+          </h5>
+          <div className="mb-2 flex flex-col gap-12 md:flex-row md:items-center">
             <Flatpickr
               options={{
                 mode: "range",
-                dateFormat: "d-m-Y", // Format "DD-MM-YYYY" pour le calendrier
-                locale: French, // Affichage en français
-                defaultDate: dateRange, // Initialisation des dates
+                dateFormat: "d-m-Y",
+                locale: French,
+                defaultDate: dateRange,
               }}
               className="form-input w-[220px]"
               onChange={(selectedDates: Date[]) => {
-                setDateRange(selectedDates); // Mettre à jour la plage de dates
+                setDateRange(selectedDates);
               }}
             />
+
+            <div className="dropdown">
+              <Dropdown
+                btnClassName="!flex items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
+                button={
+                  <>
+                    <span className="ltr:mr-1 rtl:ml-1">Caisse</span>
+                    <IconCaretDown className="h-5 w-[100px]" />
+                  </>
+                }
+              >
+                <ul className="!min-w-[140px]">
+                  {caisse.map((col, i) => (
+                    <li
+                      key={i}
+                      className="flex flex-col"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center px-4 py-1">
+                        <label className="mb-0 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={true}
+                            className="form-checkbox"
+                            value={col.label}
+                            onChange={(event) => {
+                              showHideColumns(event.target.value);
+                            }}
+                          />
+                          <span className="ltr:ml-2 rtl:mr-2">{col.value}</span>
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Dropdown>
+            </div>
+            <div className="dropdown">
+              <Dropdown
+                btnClassName="!flex items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
+                button={
+                  <>
+                    <span className="ltr:mr-1 rtl:ml-1">Banque</span>
+                    <IconCaretDown className="h-5 w-[100px]" />
+                  </>
+                }
+              >
+                <ul className="!min-w-[140px]">
+                  {banque.map((col, i) => (
+                    <li
+                      key={i}
+                      className="flex flex-col"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center px-4 py-1">
+                        <label className="mb-0 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={true}
+                            className="form-checkbox"
+                            value={col.label}
+                            onChange={(event) => {
+                              showHideColumns(event.target.value);
+                            }}
+                          />
+                          <span className="ltr:ml-2 rtl:mr-2">{col.value}</span>
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Dropdown>
+            </div>
+            <div className="dropdown">
+              <Dropdown
+                btnClassName="!flex items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
+                button={
+                  <>
+                    <span className="ltr:mr-1 rtl:ml-1">Exploitation</span>
+                    <IconCaretDown className="h-5 w-[100px]" />
+                  </>
+                }
+              >
+                <ul className="!min-w-[140px]">
+                  {exploitation.map((col, i) => (
+                    <li
+                      key={i}
+                      className="flex flex-col"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center px-4 py-1">
+                        <label className="mb-0 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={true}
+                            className="form-checkbox"
+                            value={col.label}
+                            onChange={(event) => {
+                              showHideColumns(event.target.value);
+                            }}
+                          />
+                          <span className="ltr:ml-2 rtl:mr-2">{col.value}</span>
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Dropdown>
+            </div>
+            <div className="dropdown">
+              <Dropdown
+                btnClassName="!flex items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
+                button={
+                  <>
+                    <span className="ltr:mr-1 rtl:ml-1">
+                      Direction régional
+                    </span>
+                    <IconCaretDown className="h-5 w-[100px]" />
+                  </>
+                }
+              >
+                <ul className="!min-w-[140px]">
+                  {DR.map((col, i) => (
+                    <li
+                      key={i}
+                      className="flex flex-col"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center px-4 py-1">
+                        <label className="mb-0 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={true}
+                            className="form-checkbox"
+                            value={col.label}
+                            onChange={(event) => {
+                              showHideColumns(event.target.value);
+                            }}
+                          />
+                          <span className="ltr:ml-2 rtl:mr-2">{col.value}</span>
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Dropdown>
+            </div>
 
             <div className="dropdown">
               <Dropdown
@@ -636,15 +793,6 @@ const ComponentsDatatablesColumnChooser = () => {
                 </ul>
               </Dropdown>
             </div>
-          </div>
-          <div className="text-right">
-            <input
-              type="text"
-              className="form-input w-[400px]"
-              placeholder="Recherche..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
           </div>
         </div>
       </div>
