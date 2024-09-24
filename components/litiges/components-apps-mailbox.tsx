@@ -34,8 +34,50 @@ import "tippy.js/dist/tippy.css";
 import "react-quill/dist/quill.snow.css";
 import DayCounter from "@/utils/Daycounter";
 import { Dialog, Transition } from "@headlessui/react";
+import ComponentsDatatablesColumnValider from "../datatables/components-datatables-column-valider";
+import { EncaissementTerminer } from "@/types/litigeVisualisation.types";
+import DetailEncaissmentvalider from "../datatables/detail-encaissement-validate";
+import DatatablesLitigesView from "../datatables/components-datatables-litiges-view";
 
 const ComponentsAppsMailbox = () => {
+	const mailModal: EncaissementTerminer[] = [
+		{
+			detailsMontants: {
+				montantCaisses: 25000000,
+				montantBordereaux: 2500000,
+				ecart1: 22500000,
+				observationEcartCaisseBordereau: "RAS",
+			},
+			releveBancaire: {
+				dateReleve: "2024-07-21",
+				montantBordereaux: 2500000,
+				nomBanque: "BNP Paribas",
+				montantBanque: 2500000,
+				ecart2: 0,
+				observationEcartCaisseBanque: "", // Pas d'observation pour l'écart 2
+			},
+		},
+	];
+
+	// const [mailModal, setMailModal] = useState<EncaissementTerminer[]>([
+	// 	{
+	// 		detailsMontants: {
+	// 			montantCaisses: 25000000,
+	// 			montantBordereaux: 2500000,
+	// 			ecart1: 22500000,
+	// 			observationEcartCaisseBordereau: "RAS",
+	// 		},
+	// 		releveBancaire: {
+	// 			dateReleve: "2024-07-21",
+	// 			montantBordereaux: 2500000,
+	// 			nomBanque: "BNP Paribas",
+	// 			montantBanque: 2500000,
+	// 			ecart2: 0,
+	// 			observationEcartCaisseBanque: "", // Pas d'observation pour l'écart 2
+	// 		},
+	// 	},
+	// ]);
+
 	const [mailList, setMailList] = useState([
 		{
 			id: 1,
@@ -86,16 +128,21 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
 
  </p>
                               <div class="gallery text-center">
-                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" class="mb-4 mt-4" style="width: 250px; height: 180px;" />
-                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" class="mb-4 mt-4" style="width: 250px; height: 180px;" />
-                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" class="mb-4 mt-4" style="width: 250px; height: 180px;" />
-                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" class="mb-4 mt-4" style="width: 250px; height: 180px;" />
+                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" className="mb-4 mt-4" style="width: 250px; height: 180px;" />
+                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" className="mb-4 mt-4" style="width: 250px; height: 180px;" />
+                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" className="mb-4 mt-4" style="width: 250px; height: 180px;" />
+                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" className="mb-4 mt-4" style="width: 250px; height: 180px;" />
                         
                               </div>
                               <p>L’écart de 200 000 FCFA entre le montant en banque et le montant relevé dans Saphir/Jade est dû à deux virements de 100 000 FCFA chacun, mentionnés dans le bordereau joint. Ces virements sont en cours de traitement par la banque et ne figurent pas encore sur le relevé bancaire. Une fois ces virements encaissés, l’écart sera résorbé.</p>
                               `,
 		},
 	]);
+	const [isZoomed, setIsZoomed] = useState(false);
+
+	const handleClick = () => {
+		setIsZoomed(!isZoomed);
+	};
 
 	const defaultParams = {
 		id: null,
@@ -809,44 +856,24 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
 														>
 															<Dialog.Panel
 																as="div"
-																className="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark"
+																className="panel my-8 w-full max-w-[900px] overflow-hidden rounded-lg border-0 p-0 text-black dark:text-white-dark"
 															>
-																<div className="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
+																{/* <div className="flex items-center justify-between bg-[#fbfbfb] px-5 py-3 dark:bg-[#121c2c]">
 																	<h5 className="text-lg font-bold">
 																		<h4 className="text-base font-medium md:text-lg ltr:mr-2 rtl:ml-2">
 																			{mailList[0].titre} {mailList[0].caisse}
 																		</h4>
 																	</h5>
-																	{/* <button
-																		type="button"
-																		className="text-white-dark hover:text-dark"
-																		onClick={() => setModal2(false)}
-																	>
-																		<svg>...</svg>
-																	</button> */}
-																</div>
+																</div> */}
 																<div className="p-5">
-																	<p>
-																		{/* <div className="badge bg-info hover:top-0"> */}
+																	{/* <p>
 																		{mailList[0].displayDescription}
-																		{/* </div> */}
-																	</p>
-																	{/* <div className="mt-8 flex items-center justify-end">
-																		<button
-																			type="button"
-																			className="btn btn-outline-danger"
-																			onClick={() => setModal2(false)}
-																		>
-																			Discard
-																		</button>
-																		<button
-																			type="button"
-																			className="btn btn-primary ltr:ml-4 rtl:mr-4"
-																			onClick={() => setModal2(false)}
-																		>
-																			Save
-																		</button>
-																	</div> */}
+																	</p> */}
+																	{/* <PerfectScrollbar> */}
+																	<DatatablesLitigesView
+																		data={mailModal ? mailModal : []}
+																	/>
+																	{/* </PerfectScrollbar> */}
 																</div>
 															</Dialog.Panel>
 														</Transition.Child>
