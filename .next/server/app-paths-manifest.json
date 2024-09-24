@@ -1,8 +1,7 @@
 {
-  "/page": "app/page.js",
-  "/(defaults)/encaissement/page": "app/(defaults)/encaissement/page.js",
-  "/(defaults)/profil/page": "app/(defaults)/profil/page.js",
+  "/(defaults)/user/page": "app/(defaults)/user/page.js",
   "/(defaults)/permission/page": "app/(defaults)/permission/page.js",
-  "/(defaults)/dashboard/page": "app/(defaults)/dashboard/page.js",
-  "/(defaults)/litiges/page": "app/(defaults)/litiges/page.js"
+  "/(defaults)/litiges/page": "app/(defaults)/litiges/page.js",
+  "/(defaults)/profil/page": "app/(defaults)/profil/page.js",
+  "/(defaults)/encaissement/page": "app/(defaults)/encaissement/page.js"
 }
