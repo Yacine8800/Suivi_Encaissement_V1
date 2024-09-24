@@ -1,6 +1,8 @@
 {
-  "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/(defaults)/litiges/page": "app/(defaults)/litiges/page.js",
+  "/page": "app/page.js",
   "/(defaults)/encaissement/page": "app/(defaults)/encaissement/page.js",
-  "/(defaults)/dashboard/page": "app/(defaults)/dashboard/page.js"
+  "/(defaults)/profil/page": "app/(defaults)/profil/page.js",
+  "/(defaults)/permission/page": "app/(defaults)/permission/page.js",
+  "/(defaults)/dashboard/page": "app/(defaults)/dashboard/page.js",
+  "/(defaults)/litiges/page": "app/(defaults)/litiges/page.js"
 }
