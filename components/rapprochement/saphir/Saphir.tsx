@@ -7,6 +7,7 @@ import { Fragment, useEffect, useState } from "react";
 import IconTag from "@/components/icon/icon-tag";
 import IconDollarSignCircle from "@/components/icon/icon-dollar-sign-circle";
 import Table from "./table";
+import Timbre from "../timbre/TableTimbre";
 
 const Saphir = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -58,13 +59,7 @@ const Saphir = () => {
               </Tab.Panel>
               <Tab.Panel>
                 <div>
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Incidunt dolor impedit labore consectetur libero. Nesciunt
-                    deleniti, facilis animi at provident perspiciatis, optio
-                    officia, totam veritatis impedit labore repudiandae nisi
-                    hic.
-                  </p>
+                  <Timbre />
                 </div>
               </Tab.Panel>
 
