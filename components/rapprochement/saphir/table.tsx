@@ -103,10 +103,6 @@ const Table = () => {
       return { ...record, Total: total };
     });
 
-    const formatCellStyle = (num: number) => {
-      return num >= 0 ? "text-success" : "text-danger";
-    };
-
     // Ajout des montants Jade et Écart à chaque tableau
     const combinedHtData = [
       ...htWithTotal,
