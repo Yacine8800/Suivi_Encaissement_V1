@@ -23,7 +23,22 @@ const rowData = [
   {
     id: 1,
     montantEncaisse: {
-      Libelle: "Montant Encaissé",
+      Libelle: "Montant Timbre Encaissé",
+      Janvier: 100,
+      Février: 120,
+      Mars: 90,
+      Avril: 150,
+      Mai: 130,
+      Juin: 110,
+      Juillet: 140,
+      Août: 160,
+      Septembre: 120,
+      Octobre: 170,
+      Novembre: 180,
+      Décembre: 190,
+    },
+    montantJade: {
+      Libelle: "Montant Timbre JADE",
       Janvier: 100,
       Février: 120,
       Mars: 90,
@@ -56,14 +71,21 @@ const rowData = [
 ];
 
 const Table = () => {
-  const [encaisseData, setEncaisseData] = useState<MontantData[]>([]);
-  const [timbreData, setTimbreData] = useState<MontantData[]>([]);
+  const [encaisseData, setEncaisseData] = useState<any[]>([]);
+  const [timbreData, setTimbreData] = useState<any[]>([]);
 
   useEffect(() => {
     const encaisseRecords = rowData.map((item) => item.montantEncaisse);
+    const jadeRecords = rowData.map((item) => item.montantJade);
     const timbreRecords = rowData.map((item) => item.montantTimbre);
 
     const encaisseWithTotal = encaisseRecords.map((record) => {
+      const total = Object.values(record)
+        .slice(1, 13)
+        .reduce((acc, val) => acc + Number(val), 0);
+      return { ...record, Total: total };
+    });
+    const jadeWithTotal = jadeRecords.map((record) => {
       const total = Object.values(record)
         .slice(1, 13)
         .reduce((acc, val) => acc + Number(val), 0);
@@ -79,6 +101,7 @@ const Table = () => {
 
     const combinedEncaisseData = [
       ...encaisseWithTotal,
+      ...jadeWithTotal,
       {
         Libelle: "Écart",
         Janvier: encaisseRecords[0].Janvier - timbreRecords[0].Janvier,
@@ -93,7 +116,8 @@ const Table = () => {
         Octobre: encaisseRecords[0].Octobre - timbreRecords[0].Octobre,
         Novembre: encaisseRecords[0].Novembre - timbreRecords[0].Novembre,
         Décembre: encaisseRecords[0].Décembre - timbreRecords[0].Décembre,
-        Total: encaisseWithTotal[0].Total - timbreWithTotal[0].Total,
+        Total:
+          Number(encaisseWithTotal[0].Total) - Number(timbreWithTotal[0].Total),
       },
     ];
 
@@ -139,7 +163,7 @@ const Table = () => {
         </div>
       </div>
 
-      <div className="panel mt-5">
+      {/* <div className="panel mt-5">
         <p className="flex items-center text-success">
           <button
             type="button"
@@ -173,7 +197,7 @@ const Table = () => {
             minHeight={200}
           />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

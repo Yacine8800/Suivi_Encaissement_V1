@@ -17,7 +17,7 @@ interface MontantData {
   Octobre: number;
   Novembre: number;
   Décembre: number;
-  Total?: number; // Ajout de la propriété Total
+  Total: number; // Rendre cette propriété obligatoire et de type number
 }
 
 const rowData = [
@@ -120,7 +120,7 @@ const Table = () => {
         Octobre: htRecords[0].Octobre + btRecords[0].Octobre,
         Novembre: htRecords[0].Novembre + btRecords[0].Novembre,
         Décembre: htRecords[0].Décembre + btRecords[0].Décembre,
-        Total: htWithTotal[0].Total + btWithTotal[0].Total,
+        Total: Number(htWithTotal[0].Total) + Number(btWithTotal[0].Total),
       },
       {
         Libelle: "Écart",
@@ -136,7 +136,7 @@ const Table = () => {
         Octobre: htRecords[0].Octobre - btRecords[0].Octobre,
         Novembre: htRecords[0].Novembre - btRecords[0].Novembre,
         Décembre: htRecords[0].Décembre - btRecords[0].Décembre,
-        Total: htWithTotal[0].Total - btWithTotal[0].Total,
+        Total: Number(htWithTotal[0].Total) - Number(btWithTotal[0].Total),
       },
     ];
 
@@ -156,7 +156,7 @@ const Table = () => {
         Octobre: htRecords[0].Octobre + btRecords[0].Octobre,
         Novembre: htRecords[0].Novembre + btRecords[0].Novembre,
         Décembre: htRecords[0].Décembre + btRecords[0].Décembre,
-        Total: htWithTotal[0].Total + btWithTotal[0].Total,
+        Total: Number(htWithTotal[0].Total) + Number(btWithTotal[0].Total),
       },
       {
         Libelle: "Écart",
@@ -172,7 +172,7 @@ const Table = () => {
         Octobre: htRecords[0].Octobre - btRecords[0].Octobre,
         Novembre: htRecords[0].Novembre - btRecords[0].Novembre,
         Décembre: htRecords[0].Décembre - btRecords[0].Décembre,
-        Total: htWithTotal[0].Total - btWithTotal[0].Total,
+        Total: Number(htWithTotal[0].Total) - Number(btWithTotal[0].Total),
       },
     ];
 
@@ -192,7 +192,7 @@ const Table = () => {
         Octobre: prepaidRecords[0].Octobre + btRecords[0].Octobre,
         Novembre: prepaidRecords[0].Novembre + btRecords[0].Novembre,
         Décembre: prepaidRecords[0].Décembre + btRecords[0].Décembre,
-        Total: prepaidWithTotal[0].Total + btWithTotal[0].Total,
+        Total: Number(prepaidWithTotal[0].Total) + Number(btWithTotal[0].Total),
       },
       {
         Libelle: "Écart",
@@ -208,7 +208,7 @@ const Table = () => {
         Octobre: prepaidRecords[0].Octobre - btRecords[0].Octobre,
         Novembre: prepaidRecords[0].Novembre - btRecords[0].Novembre,
         Décembre: prepaidRecords[0].Décembre - btRecords[0].Décembre,
-        Total: prepaidWithTotal[0].Total - btWithTotal[0].Total,
+        Total: Number(prepaidWithTotal[0].Total) - Number(btWithTotal[0].Total),
       },
     ];
 
