@@ -1,6 +1,6 @@
 {
   "/page": "app/page.js",
   "/(defaults)/rapprochement/page": "app/(defaults)/rapprochement/page.js",
-  "/(defaults)/profil/page": "app/(defaults)/profil/page.js",
-  "/(defaults)/encaissement/page": "app/(defaults)/encaissement/page.js"
+  "/(defaults)/encaissement/page": "app/(defaults)/encaissement/page.js",
+  "/(defaults)/profil/page": "app/(defaults)/profil/page.js"
 }
