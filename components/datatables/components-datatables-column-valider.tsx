@@ -20,6 +20,7 @@ import Pdf from "../icon/pdf";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
 import { French } from "flatpickr/dist/l10n/fr.js";
+import IconSquareRotated from "../icon/icon-square-rotated";
 
 interface RowData {
 	id: number;
@@ -527,41 +528,33 @@ const ComponentsDatatablesColumnValider = () => {
 	];
 	return (
 		<div className="mt-6">
-			<div className="flex w-full">
-				<h5 className="mb-8 ml-9 flex w-full flex-wrap items-center gap-6 text-xl font-bold text-orange-400">
+			<div className="mb-8 flex w-full">
+				<h5 className=" ml-9 flex w-full flex-wrap items-center gap-6 text-xl font-bold text-orange-400">
 					{totalValidatedRecords}
 					{encaissementText}{" "}
 				</h5>
 
-				<div className="mb-8 flex w-full flex-wrap items-center gap-2 ">
-					<button type="button" className="btn btn-success w-2/12 gap-2">
-						<IconExcel className="" />
-						XLS
+				<div className=" flex items-center justify-center lg:justify-end">
+					<button type="button" className="mr-1">
+						<IconExcel />
 					</button>
-					<button
-						type="button"
-						className="btn w-2/12 gap-2 bg-black text-white"
-					>
-						<Csv className="" />
-						CSV
+					<button type="button" className="text-white">
+						<Csv />
 					</button>
-					<button type="button" className="btn btn-danger w-2/12 gap-2">
-						<Pdf className="" />
-						PDF
+					<button type="button" className="mr-7">
+						<Pdf />
 					</button>
-
-					<div className="h-full w-5/12  text-right">
-						<input
-							type="text"
-							className="form-input h-full"
-							placeholder="Recherche..."
-							value={search}
-							onChange={(e) => setSearch(e.target.value)}
-						/>
-					</div>
+				</div>
+				<div className=" w-5/12 text-right">
+					<input
+						type="text"
+						className="form-input"
+						placeholder="Recherche..."
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+					/>
 				</div>
 			</div>
-
 			<div className="mb-8 flex flex-col gap-5 md:flex-row md:items-center">
 				<div className="flex w-full items-center justify-center gap-8  ltr:ml-auto rtl:mr-auto">
 					<div className="mb-2 flex w-full flex-col gap-6  md:flex-row md:items-center">
