@@ -3,20 +3,11 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import { IRootState } from "@/store";
-import {
-  toggleTheme,
-  toggleSidebar,
-  toggleRTL,
-  toggleSemidark,
-} from "@/store/themeConfigSlice";
+import { toggleSidebar, toggleRTL } from "@/store/themeConfigSlice";
 import Dropdown from "@/components/dropdown";
 import { usePathname, useRouter } from "next/navigation";
 import { getTranslation } from "@/i18n";
 import IconMenu from "@/components/icon/icon-menu";
-
-import IconSun from "@/components/icon/icon-sun";
-import IconMoon from "@/components/icon/icon-moon";
-import IconLaptop from "@/components/icon/icon-laptop";
 import IconUser from "@/components/icon/icon-user";
 
 import IconLogout from "@/components/icon/icon-logout";
@@ -25,7 +16,7 @@ import IconCaretDown from "@/components/icon/icon-caret-down";
 import IconMenuApps from "@/components/icon/menu/icon-menu-apps";
 import IconMenuComponents from "@/components/icon/menu/icon-menu-components";
 
-import React, { ReactNode } from "react";
+import React from "react";
 import IconSquareRotated from "../icon/icon-square-rotated";
 
 const Header = () => {
@@ -168,7 +159,7 @@ const Header = () => {
                 </button>
               )}
             </div> */}
-            <div className="dropdown shrink-0">
+            {/* <div className="dropdown shrink-0">
               <Dropdown
                 offset={[0, 8]}
                 placement={`${isRtl ? "bottom-start" : "bottom-end"}`}
@@ -211,7 +202,7 @@ const Header = () => {
                   })}
                 </ul>
               </Dropdown>
-            </div>
+            </div> */}
 
             <div className="dropdown flex shrink-0">
               <Dropdown

@@ -48,7 +48,7 @@ const ComponentsAppsUsers = () => {
     try {
       const [usersResponse, dataResponse] = await Promise.all([
         axios.get("/api/getUsers"),
-        axios.get("/api/data"), // API data.json pour DR, Secteurs et Profils
+        axios.get("/api/data"),
       ]);
       setUsersList(usersResponse.data);
       setFilteredItems(usersResponse.data);

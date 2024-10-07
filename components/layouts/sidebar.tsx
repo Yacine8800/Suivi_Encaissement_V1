@@ -111,7 +111,7 @@ const Sidebar = () => {
                   <div className="flex items-center">
                     <IconDesktop className="shrink-0 group-hover:!text-primary" />
                     <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
-                      {t("Mon Tableau de board")}
+                      {t("Tableau de board")}
                     </span>
                   </div>
                 </Link>
@@ -127,13 +127,13 @@ const Sidebar = () => {
                   <div className="flex items-center">
                     <IconNotesEdit className="shrink-0 group-hover:!text-primary" />
                     <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
-                      {t("Mes Encaissements")}
+                      {t("Encaissements")}
                     </span>
                   </div>
                 </Link>
               </li>
 
-              <li className="sub-menu nav-item">
+              {/* <li className="sub-menu nav-item">
                 <Link href="/valider" className="group">
                   <div className="flex items-center">
                     <IconListCheck className="shrink-0 group-hover:!text-primary" />
@@ -142,9 +142,9 @@ const Sidebar = () => {
                     </span>
                   </div>
                 </Link>
-              </li>
+              </li> */}
               <li className="sub-menu nav-item">
-                <Link href="" className="group">
+                <Link href="/rapprochement" className="group">
                   <div className="flex items-center">
                     <IconLink className="shrink-0 group-hover:!text-primary" />
                     <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">

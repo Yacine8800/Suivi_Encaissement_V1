@@ -1,11 +1,10 @@
 "use client";
+import IconEye from "@/components/icon/icon-eye";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import Image from "next/image";
+import ForgotPasswordModal from "../components/modals/ForgotPasswordModal";
 
-<<<<<<< HEAD
-import ComponentsAuthLoginForm from "@/components/auth/login/loginUser";
-
-const userLogin = () => {
-  return <ComponentsAuthLoginForm />;
-=======
 const ComponentsAuthLoginForm = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -335,7 +334,7 @@ const ComponentsAuthLoginForm = () => {
             <button
               type="button"
               className="text-sm text-gray-500 hover:text-orange-500"
-              onClick={openModal}
+              onClick={openModal} // Open the modal when clicked
             >
               Mot de passe oublié?
             </button>
@@ -352,7 +351,8 @@ const ComponentsAuthLoginForm = () => {
       {isModalOpen && <ForgotPasswordModal closeModal={closeModal} />}
     </div>
   );
->>>>>>> d4ddd016ace73f7b2fb6e1eff74dc6baa02ff212
 };
 
-export default userLogin;
+// };
+
+export default ComponentsAuthLoginForm;
