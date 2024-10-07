@@ -77,6 +77,16 @@ const Table = () => {
 	const [encaisseData, setEncaisseData] = useState<any[]>([]);
 	const [timbreData, setTimbreData] = useState<any[]>([]);
 
+	const couleurEcartTotaux = (colorRef: number) => {
+		if (colorRef > 0) {
+			return <div className="text-green-600">{colorRef}</div>;
+		} else if (colorRef === 0) {
+			return <div className="text-black">{colorRef}</div>;
+		} else {
+			return <div className="text-red-600">{colorRef}</div>;
+		}
+	};
+
 	useEffect(() => {
 		const encaisseRecords = rowData.map((item) => item.montantEncaisse);
 		const jadeRecords = rowData.map((item) => item.montantJade);
@@ -119,8 +129,9 @@ const Table = () => {
 				Octobre: encaisseRecords[0].Octobre - timbreRecords[0].Octobre,
 				Novembre: encaisseRecords[0].Novembre - timbreRecords[0].Novembre,
 				Décembre: encaisseRecords[0].Décembre - timbreRecords[0].Décembre,
-				Total:
-					Number(encaisseWithTotal[0].Total) - Number(timbreWithTotal[0].Total),
+				Total: couleurEcartTotaux(
+					Number(encaisseWithTotal[0].Total) - Number(timbreWithTotal[0].Total)
+				),
 			},
 		];
 

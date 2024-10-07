@@ -79,6 +79,16 @@ const Table = () => {
 	const [btData, setBtData] = useState<MontantData[]>([]);
 	const [prepaidData, setPrepaidData] = useState<MontantData[]>([]);
 
+	const couleurEcartTotaux = (colorRef: number) => {
+		if (colorRef > 0) {
+			return <div className="text-green-600">{colorRef}</div>;
+		} else if (colorRef === 0) {
+			return <div className="text-black">{colorRef}</div>;
+		} else {
+			return <div className="text-red-600">{colorRef}</div>;
+		}
+	};
+
 	useEffect(() => {
 		const htRecords = rowData.map((item) => item.montantsaphirHT);
 		const btRecords = rowData.map((item) => item.montantsaphirBT);
@@ -123,23 +133,41 @@ const Table = () => {
 				Octobre: htRecords[0].Octobre + btRecords[0].Octobre,
 				Novembre: htRecords[0].Novembre + btRecords[0].Novembre,
 				Décembre: htRecords[0].Décembre + btRecords[0].Décembre,
-				Total: Number(htWithTotal[0].Total) + Number(btWithTotal[0].Total),
+				Total: couleurEcartTotaux(
+					Number(htWithTotal[0].Total) + Number(btWithTotal[0].Total)
+				),
 			},
 			{
 				Libelle: "Écart",
-				Janvier: htRecords[0].Janvier - btRecords[0].Janvier,
-				Février: htRecords[0].Février - btRecords[0].Février,
-				Mars: htRecords[0].Mars - btRecords[0].Mars,
-				Avril: htRecords[0].Avril - btRecords[0].Avril,
-				Mai: htRecords[0].Mai - btRecords[0].Mai,
-				Juin: htRecords[0].Juin - btRecords[0].Juin,
-				Juillet: htRecords[0].Juillet - btRecords[0].Juillet,
-				Août: htRecords[0].Août - btRecords[0].Août,
-				Septembre: htRecords[0].Septembre - btRecords[0].Septembre,
-				Octobre: htRecords[0].Octobre - btRecords[0].Octobre,
-				Novembre: htRecords[0].Novembre - btRecords[0].Novembre,
-				Décembre: htRecords[0].Décembre - btRecords[0].Décembre,
-				Total: Number(htWithTotal[0].Total) - Number(btWithTotal[0].Total),
+				Janvier: couleurEcartTotaux(
+					htRecords[0].Janvier - btRecords[0].Janvier
+				),
+				Février: couleurEcartTotaux(
+					htRecords[0].Février - btRecords[0].Février
+				),
+				Mars: couleurEcartTotaux(htRecords[0].Mars - btRecords[0].Mars),
+				Avril: couleurEcartTotaux(htRecords[0].Avril - btRecords[0].Avril),
+				Mai: couleurEcartTotaux(htRecords[0].Mai - btRecords[0].Mai),
+				Juin: couleurEcartTotaux(htRecords[0].Juin - btRecords[0].Juin),
+				Juillet: couleurEcartTotaux(
+					htRecords[0].Juillet - btRecords[0].Juillet
+				),
+				Août: couleurEcartTotaux(htRecords[0].Août - btRecords[0].Août),
+				Septembre: couleurEcartTotaux(
+					htRecords[0].Septembre - btRecords[0].Septembre
+				),
+				Octobre: couleurEcartTotaux(
+					htRecords[0].Octobre - btRecords[0].Octobre
+				),
+				Novembre: couleurEcartTotaux(
+					htRecords[0].Novembre - btRecords[0].Novembre
+				),
+				Décembre: couleurEcartTotaux(
+					htRecords[0].Décembre - btRecords[0].Décembre
+				),
+				Total: couleurEcartTotaux(
+					Number(htWithTotal[0].Total) - Number(btWithTotal[0].Total)
+				),
 			},
 		];
 
@@ -159,23 +187,41 @@ const Table = () => {
 				Octobre: htRecords[0].Octobre + btRecords[0].Octobre,
 				Novembre: htRecords[0].Novembre + btRecords[0].Novembre,
 				Décembre: htRecords[0].Décembre + btRecords[0].Décembre,
-				Total: Number(htWithTotal[0].Total) + Number(btWithTotal[0].Total),
+				Total: couleurEcartTotaux(
+					Number(htWithTotal[0].Total) + Number(btWithTotal[0].Total)
+				),
 			},
 			{
 				Libelle: "Écart",
-				Janvier: htRecords[0].Janvier - btRecords[0].Janvier,
-				Février: htRecords[0].Février - btRecords[0].Février,
-				Mars: htRecords[0].Mars - btRecords[0].Mars,
-				Avril: htRecords[0].Avril - btRecords[0].Avril,
-				Mai: htRecords[0].Mai - btRecords[0].Mai,
-				Juin: htRecords[0].Juin - btRecords[0].Juin,
-				Juillet: htRecords[0].Juillet - btRecords[0].Juillet,
-				Août: htRecords[0].Août - btRecords[0].Août,
-				Septembre: htRecords[0].Septembre - btRecords[0].Septembre,
-				Octobre: htRecords[0].Octobre - btRecords[0].Octobre,
-				Novembre: htRecords[0].Novembre - btRecords[0].Novembre,
-				Décembre: htRecords[0].Décembre - btRecords[0].Décembre,
-				Total: Number(htWithTotal[0].Total) - Number(btWithTotal[0].Total),
+				Janvier: couleurEcartTotaux(
+					htRecords[0].Janvier - btRecords[0].Janvier
+				),
+				Février: couleurEcartTotaux(
+					htRecords[0].Février - btRecords[0].Février
+				),
+				Mars: couleurEcartTotaux(htRecords[0].Mars - btRecords[0].Mars),
+				Avril: couleurEcartTotaux(htRecords[0].Avril - btRecords[0].Avril),
+				Mai: couleurEcartTotaux(htRecords[0].Mai - btRecords[0].Mai),
+				Juin: couleurEcartTotaux(htRecords[0].Juin - btRecords[0].Juin),
+				Juillet: couleurEcartTotaux(
+					htRecords[0].Juillet - btRecords[0].Juillet
+				),
+				Août: couleurEcartTotaux(htRecords[0].Août - btRecords[0].Août),
+				Septembre: couleurEcartTotaux(
+					htRecords[0].Septembre - btRecords[0].Septembre
+				),
+				Octobre: couleurEcartTotaux(
+					htRecords[0].Octobre - btRecords[0].Octobre
+				),
+				Novembre: couleurEcartTotaux(
+					htRecords[0].Novembre - btRecords[0].Novembre
+				),
+				Décembre: couleurEcartTotaux(
+					htRecords[0].Décembre - btRecords[0].Décembre
+				),
+				Total: couleurEcartTotaux(
+					Number(htWithTotal[0].Total) - Number(btWithTotal[0].Total)
+				),
 			},
 		];
 
@@ -195,23 +241,41 @@ const Table = () => {
 				Octobre: prepaidRecords[0].Octobre + btRecords[0].Octobre,
 				Novembre: prepaidRecords[0].Novembre + btRecords[0].Novembre,
 				Décembre: prepaidRecords[0].Décembre + btRecords[0].Décembre,
-				Total: Number(prepaidWithTotal[0].Total) + Number(btWithTotal[0].Total),
+				Total: couleurEcartTotaux(
+					Number(prepaidWithTotal[0].Total) + Number(btWithTotal[0].Total)
+				),
 			},
 			{
-				Libelle: "Écart",
-				Janvier: prepaidRecords[0].Janvier - btRecords[0].Janvier,
-				Février: prepaidRecords[0].Février - btRecords[0].Février,
-				Mars: prepaidRecords[0].Mars - btRecords[0].Mars,
-				Avril: prepaidRecords[0].Avril - btRecords[0].Avril,
-				Mai: prepaidRecords[0].Mai - btRecords[0].Mai,
-				Juin: prepaidRecords[0].Juin - btRecords[0].Juin,
-				Juillet: prepaidRecords[0].Juillet - btRecords[0].Juillet,
-				Août: prepaidRecords[0].Août - btRecords[0].Août,
-				Septembre: prepaidRecords[0].Septembre - btRecords[0].Septembre,
-				Octobre: prepaidRecords[0].Octobre - btRecords[0].Octobre,
-				Novembre: prepaidRecords[0].Novembre - btRecords[0].Novembre,
-				Décembre: prepaidRecords[0].Décembre - btRecords[0].Décembre,
-				Total: Number(prepaidWithTotal[0].Total) - Number(btWithTotal[0].Total),
+				Libelle: "Écart --",
+				Janvier: couleurEcartTotaux(
+					prepaidRecords[0].Janvier - btRecords[0].Janvier
+				),
+				Février: couleurEcartTotaux(
+					prepaidRecords[0].Février - btRecords[0].Février
+				),
+				Mars: couleurEcartTotaux(prepaidRecords[0].Mars - btRecords[0].Mars),
+				Avril: couleurEcartTotaux(prepaidRecords[0].Avril - btRecords[0].Avril),
+				Mai: couleurEcartTotaux(prepaidRecords[0].Mai - btRecords[0].Mai),
+				Juin: couleurEcartTotaux(prepaidRecords[0].Juin - btRecords[0].Juin),
+				Juillet: couleurEcartTotaux(
+					prepaidRecords[0].Juillet - btRecords[0].Juillet
+				),
+				Août: couleurEcartTotaux(prepaidRecords[0].Août - btRecords[0].Août),
+				Septembre: couleurEcartTotaux(
+					prepaidRecords[0].Septembre - btRecords[0].Septembre
+				),
+				Octobre: couleurEcartTotaux(
+					prepaidRecords[0].Octobre - btRecords[0].Octobre
+				),
+				Novembre: couleurEcartTotaux(
+					prepaidRecords[0].Novembre - btRecords[0].Novembre
+				),
+				Décembre: couleurEcartTotaux(
+					prepaidRecords[0].Décembre - btRecords[0].Décembre
+				),
+				Total: couleurEcartTotaux(
+					Number(prepaidWithTotal[0].Total) - Number(btWithTotal[0].Total)
+				),
 			},
 		];
 
@@ -247,9 +311,9 @@ const Table = () => {
 						</button>
 					</div>
 				</div>
-				<div className="datatables mt-3">
+				<div className="datatables mt-3 ">
 					<DataTable
-						className="table-bordered whitespace-nowrap"
+						className="table-bordered whitespace-nowrap "
 						records={htData}
 						columns={[
 							{ accessor: "Libelle", title: "Libelle" },
