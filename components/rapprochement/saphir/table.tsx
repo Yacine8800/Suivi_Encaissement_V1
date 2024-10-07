@@ -75,9 +75,9 @@ const rowData = [
 ];
 
 const Table = () => {
-	const [htData, setHtData] = useState<MontantData[]>([]);
-	const [btData, setBtData] = useState<MontantData[]>([]);
-	const [prepaidData, setPrepaidData] = useState<MontantData[]>([]);
+	const [htData, setHtData] = useState<any[]>([]);
+	const [btData, setBtData] = useState<any[]>([]);
+	const [prepaidData, setPrepaidData] = useState<any[]>([]);
 
 	const couleurEcartTotaux = (colorRef: number) => {
 		if (colorRef > 0) {
@@ -98,21 +98,21 @@ const Table = () => {
 		const htWithTotal = htRecords.map((record) => {
 			const total = Object.values(record)
 				.slice(1, 13)
-				.reduce((acc, val) => acc + Number(val), 0);
+				.reduce((acc, val) => Number(acc) + Number(val), 0);
 			return { ...record, Total: total };
 		});
 
 		const btWithTotal = btRecords.map((record) => {
 			const total = Object.values(record)
 				.slice(1, 13)
-				.reduce((acc, val) => acc + Number(val), 0);
+				.reduce((acc, val) => Number(acc) + Number(val), 0);
 			return { ...record, Total: total };
 		});
 
 		const prepaidWithTotal = prepaidRecords.map((record) => {
 			const total = Object.values(record)
 				.slice(1, 13)
-				.reduce((acc, val) => acc + Number(val), 0);
+				.reduce((acc, val) => Number(acc) + Number(val), 0);
 			return { ...record, Total: total };
 		});
 

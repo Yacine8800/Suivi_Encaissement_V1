@@ -95,20 +95,20 @@ const Table = () => {
 		const encaisseWithTotal = encaisseRecords.map((record) => {
 			const total = Object.values(record)
 				.slice(1, 13)
-				.reduce((acc, val) => acc + Number(val), 0);
+				.reduce((acc, val) => Number(acc) + Number(val), 0);
 			return { ...record, Total: total };
 		});
 		const jadeWithTotal = jadeRecords.map((record) => {
 			const total = Object.values(record)
 				.slice(1, 13)
-				.reduce((acc, val) => acc + Number(val), 0);
+				.reduce((acc, val) => Number(acc) + Number(val), 0);
 			return { ...record, Total: total };
 		});
 
 		const timbreWithTotal = timbreRecords.map((record) => {
 			const total = Object.values(record)
 				.slice(1, 13)
-				.reduce((acc, val) => acc + Number(val), 0);
+				.reduce((acc, val) => Number(acc) + Number(val), 0);
 			return { ...record, Total: total };
 		});
 
