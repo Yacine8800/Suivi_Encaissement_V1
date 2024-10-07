@@ -1,26 +1,21 @@
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import Dropdown from "@/components/dropdown";
+import IconCaretDown from "@/components/icon/icon-caret-down";
+import Tippy from "@tippyjs/react";
 import sortBy from "lodash/sortBy";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import Tippy from "@tippyjs/react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import "tippy.js/dist/tippy.css";
-import IconCaretDown from "@/components/icon/icon-caret-down";
-import IconPencil from "@/components/icon/icon-pencil";
 import IconX from "../icon/icon-x";
-import Dropdown from "@/components/dropdown";
 
-import IconUsersGroup from "../icon/icon-users-group";
-import IconEye from "../icon/icon-eye";
-import Link from "next/link";
-import PanelCodeHighlight from "../panel-code-highlight";
+import "flatpickr/dist/flatpickr.css";
+import { French } from "flatpickr/dist/l10n/fr.js";
+import Flatpickr from "react-flatpickr";
 import Swal from "sweetalert2";
 import Csv from "../icon/csv";
 import IconExcel from "../icon/excel";
+import IconEye from "../icon/icon-eye";
 import Pdf from "../icon/pdf";
-import Flatpickr from "react-flatpickr";
-import "flatpickr/dist/flatpickr.css";
-import { French } from "flatpickr/dist/l10n/fr.js";
-import IconSquareRotated from "../icon/icon-square-rotated";
 
 interface RowData {
 	id: number;
@@ -442,76 +437,6 @@ const ComponentsDatatablesColumnValider = () => {
 		}
 	};
 
-<<<<<<< HEAD
-  const validatedRecordsExist = validatedRecords.length > 0;
-  const showAlert = async () => {
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-primary",
-        cancelButton: "btn btn-dark ltr:mr-3 rtl:ml-3",
-        popup: "sweet-alerts",
-      },
-      buttonsStyling: false,
-    });
-
-    swalWithBootstrapButtons
-      .fire({
-        title: "Êtes-vous sûr de passer en litige?",
-        text: "Cette action mettra l'encaissement en litige",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Confirmer",
-        cancelButtonText: "Annuler",
-        reverseButtons: true,
-        padding: "2em",
-        html: `
-          <div>
-            <input id="titre" class="form-input" placeholder="Titre..." required />
-          </div>
-          <br />
-          <div>
-            <textarea id="ctnTextarea" rows="3" class="form-textarea" placeholder="Description..." required></textarea>
-          </div>
-        `,
-        preConfirm: () => {
-          const titreElement = document.getElementById(
-            "titre"
-          ) as HTMLInputElement | null;
-          const textareaElement = document.getElementById(
-            "ctnTextarea"
-          ) as HTMLTextAreaElement | null;
-
-          if (!titreElement || !titreElement.value) {
-            Swal.showValidationMessage("Le titre ne doit pas être vide");
-            return false; // Annule la confirmation si le titre est vide
-          }
-
-          if (!textareaElement || !textareaElement.value) {
-            Swal.showValidationMessage("La description ne doit pas être vide");
-            return false; // Annule la confirmation si la description est vide
-          }
-
-          return {
-            titre: titreElement.value,
-            description: textareaElement.value,
-          };
-        },
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          const { titre } = result.value;
-
-          swalWithBootstrapButtons.fire(
-            "Confirmer",
-            `Votre encaissement est passé en litige avec le titre : ${titre}`,
-            "success"
-          );
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire("Annuler", "Vous avez annulé", "error");
-        }
-      });
-  };
-=======
 	const validatedRecordsExist = validatedRecords.length > 0;
 
 	const showAlert = async () => {
@@ -550,7 +475,6 @@ const ComponentsDatatablesColumnValider = () => {
 				}
 			});
 	};
->>>>>>> d4ddd016ace73f7b2fb6e1eff74dc6baa02ff212
 
 	const jour = new Date();
 	const lendemain = new Date();

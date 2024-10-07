@@ -1,8 +1,7 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import themeConfigSlice from "@/store/themeConfigSlice";
-import { createLogger } from "redux-logger";
 import { isDev } from "@/utils/isDev";
-import { thunk } from "redux-thunk";
+import { configureStore } from "@reduxjs/toolkit";
+import { createLogger } from "redux-logger";
+
 import { useDispatch } from "react-redux";
 import { persistStore } from "redux-persist";
 import rootReducer from "./reducers/rootReducer";
@@ -15,14 +14,14 @@ import rootReducer from "./reducers/rootReducer";
 // 	reducer: rootReducer,
 // });
 const loggerMiddleware = createLogger({
-	predicate: () => isDev(),
-	collapsed: true,
+  predicate: () => isDev(),
+  collapsed: true,
 });
 
 const store = configureStore({
-	reducer: rootReducer,
-	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware().concat(loggerMiddleware, thunk), // retourne directement la concaténation
+  reducer: rootReducer,
+  // middleware: (getDefaultMiddleware) =>
+  //   getDefaultMiddleware().concat(loggerMiddleware, thunk), // retourne directement la concaténation
 });
 
 export default store;
