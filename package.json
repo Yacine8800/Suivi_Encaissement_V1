@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 2403",
+    "dev": "next dev -p 2408",
     "build": "next build",
-    "start": "next start -p 2403",
+    "start": "next start -p 2408",
     "lint": "next lint"
   },
   "dependencies": {
@@ -30,6 +30,7 @@
     "@x1mrdonut1x/nouislider-react": "^3.4.3",
     "apexcharts": "^3.37.1",
     "axios": "^1.7.7",
+    "cookies-next": "^5.0.2",
     "easymde": "^2.18.0",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.2",
@@ -59,6 +60,7 @@
     "react-simplemde-editor": "^5.2.0",
     "react-sortablejs": "^6.1.4",
     "react-text-mask": "^5.5.0",
+    "react-toastify": "^10.0.6",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "sortablejs": "^1.15.0",

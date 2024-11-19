@@ -161,7 +161,7 @@ const Table = () => {
             >
               <IconSquareRotated className="shrink-0 fill-success" />
             </button>
-            <span className="ml-2"> Montant Encaissé</span>
+            <span className="ml-2"> Montant Encaissé Prépayé</span>
           </div>
 
           <div className=" flex  items-center justify-center   lg:justify-end">

@@ -1,31 +1,63 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import userReducer from "./users-test/user.slice";
+import authReducer from "./auth/user.slice";
+import UserReducer from "./user/get.user.slice";
+import resetPasswordReducer from "./auth/send-email-reset.slice";
+import resetPasswordOtpReducer from "./auth/reset-password-otp.slice";
+
+//add user
+import userAddReducer from "./user/create-user.slice";
+import UserSUpdateReducer from "./user/update-user.slice";
+import UserGetPatchReducer from "./user/get-patch-user.slice";
+import UserDeleteReducer from "./user/delete-user.slice";
+
+//select
+import directionRegionalesReducer from "./select/dr.slice";
+import ProfileReducer from "./select/profile.slice";
+import SecteursReducer from "./select/secteur.slice";
+
+//habilitation
+import objetDRReducer from "./permission/objet-get-slice";
+
 import themeConfigSlice from "../themeConfigSlice";
 
-export const persistConfig = {
-	key: "smart_control_v2",
-	storage,
-	whitelist: ["user", "mail"],
-	blacklist: [],
+// Configuration pour persister uniquement les slices "auth" et "mail"
+const persistConfig = {
+  key: "smart_control_v2",
+  storage,
+  whitelist: ["auth", "mail"],
+  blacklist: [],
 };
 
+// Combinaison des reducers
 const topReducer = combineReducers({
-	user: userReducer,
-	themeConfig: themeConfigSlice,
+  themeConfig: themeConfigSlice,
+  auth: authReducer,
+  mail: resetPasswordReducer,
+  reset: resetPasswordOtpReducer,
+
+  // user
+  usersData: UserReducer,
+  useradd: userAddReducer,
+  userUpdate: UserSUpdateReducer,
+  useGetPatch: UserGetPatchReducer,
+  deleteUser: UserDeleteReducer,
+
+  //select
+  dr: directionRegionalesReducer,
+  profile: ProfileReducer,
+  secteur: SecteursReducer,
+
+  //habilitation
+  ListHabilitation: objetDRReducer,
 });
 
 const rootReducer = (state: any, action: any) => {
-	// //console.log("État du store avant réinitialisation:", state);
-
-	if (action.type === "RESET_STORE") {
-		// //console.log("État du store après réinitialisation:", state);
-		state = undefined;
-	}
-	return topReducer(state, action);
+  if (action.type === "RESET_STORE") {
+    state = undefined;
+  }
+  return topReducer(state, action);
 };
-
-// Après la déconnexion, inspectez l'état du magasin
 
 export default persistReducer(persistConfig, rootReducer);

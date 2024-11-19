@@ -1,88 +1,176 @@
 "use client";
-import IconEye from "@/components/icon/icon-eye";
+
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import IconEye from "@/components/icon/icon-eye";
+import ForgotPasswordModal from "@/components/auth/components/modals/ForgotPasswordModal";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import ForgotPasswordModal from "../components/modals/ForgotPasswordModal";
-import { useEffect } from "react";
+import IconDownload from "@/components/icon/icon-download";
+import { login } from "@/store/reducers/auth/user.slice";
+import { useAppDispatch } from "@/store";
+import { Toastify } from "@/utils/toast";
 
 const ComponentsAuthLoginForm = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
-  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // State for the modal
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [credential, setCredential] = useState(""); // Champ unique pour email ou matricule
+  const [password, setPassword] = useState("");
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const defaultBackground = "/assets/images/auth/default-bg.jpg";
+  const [background, setBackground] = useState(defaultBackground);
+  const [isCustomBackground, setIsCustomBackground] = useState(false);
 
   useEffect(() => {
-    router.push("/login");
-  }, [router]);
-
-  React.useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 768);
-    };
-
-    handleResize(); // Initial call to set the state correctly
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    const savedBackground = localStorage.getItem("userBackground");
+    if (savedBackground) {
+      setBackground(savedBackground);
+      setIsCustomBackground(true);
+    }
   }, []);
 
-  const submitForm = (e: any) => {
+  useEffect(() => {
+    const handleResize = () => setIsSmallScreen(window.innerWidth <= 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const [selectedImageName, setSelectedImageName] = useState(
+    "Aucune image choisie"
+  );
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target?.result as string;
+        setBackground(base64);
+        setIsCustomBackground(true);
+        localStorage.setItem("userBackground", base64); // Sauvegarde l'image dans le localStorage
+      };
+      reader.readAsDataURL(file);
+      setSelectedImageName(file.name);
+    }
+  };
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const submitForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/dashboard");
-  };
+    if (!credential || !password) {
+      Toastify(
+        "error",
+        "Veuillez entrer un email ou un matricule et un mot de passe."
+      );
+      return;
+    }
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+    setIsAnimating(true);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+    const result = await dispatch(login({ credential, password }));
+    if (login.fulfilled.match(result)) {
+      Toastify("success", "Connexion réussie !");
+      router.push("/dashboard");
+    } else {
+      setIsAnimating(false);
+      Toastify("error", "Échec de la connexion. Vérifiez vos identifiants.");
+    }
   };
 
   return (
-    <div className="relative flex h-screen items-center justify-center overflow-hidden">
-      {/* Dividing the page into two sections */}
-      <div className="absolute inset-0 flex">
-        <div className="relative flex w-1/2 items-center justify-center bg-[#FFDFBD]">
-          {/* Left animated SVGs or images */}
-        </div>
-        <div className="relative flex w-1/2 items-center justify-center bg-[#F07D00]">
-          {/* Right animated SVGs or images */}
-        </div>
-      </div>
-
-      {/* Logo at the top left */}
-      <div className="absolute left-5 top-5 z-10">
-        <Image
-          width={181}
-          height={82}
-          src="/assets/images/auth/logo.png" // Path to the logo
-          alt="Logo"
-          className="h-12 w-auto"
+    <div
+      className="relative flex h-screen items-center justify-center overflow-hidden"
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Bouton flottant pour uploader l'image */}
+      <div className="fixed bottom-0 right-0 z-30 -translate-y-1/2 transform">
+        <label htmlFor="file-upload" className="cursor-pointer">
+          <div className="flex items-center gap-2 rounded-[10px] bg-white p-3 shadow-lg hover:bg-orange-100">
+            <IconDownload className="h-6 w-6 text-orange-500" />
+            <span className="text-sm font-medium text-orange-500">
+              Fond d'écran
+            </span>
+          </div>
+        </label>
+        <input
+          type="file"
+          name="file-upload"
+          id="file-upload"
+          className="hidden"
+          accept="image/*"
+          onChange={handleFileChange}
         />
       </div>
 
-      {/* Login box with conditional padding */}
-      <div
-        className={`relative z-20 w-full max-w-lg rounded-[30px] bg-white p-8 shadow-xl ${
-          isSmallScreen ? "mx-4" : ""
-        }`} // Adding 'mx-4' padding on small screens
-      >
-        {/* Title and logo in the form */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold text-gray-900">Login</h2>
+      {/* Affichage du fond et autres éléments */}
+      {!isCustomBackground && (
+        <>
+          <div className="absolute inset-0 flex">
+            <div className="w-1/2 border-r-4 border-white bg-[#FFDFBD]" />
+            <div className="w-1/2 border-l-4 border-white bg-[#F07D00]" />
+          </div>
+
           <Image
+            src="/assets/images/auth/electric-circuit-white.svg"
+            alt="Thunder Left"
+            className="absolute bottom-0 left-0 h-[600px] w-auto rotate-90 opacity-90"
+            width={181}
+            height={82}
+          />
+          <Image
+            src="/assets/images/auth/electric-circuit-white.svg"
+            alt="Thunder Right"
+            className="absolute right-0 top-0 h-[600px] w-auto -rotate-90 opacity-90"
+            width={181}
+            height={82}
+          />
+        </>
+      )}
+
+      <div className="absolute left-5 top-5 z-10">
+        <Image
+          src="/assets/images/auth/logo.png"
+          alt="Logo"
+          width={65}
+          height={82}
+        />
+      </div>
+
+      <div
+        className={`right-50 absolute top-0 z-10 transition-transform duration-1000 ${
+          isAnimating ? "translate-y-[35vh]" : ""
+        }`}
+      >
+        <Image
+          src="/assets/images/auth/light-vertical.png"
+          alt="Vertical Light"
+          className="h-72 w-auto"
+          width={281}
+          height={182}
+        />
+      </div>
+
+      <div
+        className={`relative z-20 w-full max-w-lg rounded-[30px] bg-white p-8 shadow-xl transition-opacity duration-500 ${
+          isAnimating ? "opacity-0" : "opacity-100"
+        } ${isSmallScreen ? "mx-4" : ""}`}
+      >
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-bold text-gray-900">Connexion</h2>
+          <Image
+            src="/assets/images/logo2.png"
+            alt=""
             width={100}
             height={100}
-            src={"/assets/images/logo2.png"}
-            alt=""
           />
         </div>
         <p className="font-bold text-gray-500">
@@ -92,38 +180,41 @@ const ComponentsAuthLoginForm = () => {
         <form className="space-y-6 pt-5" onSubmit={submitForm}>
           <div>
             <label
-              htmlFor="Email"
+              htmlFor="Credential"
               className="block text-sm font-medium text-gray-700"
             >
-              Entrez votre adresse mail
+              Email ou Matricule
             </label>
-            <div className="relative mt-1">
-              <input
-                id="Email"
-                type="email"
-                placeholder="johndoe@gmail.com"
-                className="w-full rounded-md border border-gray-300 px-4 py-3 placeholder-gray-400 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
-                required
-              />
-            </div>
+            <input
+              id="Credential"
+              type="text"
+              placeholder="Entrez votre email ou matricule"
+              className="w-full rounded-md border px-4 py-3 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+              value={credential}
+              onChange={(e) => setCredential(e.target.value)}
+              required
+            />
           </div>
+
           <div>
             <label
               htmlFor="Password"
               className="block text-sm font-medium text-gray-700"
             >
-              Entrez votre mot de passe
+              Mot de passe
             </label>
             <div className="relative mt-1">
               <input
                 id="Password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Mot de passe"
-                className="w-full rounded-md border border-gray-300 px-4 py-3 placeholder-gray-400 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+                className="w-full rounded-md border px-4 py-3 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
               <span
-                className="absolute right-3 top-1/2 -translate-y-1/2 transform cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
                 onClick={togglePasswordVisibility}
               >
                 <IconEye
@@ -132,26 +223,29 @@ const ComponentsAuthLoginForm = () => {
               </span>
             </div>
           </div>
+
           <div className="flex justify-end">
             <button
               type="button"
               className="text-sm text-gray-500 hover:text-orange-500"
-              onClick={openModal} // Open the modal when clicked
+              onClick={() => setIsModalOpen(true)}
             >
               Mot de passe oublié?
             </button>
           </div>
+
           <button
             type="submit"
-            className="w-full rounded-md bg-orange-500 px-4 py-3 text-white shadow-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+            className="w-full rounded-md bg-orange-500 py-3 text-white shadow-md hover:bg-orange-600"
           >
-            Connexion
+            Se connecter
           </button>
         </form>
       </div>
 
-      {/* Modal */}
-      {isModalOpen && <ForgotPasswordModal closeModal={closeModal} />}
+      {isModalOpen && (
+        <ForgotPasswordModal closeModal={() => setIsModalOpen(false)} />
+      )}
     </div>
   );
 };

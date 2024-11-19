@@ -12,6 +12,9 @@ import AnimateHeight from "react-animate-height";
 import IconTxtFile from "../icon/icon-txt-file";
 import IconTrashLines from "../icon/icon-trash-lines";
 import IconClipboardText from "../icon/icon-clipboard-text";
+import { useDispatch, useSelector } from "react-redux";
+import { TAppDispatch, TRootState } from "@/store";
+import { fetchObjetDr } from "@/store/reducers/permission/objet-get-slice";
 
 // Définition des types pour les options des sélecteurs
 interface Option {
@@ -25,6 +28,8 @@ interface DataResponse {
 }
 
 const Role = () => {
+  const dispatch = useDispatch<TAppDispatch>();
+
   const [personalInfo, setPersonalInfo] = useState({
     libelle: "",
     description: "",
@@ -35,25 +40,25 @@ const Role = () => {
     description: "",
   });
 
-  const items2 = [
-    { id: 6, text: "Dashboard", description: "Agence" },
-    {
-      id: 7,
-      text: "Mes encaissements",
-      description: "Assistant Gestion Comptable",
-    },
-    {
-      id: 8,
-      text: "Encaissement valider",
-      description: "Responsable Commercial",
-    },
-    { id: 9, text: "Habilitations", description: "Directeur Régional" },
-    {
-      id: 10,
-      text: "Utilisateurs",
-      description: "Direction Financière et Comptable",
-    },
-  ];
+  const objetList: any = useSelector(
+    (state: TRootState) => state.ListHabilitation?.data
+  );
+
+  useEffect(() => {
+    dispatch(fetchObjetDr());
+  }, [dispatch]);
+
+  console.log(objetList);
+
+  const dynamicItems = objetList
+    ? objetList.map((objet: any, index: number) => ({
+        id: objet.id,
+        text: objet.name,
+        description: objet.description || "",
+      }))
+    : [];
+
+  const items2 = dynamicItems || [];
 
   const permissionNames = [
     "CREATION",
@@ -63,7 +68,7 @@ const Role = () => {
   ];
 
   const [individualSwitches, setIndividualSwitches] = useState(
-    items2.map(() => permissionNames.map(() => false))
+    items2?.map(() => permissionNames?.map(() => false))
   );
   const [globalSwitch, setGlobalSwitch] = useState(false);
   const [treeview, setTreeview] = useState<string[]>([]);
@@ -76,8 +81,8 @@ const Role = () => {
   const handleGlobalSwitch = () => {
     const newState = !globalSwitch;
     setGlobalSwitch(newState);
-    const updatedSwitches = items2.map(() =>
-      permissionNames.map(() => newState)
+    const updatedSwitches = items2?.map(() =>
+      permissionNames?.map(() => newState)
     );
     setIndividualSwitches(updatedSwitches);
   };
@@ -124,10 +129,10 @@ const Role = () => {
             height={treeview.includes(personalInfo.libelle) ? "auto" : 0}
           >
             <ul className="ltr:pl-14 rtl:pr-14">
-              {items2.map((role, roleIndex) => {
+              {items2.map((role: { text: any; id: any }, roleIndex: any) => {
                 // Check if any permission switch is on for this role
                 const isRoleVisible = individualSwitches[roleIndex].some(
-                  (state) => state
+                  (state: any) => state
                 );
                 if (!isRoleVisible) return null;
 
@@ -153,7 +158,7 @@ const Role = () => {
                       height={isRoleOpen ? "auto" : 0}
                     >
                       <ul className="ltr:pl-14 rtl:pr-14">
-                        {permissionNames.map((permission, permIndex) => {
+                        {permissionNames?.map((permission, permIndex) => {
                           if (!individualSwitches[roleIndex][permIndex])
                             return null;
 
@@ -272,7 +277,7 @@ const Role = () => {
                         <span className="outline_checkbox bg-icon block h-full rounded-full border-2 border-[#ebedf2] before:absolute before:bottom-1 before:left-1 before:h-4 before:w-4 before:rounded-full before:bg-[#ebedf2] before:bg-[url(/assets/images/close.svg)] before:bg-center before:bg-no-repeat before:transition-all before:duration-300 peer-checked:border-primary peer-checked:before:left-7 peer-checked:before:bg-primary peer-checked:before:bg-[url(/assets/images/checked.svg)] dark:border-white-dark dark:before:bg-white-dark"></span>
                       </label>
                     </th>
-                    {permissionNames.map((permission, index) => (
+                    {permissionNames?.map((permission, index) => (
                       <th key={index} className="px-4 py-2">
                         {permission}
                       </th>
@@ -280,26 +285,30 @@ const Role = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {items2.map((role, roleIndex) => (
-                    <tr key={role.id} className="border-t dark:border-dark">
-                      <td className="px-4 py-2 font-semibold">{role.text}</td>
-                      {permissionNames.map((permission, permIndex) => (
-                        <td key={permIndex} className="px-4 py-2">
-                          <label className="relative h-6 w-12">
-                            <input
-                              type="checkbox"
-                              className="custom_switch peer absolute z-10 h-full w-full cursor-pointer opacity-0"
-                              checked={individualSwitches[roleIndex][permIndex]}
-                              onChange={() =>
-                                handleIndividualSwitch(roleIndex, permIndex)
-                              }
-                            />
-                            <span className="outline_checkbox bg-icon block h-full rounded-full border-2 border-[#ebedf2] before:absolute before:bottom-1 before:left-1 before:h-4 before:w-4 before:rounded-full before:bg-[#ebedf2] before:bg-[url(/assets/images/close.svg)] before:bg-center before:bg-no-repeat before:transition-all before:duration-300 peer-checked:border-success peer-checked:before:left-7 peer-checked:before:bg-success peer-checked:before:bg-[url(/assets/images/checked.svg)] dark:border-white-dark dark:before:bg-white-dark"></span>
-                          </label>
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
+                  {items2?.map(
+                    (role: { id: any; text: any }, roleIndex: number) => (
+                      <tr key={role.id} className="border-t dark:border-dark">
+                        <td className="px-4 py-2 font-semibold">{role.text}</td>
+                        {permissionNames?.map((permission, permIndex) => (
+                          <td key={permIndex} className="px-4 py-2">
+                            <label className="relative h-6 w-12">
+                              <input
+                                type="checkbox"
+                                className="custom_switch peer absolute z-10 h-full w-full cursor-pointer opacity-0"
+                                checked={
+                                  individualSwitches[roleIndex][permIndex]
+                                }
+                                onChange={() =>
+                                  handleIndividualSwitch(roleIndex, permIndex)
+                                }
+                              />
+                              <span className="outline_checkbox bg-icon block h-full rounded-full border-2 border-[#ebedf2] before:absolute before:bottom-1 before:left-1 before:h-4 before:w-4 before:rounded-full before:bg-[#ebedf2] before:bg-[url(/assets/images/close.svg)] before:bg-center before:bg-no-repeat before:transition-all before:duration-300 peer-checked:border-success peer-checked:before:left-7 peer-checked:before:bg-success peer-checked:before:bg-[url(/assets/images/checked.svg)] dark:border-white-dark dark:before:bg-white-dark"></span>
+                            </label>
+                          </td>
+                        ))}
+                      </tr>
+                    )
+                  )}
                 </tbody>
               </table>
             </div>

@@ -1,18 +1,11 @@
-import { isDev } from "@/utils/isDev";
 import { configureStore } from "@reduxjs/toolkit";
 import { createLogger } from "redux-logger";
-
-import { useDispatch } from "react-redux";
 import { persistStore } from "redux-persist";
 import rootReducer from "./reducers/rootReducer";
+import { isDev } from "@/utils/isDev";
+import { useDispatch } from "react-redux";
 
-// const rootReducer = combineReducers({
-// 	themeConfig: themeConfigSlice,
-// });
-
-// export default configureStore({
-// 	reducer: rootReducer,
-// });
+// Configuration du middleware logger, seulement en développement
 const loggerMiddleware = createLogger({
   predicate: () => isDev(),
   collapsed: true,
@@ -20,13 +13,16 @@ const loggerMiddleware = createLogger({
 
 const store = configureStore({
   reducer: rootReducer,
-  // middleware: (getDefaultMiddleware) =>
-  //   getDefaultMiddleware().concat(loggerMiddleware, thunk), // retourne directement la concaténation
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }) // Désactive la vérification de sérialisation pour redux-persist
+      .concat(loggerMiddleware),
 });
 
-export default store;
-export type IRootState = ReturnType<typeof rootReducer>;
+export const persistor = persistStore(store);
+
+// Types TypeScript pour le store et le dispatch
 export type TRootState = ReturnType<typeof store.getState>;
 export type TAppDispatch = typeof store.dispatch;
-export const useAppDispatch = () => useDispatch<typeof store.dispatch>();
-export const persistor = persistStore(store);
+export const useAppDispatch = () => useDispatch<TAppDispatch>();
+
+export default store;
