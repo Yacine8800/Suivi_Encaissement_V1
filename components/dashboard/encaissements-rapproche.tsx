@@ -136,9 +136,6 @@ const EncaissementsRapproche = () => {
     (state: any) => state?.user?.errorUser
   );
 
-  console.log("statutUsers", statutUsersTestRecup);
-  console.log("statutUsers + Data", dataUsersTestRecup);
-  console.log("statutUsers + ErreurData", errorUsersTestRecup);
   // ------------------------------------------------
 
   return (
