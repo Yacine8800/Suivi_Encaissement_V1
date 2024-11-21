@@ -128,14 +128,12 @@ const EncaissementsRapproche = () => {
   const dispatch = useDispatch<typeof store.dispatch>();
   dispatch(fetchUsersList());
   console.log({ statutUsers: 5 });
-  const dataUsersTestRecup = useSelector(
-    (state: TRootState) => state.user.userData
-  );
+  const dataUsersTestRecup = useSelector((state: any) => state?.user?.userData);
   const statutUsersTestRecup = useSelector(
-    (state: TRootState) => state.user.statutUser
+    (state: any) => state?.user?.statutUser
   );
   const errorUsersTestRecup = useSelector(
-    (state: TRootState) => state.user.errorUser
+    (state: any) => state?.user?.errorUser
   );
 
   console.log("statutUsers", statutUsersTestRecup);
