@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import IconDownload from "@/components/icon/icon-download";
 import { login } from "@/store/reducers/auth/user.slice";
 import { useAppDispatch } from "@/store";
-import { Toastify } from "@/utils/toast";
 
 const ComponentsAuthLoginForm = () => {
   const router = useRouter();
@@ -24,11 +23,21 @@ const ComponentsAuthLoginForm = () => {
   const [background, setBackground] = useState(defaultBackground);
   const [isCustomBackground, setIsCustomBackground] = useState(false);
 
+  // useEffect(() => {
+  //   const savedBackground = localStorage.getItem("userBackground");
+  //   if (savedBackground) {
+  //     setBackground(savedBackground);
+  //     setIsCustomBackground(true);
+  //   }
+  // }, []);
+
   useEffect(() => {
-    const savedBackground = localStorage.getItem("userBackground");
-    if (savedBackground) {
-      setBackground(savedBackground);
-      setIsCustomBackground(true);
+    if (typeof window !== "undefined") {
+      const savedBackground = localStorage.getItem("userBackground");
+      if (savedBackground) {
+        setBackground(savedBackground);
+        setIsCustomBackground(true);
+      }
     }
   }, []);
 
@@ -59,13 +68,11 @@ const ComponentsAuthLoginForm = () => {
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
   const submitForm = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!credential || !password) {
-      Toastify(
-        "error",
-        "Veuillez entrer un email ou un matricule et un mot de passe."
-      );
+      alert("Veuillez entrer un email ou un matricule et un mot de passe.");
       return;
     }
 
@@ -73,11 +80,10 @@ const ComponentsAuthLoginForm = () => {
 
     const result = await dispatch(login({ credential, password }));
     if (login.fulfilled.match(result)) {
-      Toastify("success", "Connexion réussie !");
       router.push("/dashboard");
     } else {
       setIsAnimating(false);
-      Toastify("error", "Échec de la connexion. Vérifiez vos identifiants.");
+      alert("Échec de la connexion. Vérifiez vos identifiants.");
     }
   };
 
