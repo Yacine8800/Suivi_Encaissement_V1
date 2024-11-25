@@ -2,12 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import IconEye from "@/components/icon/icon-eye";
-import ForgotPasswordModal from "@/components/auth/components/modals/ForgotPasswordModal";
 import { useRouter } from "next/navigation";
-import IconDownload from "@/components/icon/icon-download";
 import { login } from "@/store/reducers/auth/user.slice";
 import { useAppDispatch } from "@/store";
+import dynamic from "next/dynamic";
+
+const IconEye = dynamic(() => import("@/components/icon/icon-eye"), {
+  ssr: false,
+});
+const IconDownload = dynamic(() => import("@/components/icon/icon-download"), {
+  ssr: false,
+});
+const ForgotPasswordModal = dynamic(
+  () => import("@/components/auth/components/modals/ForgotPasswordModal"),
+  { ssr: false }
+);
 
 const ComponentsAuthLoginForm = () => {
   const router = useRouter();
@@ -23,11 +32,21 @@ const ComponentsAuthLoginForm = () => {
   const [background, setBackground] = useState(defaultBackground);
   const [isCustomBackground, setIsCustomBackground] = useState(false);
 
+  // useEffect(() => {
+  //   const savedBackground = localStorage.getItem("userBackground");
+  //   if (savedBackground) {
+  //     setBackground(savedBackground);
+  //     setIsCustomBackground(true);
+  //   }
+  // }, []);
+
   useEffect(() => {
-    const savedBackground = localStorage.getItem("userBackground");
-    if (savedBackground) {
-      setBackground(savedBackground);
-      setIsCustomBackground(true);
+    if (typeof window !== "undefined") {
+      const savedBackground = localStorage.getItem("userBackground");
+      if (savedBackground) {
+        setBackground(savedBackground);
+        setIsCustomBackground(true);
+      }
     }
   }, []);
 
