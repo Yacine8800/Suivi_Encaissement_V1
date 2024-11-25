@@ -1,6 +1,5 @@
 "use client";
 import store, { TRootState } from "@/store";
-import { fetchUsersList } from "@/store/reducers/users-test/user.async";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ComponentsDatatablesColumnValider from "../datatables/components-datatables-column-valider";
@@ -126,7 +125,7 @@ const EncaissementsRapproche = () => {
 
   // ------------------------------------------------
   const dispatch = useDispatch<typeof store.dispatch>();
-  dispatch(fetchUsersList());
+
   console.log({ statutUsers: 5 });
   const dataUsersTestRecup = useSelector((state: any) => state?.user?.userData);
   const statutUsersTestRecup = useSelector(

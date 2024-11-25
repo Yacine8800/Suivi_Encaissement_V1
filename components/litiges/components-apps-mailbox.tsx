@@ -23,7 +23,7 @@ import IconTxtFile from "@/components/icon/icon-txt-file";
 import IconUser from "@/components/icon/icon-user";
 import IconUsers from "@/components/icon/icon-users";
 import IconZipFile from "@/components/icon/icon-zip-file";
-import { IRootState } from "@/store";
+import { TRootState } from "@/store";
 import Tippy from "@tippyjs/react";
 import React, { Fragment, useEffect, useState } from "react";
 import ReactQuill from "react-quill";
@@ -170,7 +170,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
   const [pagedMails, setPagedMails] = useState<any>([]);
 
   const isRtl =
-    useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl";
+    useSelector((state: TRootState) => state.themeConfig.rtlClass) === "rtl";
 
   const [pager] = useState<any>({
     currentPage: 1,

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
-import { IRootState } from "@/store";
+import { TRootState } from "@/store";
 import { toggleSidebar, toggleRTL } from "@/store/themeConfigSlice";
 import Dropdown from "@/components/dropdown";
 import { usePathname, useRouter } from "next/navigation";
@@ -58,9 +58,9 @@ const Header = () => {
   }, [pathname]);
 
   const isRtl =
-    useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl";
+    useSelector((state: TRootState) => state.themeConfig.rtlClass) === "rtl";
 
-  const themeConfig = useSelector((state: IRootState) => state.themeConfig);
+  const themeConfig = useSelector((state: TRootState) => state.themeConfig);
   const setLocale = (flag: string) => {
     if (flag.toLowerCase() === "ae") {
       dispatch(toggleRTL("rtl"));

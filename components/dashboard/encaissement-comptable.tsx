@@ -1,11 +1,11 @@
 "use client";
 
-import { IRootState } from "@/store";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ComponentsDatatablesColumnChooser from "../datatables/components-datatables-column-chooser";
 import IconZipFile from "../icon/icon-zip-file";
 import IconCircleCheck from "../icon/icon-circle-check";
+import { TRootState } from "@/store";
 
 interface RecordType {
   validated: boolean;
@@ -17,11 +17,11 @@ interface RecordType {
 
 const EncaissementComptable = () => {
   const isDark = useSelector(
-    (state: IRootState) =>
+    (state: TRootState) =>
       state.themeConfig.theme === "dark" || state.themeConfig.isDarkMode
   );
   const isRtl =
-    useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl";
+    useSelector((state: TRootState) => state.themeConfig.rtlClass) === "rtl";
   const [completionRate, setCompletionRate] = useState<number>(0);
   const [expensesPercentage, setExpensesPercentage] = useState<number>(0);
   const [validatedRecords, setValidatedRecords] = useState<number>(0);

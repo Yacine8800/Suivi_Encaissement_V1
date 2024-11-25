@@ -1,6 +1,5 @@
 "use client";
 
-import { IRootState } from "@/store";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import IconBox from "../icon/icon-box";
