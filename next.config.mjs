@@ -8,6 +8,9 @@ const nextConfig = {
   // experimental: {
   //   serverActions: true,
   // },
+  experimental: {
+    outputFileTracing: true,
+  },
 };
 
 export default nextConfig;
