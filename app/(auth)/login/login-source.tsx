@@ -103,7 +103,7 @@ const ComponentsAuthLoginForm = () => {
           <div className="flex items-center gap-2 rounded-[10px] bg-white p-3 shadow-lg hover:bg-orange-100">
             <IconDownload className="h-6 w-6 text-orange-500" />
             <span className="text-sm font-medium text-orange-500">
-              Fond d'écran
+              Changer le Fond d'écran
             </span>
           </div>
         </label>
