@@ -104,7 +104,7 @@ const ComponentsDashboardSales = () => {
         "Sep",
         "Oct",
         "Nov",
-        "Dec",
+        "Decembre",
       ],
       xaxis: {
         axisBorder: {
