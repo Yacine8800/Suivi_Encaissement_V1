@@ -158,16 +158,18 @@ const Header = () => {
                       <div className="truncate ltr:pl-4 rtl:pr-4">
                         <h4 className="text-base">
                           {`${lastname} ${firstname}`}
-                          <span className="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">
-                            {newProfile}
-                          </span>
-                          <span className="rounded bg-danger-light px-1 text-xs text-danger ltr:ml-2 rtl:ml-2">
-                            {matricule}
-                          </span>
                         </h4>
                         <span className="text-sm font-thin text-black hover:text-primary dark:text-dark-light/60 dark:hover:text-white">
                           {email}
                         </span>
+                        <div className="mt-1 flex gap-2">
+                          <span className="rounded bg-success-light px-1 text-xs text-success ">
+                            {newProfile}
+                          </span>
+                          <span className="rounded bg-danger-light px-1 text-xs text-danger ">
+                            {matricule}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </li>

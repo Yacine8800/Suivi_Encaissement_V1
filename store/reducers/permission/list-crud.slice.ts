@@ -2,11 +2,11 @@ import { API_AUTH_SUIVI } from "@/config/constants";
 import axiosInstance from "@/utils/axios";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchObjet = createAsyncThunk(
-  "objet/fetchObjet",
+export const fetchpermissions = createAsyncThunk(
+  "permissions/fetchpermissions",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`${API_AUTH_SUIVI}/object`);
+      const response = await axiosInstance.get(`${API_AUTH_SUIVI}/permissions`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -17,8 +17,8 @@ export const fetchObjet = createAsyncThunk(
   }
 );
 
-const objetSlice = createSlice({
-  name: "objet",
+const permissionsSlice = createSlice({
+  name: "permissions",
   initialState: {
     data: [],
     loading: false,
@@ -27,19 +27,19 @@ const objetSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchObjet.pending, (state) => {
+      .addCase(fetchpermissions.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchObjet.fulfilled, (state, action) => {
+      .addCase(fetchpermissions.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
       })
-      .addCase(fetchObjet.rejected, (state, action) => {
+      .addCase(fetchpermissions.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
   },
 });
 
-export default objetSlice.reducer;
+export default permissionsSlice.reducer;

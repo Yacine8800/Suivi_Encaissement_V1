@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import IconSave from "@/components/icon/icon-save";
 import IconArrowBackward from "../icon/icon-arrow-backward";
 import IconSquareRotated from "../icon/icon-square-rotated";
@@ -14,7 +14,9 @@ import IconTrashLines from "../icon/icon-trash-lines";
 import IconClipboardText from "../icon/icon-clipboard-text";
 import { useDispatch, useSelector } from "react-redux";
 import { TAppDispatch, TRootState } from "@/store";
-import { fetchObjetDr } from "@/store/reducers/permission/objet-get-slice";
+import { fetchObjet } from "@/store/reducers/permission/objet-get-slice";
+import { fetchpermissions } from "@/store/reducers/permission/list-crud.slice";
+import { fetchAddRole } from "@/store/reducers/permission/create-habilitation.slice";
 
 // Définition des types pour les options des sélecteurs
 interface Option {
@@ -25,6 +27,18 @@ interface Option {
 interface DataResponse {
   profils: Option[];
   dr_secteurs: { [key: string]: Option[] };
+}
+
+interface Objet {
+  id: number;
+  text: string;
+  description: string;
+}
+
+interface Permission {
+  id: number;
+  name: string;
+  description?: string;
 }
 
 const Role = () => {
@@ -44,34 +58,35 @@ const Role = () => {
     (state: TRootState) => state.ListHabilitation?.data
   );
 
+  const permissionList = useSelector(
+    (state: TRootState) => state.permissionCrud.data
+  );
+
   useEffect(() => {
-    dispatch(fetchObjetDr());
+    dispatch(fetchObjet());
+    dispatch(fetchpermissions());
   }, [dispatch]);
 
-  console.log(objetList);
-
-  const dynamicItems = objetList
-    ? objetList.map((objet: any, index: number) => ({
-        id: objet.id,
-        text: objet.name,
-        description: objet.description || "",
-      }))
-    : [];
-
-  const items2 = dynamicItems || [];
-
-  const permissionNames = [
-    "CREATION",
-    "LECTURE",
-    "MODIFICATION",
-    "SUPPRESSION",
-  ];
-
-  const [individualSwitches, setIndividualSwitches] = useState(() =>
-    items2 && permissionNames
-      ? items2.map(() => permissionNames?.map(() => false))
-      : []
+  const items2 = useMemo(
+    () =>
+      objetList
+        ? objetList?.map(
+            (objet: { id: number; name: string; description: string }) => ({
+              id: objet.id,
+              text: objet.name,
+              description: objet.description || "",
+            })
+          )
+        : [],
+    [objetList]
   );
+
+  const permissionNames = useMemo(
+    () => permissionList?.map((perm: any) => perm?.name) || [],
+    [permissionList]
+  );
+
+  const [individualSwitches, setIndividualSwitches] = useState<boolean[][]>([]);
 
   const [globalSwitch, setGlobalSwitch] = useState(false);
   const [treeview, setTreeview] = useState<string[]>([]);
@@ -107,13 +122,45 @@ const Role = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (items2 && permissionNames) {
-  //     setIndividualSwitches(
-  //       items2?.map(() => permissionNames?.map(() => false))
-  //     );
-  //   }
-  // }, [items2, permissionNames]);
+  useEffect(() => {
+    if (items2?.length > 0 && permissionNames?.length > 0) {
+      setIndividualSwitches(
+        items2?.map(() => permissionNames?.map(() => false))
+      );
+    }
+  }, [items2.length, permissionNames.length]);
+
+  const generateSelectedPermissions = () => {
+    const selectedPermissions: { objectId: number; permissionId: number }[] =
+      [];
+
+    items2.forEach((item: Objet, roleIndex: number) => {
+      permissionList.forEach((permission: Permission, permIndex: number) => {
+        if (individualSwitches[roleIndex]?.[permIndex]) {
+          selectedPermissions.push({
+            objectId: item.id, // ID de l'objet
+            permissionId: permission.id, // ID de la permission
+          });
+        }
+      });
+    });
+
+    return selectedPermissions;
+  };
+
+  const handleSave = () => {
+    const selectedPermissions = generateSelectedPermissions();
+
+    // Exemple d'envoi des données à une API
+    const roleData = {
+      name: personalInfo.libelle,
+      description: personalInfo.description,
+      permissions: selectedPermissions,
+    };
+
+    // Dispatch vers une action Redux ou un appel API
+    dispatch(fetchAddRole(roleData));
+  };
 
   // Render Permission TreeView (Folders and Files with Icons)
   const renderPermissionTree = () => {
@@ -328,7 +375,11 @@ const Role = () => {
 
           <div className="mb-10 mt-10">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-1">
-              <button type="button" className="btn btn-success w-full gap-2">
+              <button
+                type="button"
+                className="btn btn-success w-full gap-2"
+                onClick={handleSave}
+              >
                 <IconSave className="shrink-0 ltr:mr-2 rtl:ml-2" />
                 Ajouter
               </button>

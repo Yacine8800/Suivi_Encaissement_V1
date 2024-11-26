@@ -18,7 +18,9 @@ import ProfileReducer from "./select/profile.slice";
 import SecteursReducer from "./select/secteur.slice";
 
 //habilitation
-import objetDRReducer from "./permission/objet-get-slice";
+import objetReducer from "./permission/objet-get-slice";
+import permissionsReducer from "./permission/list-crud.slice";
+import deleteProfileReducer from "./permission/delete-habilitation.slice";
 
 import themeConfigSlice from "../themeConfigSlice";
 
@@ -50,7 +52,9 @@ const topReducer = combineReducers({
   secteur: SecteursReducer,
 
   //habilitation
-  ListHabilitation: objetDRReducer,
+  ListHabilitation: objetReducer,
+  permissionCrud: permissionsReducer,
+  deleteProfile: deleteProfileReducer,
 });
 
 const rootReducer = (state: any, action: any) => {
