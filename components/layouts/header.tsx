@@ -2,21 +2,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
-import { IRootState } from "@/store";
-import {
-  toggleTheme,
-  toggleSidebar,
-  toggleRTL,
-  toggleSemidark,
-} from "@/store/themeConfigSlice";
+import { TRootState } from "@/store";
+import { toggleSidebar, toggleRTL } from "@/store/themeConfigSlice";
 import Dropdown from "@/components/dropdown";
 import { usePathname, useRouter } from "next/navigation";
 import { getTranslation } from "@/i18n";
 import IconMenu from "@/components/icon/icon-menu";
-
-import IconSun from "@/components/icon/icon-sun";
-import IconMoon from "@/components/icon/icon-moon";
-import IconLaptop from "@/components/icon/icon-laptop";
 import IconUser from "@/components/icon/icon-user";
 
 import IconLogout from "@/components/icon/icon-logout";
@@ -25,14 +16,19 @@ import IconCaretDown from "@/components/icon/icon-caret-down";
 import IconMenuApps from "@/components/icon/menu/icon-menu-apps";
 import IconMenuComponents from "@/components/icon/menu/icon-menu-components";
 
-import React, { ReactNode } from "react";
+import React from "react";
 import IconSquareRotated from "../icon/icon-square-rotated";
 
 const Header = () => {
+  const user = useSelector((state: TRootState) => state.auth?.user);
   const pathname = usePathname();
   const dispatch = useDispatch();
   const router = useRouter();
   const { t, i18n } = getTranslation();
+
+  const { email, matricule, phoneNumber, firstname, lastname } = user;
+
+  const profile = user.profile.name;
 
   useEffect(() => {
     const selector = document.querySelector(
@@ -67,9 +63,9 @@ const Header = () => {
   }, [pathname]);
 
   const isRtl =
-    useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl";
+    useSelector((state: TRootState) => state.themeConfig.rtlClass) === "rtl";
 
-  const themeConfig = useSelector((state: IRootState) => state.themeConfig);
+  const themeConfig = useSelector((state: TRootState) => state.themeConfig);
   const setLocale = (flag: string) => {
     if (flag.toLowerCase() === "ae") {
       dispatch(toggleRTL("rtl"));
@@ -80,6 +76,8 @@ const Header = () => {
   };
 
   const [search, setSearch] = useState(false);
+
+  const newProfile = profile === "ADMIN" ? "ADMINISTRATEUR" : profile;
 
   return (
     <header
@@ -119,7 +117,7 @@ const Header = () => {
             >
               <IconSquareRotated className="shrink-0 fill-success" />
             </button>
-            <span className="ml-2">AGC</span>
+            <span className="ml-2">{newProfile}</span>
           </p>
 
           <div className="flex items-center space-x-1.5 dark:text-[#d0d2d6] sm:flex-1 lg:space-x-2 ltr:ml-auto ltr:sm:ml-0 rtl:mr-auto rtl:space-x-reverse sm:rtl:mr-0">
@@ -131,89 +129,12 @@ const Header = () => {
                 onSubmit={() => setSearch(false)}
               ></form>
             </div>
-            {/* <div>
-              {themeConfig.theme === "light" ? (
-                <button
-                  className={`${
-                    themeConfig.theme === "light" &&
-                    "flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
-                  }`}
-                  onClick={() => dispatch(toggleTheme("dark"))}
-                >
-                  <IconSun />
-                </button>
-              ) : (
-                ""
-              )}
-              {themeConfig.theme === "dark" && (
-                <button
-                  className={`${
-                    themeConfig.theme === "dark" &&
-                    "flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
-                  }`}
-                  onClick={() => dispatch(toggleTheme("system"))}
-                >
-                  <IconMoon />
-                </button>
-              )}
-              {themeConfig.theme === "system" && (
-                <button
-                  className={`${
-                    themeConfig.theme === "system" &&
-                    "flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
-                  }`}
-                  onClick={() => dispatch(toggleTheme("light"))}
-                >
-                  <IconLaptop />
-                </button>
-              )}
-            </div> */}
-            <div className="dropdown shrink-0">
-              <Dropdown
-                offset={[0, 8]}
-                placement={`${isRtl ? "bottom-start" : "bottom-end"}`}
-                btnClassName="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60"
-                button={
-                  i18n.language && (
-                    <img
-                      className="h-5 w-5 rounded-full object-cover"
-                      src={`/assets/images/flags/${i18n.language.toUpperCase()}.svg`}
-                      alt="flag"
-                    />
-                  )
-                }
-              >
-                <ul className="grid w-[280px] grid-cols-2 gap-2 !px-2 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
-                  {themeConfig.languageList.map((item: any) => {
-                    return (
-                      <li key={item.code}>
-                        <button
-                          type="button"
-                          className={`flex w-full hover:text-primary ${
-                            i18n.language === item.code
-                              ? "bg-primary/10 text-primary"
-                              : ""
-                          }`}
-                          onClick={() => {
-                            i18n.changeLanguage(item.code);
-                            setLocale(item.code);
-                          }}
-                        >
-                          <img
-                            src={`/assets/images/flags/${item.code.toUpperCase()}.svg`}
-                            alt="flag"
-                            className="h-5 w-5 rounded-full object-cover"
-                          />
-                          <span className="ltr:ml-3 rtl:mr-3">{item.name}</span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </Dropdown>
-            </div>
 
             <div className="dropdown flex shrink-0">
+              <div className="mr-6">
+                <div className="font-bold text-gray-800">{`${lastname} ${firstname}`}</div>
+                <div className="text-sm text-gray-600">{newProfile}</div>
+              </div>
               <Dropdown
                 offset={[0, 8]}
                 placement={`${isRtl ? "bottom-start" : "bottom-end"}`}
@@ -236,29 +157,27 @@ const Header = () => {
                       />
                       <div className="truncate ltr:pl-4 rtl:pr-4">
                         <h4 className="text-base">
-                          DIOMANDE Yacine
-                          <span className="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">
-                            AGC
-                          </span>
+                          {`${lastname} ${firstname}`}
                         </h4>
-                        <button
-                          type="button"
-                          className="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white"
-                        >
-                          diomande.yacine@example.com
-                        </button>
+                        <span className="text-sm font-thin text-black hover:text-primary dark:text-dark-light/60 dark:hover:text-white">
+                          {email}
+                        </span>
+                        <div className="mt-1 flex gap-2">
+                          <span className="rounded bg-success-light px-1 text-xs text-success ">
+                            {newProfile}
+                          </span>
+                          <span className="rounded bg-danger-light px-1 text-xs text-danger ">
+                            {matricule}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </li>
-                  <li>
-                    <Link
-                      href="/users/profile"
-                      className="dark:hover:text-white"
-                    >
+                  {/* <li>
+                    <Link href="" className="dark:hover:text-white">
                       <IconUser className="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2" />
-                      Profile
                     </Link>
-                  </li>
+                  </li> */}
 
                   {/* <li className="border-t border-white-light dark:border-white-light/10">
                     <Link href="" className="dark:hover:text-white">
@@ -279,9 +198,9 @@ const Header = () => {
                   </li> */}
 
                   <li className="border-t border-white-light dark:border-white-light/10">
-                    <Link href="/" className="!py-3 text-danger">
+                    <Link href="/login" className="!py-3 text-danger">
                       <IconLogout className="h-4.5 w-4.5 shrink-0 rotate-90 ltr:mr-2 rtl:ml-2" />
-                      Sign Out
+                      Deconnexion
                     </Link>
                   </li>
                 </ul>

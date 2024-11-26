@@ -1,35 +1,25 @@
 "use client";
 import Dropdown from "@/components/dropdown";
-import IconArrowLeft from "@/components/icon/icon-arrow-left";
-import IconBolt from "@/components/icon/icon-bolt";
-import IconCaretDown from "@/components/icon/icon-caret-down";
 import IconCashBanknotes from "@/components/icon/icon-cash-banknotes";
-import IconCreditCard from "@/components/icon/icon-credit-card";
-import IconDollarSign from "@/components/icon/icon-dollar-sign";
 import IconHorizontalDots from "@/components/icon/icon-horizontal-dots";
-import IconInbox from "@/components/icon/icon-inbox";
-import IconMultipleForwardRight from "@/components/icon/icon-multiple-forward-right";
-import IconNetflix from "@/components/icon/icon-netflix";
-import IconPlus from "@/components/icon/icon-plus";
-import IconShoppingCart from "@/components/icon/icon-shopping-cart";
-import IconTag from "@/components/icon/icon-tag";
-import IconUser from "@/components/icon/icon-user";
-import { IRootState } from "@/store";
+
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import IconHome from "../icon/icon-home";
 import IconBox from "../icon/icon-box";
+import Select from "react-select";
+import store, { TRootState } from "@/store";
 
 const ComponentsDashboardSales = () => {
   const isDark = useSelector(
-    (state: IRootState) =>
+    (state: TRootState) =>
       state.themeConfig.theme === "dark" || state.themeConfig.isDarkMode
   );
   const isRtl =
-    useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl";
+    useSelector((state: TRootState) => state.themeConfig.rtlClass) === "rtl";
 
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
@@ -40,14 +30,14 @@ const ComponentsDashboardSales = () => {
   const revenueChart: any = {
     series: [
       {
-        name: "Montant Bordereau",
+        name: "Encaissements Crédités",
         data: [
           16800, 16800, 15500, 17800, 15500, 17000, 19000, 16000, 15000, 17000,
           14000, 17000,
         ],
       },
       {
-        name: "Montant relevé",
+        name: "Encaissements Non Crédités",
         data: [
           16500, 17500, 16200, 17300, 16000, 19500, 16000, 17000, 16000, 19000,
           18000, 19000,
@@ -114,7 +104,7 @@ const ComponentsDashboardSales = () => {
         "Sep",
         "Oct",
         "Nov",
-        "Dec",
+        "Decembre",
       ],
       xaxis: {
         axisBorder: {
@@ -270,14 +260,14 @@ const ComponentsDashboardSales = () => {
                   ) {
                     return a + b;
                   },
-                    0);
+                  0);
                 },
               },
             },
           },
         },
       },
-      labels: ["Lignes complètes", "Lignes incomplètes"],
+      labels: ["Crédité", "Non-crédité"],
       states: {
         hover: {
           filter: {
@@ -358,14 +348,14 @@ const ComponentsDashboardSales = () => {
                   ) {
                     return a + b;
                   },
-                    0);
+                  0);
                 },
               },
             },
           },
         },
       },
-      labels: ["Lignes complètes", "Lignes incomplètes"],
+      labels: ["Cloturé", "Non-Cloturé"],
       states: {
         hover: {
           filter: {
@@ -447,14 +437,14 @@ const ComponentsDashboardSales = () => {
                   ) {
                     return a + b;
                   },
-                    0);
+                  0);
                 },
               },
             },
           },
         },
       },
-      labels: ["Lignes complètes", "Lignes incomplètes"],
+      labels: ["Crédité", "Non - Crédité"],
       states: {
         hover: {
           filter: {
@@ -470,6 +460,163 @@ const ComponentsDashboardSales = () => {
         },
       },
     },
+  };
+
+  const options5 = [
+    { value: "DRAN", label: "DRAN" },
+    { value: "DRABO", label: "DRABO" },
+    { value: "DRYOP", label: "DRYOP" },
+  ];
+  const options6 = [
+    { value: "SECTEUR 1", label: "SECTEUR 1" },
+    { value: "SECTEUR 2", label: "SECTEUR 2" },
+    { value: "SECTEUR 3", label: "SECTEUR 3" },
+  ];
+
+  const caissesNonCloturees = [
+    {
+      Bordereau: "12345",
+      "Date Encais": "2024-07-20",
+      Banque: "SGBCI",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "67890",
+      "Date Encais": "2024-07-21",
+      Banque: "NSIA",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "54321",
+      "Date Encais": "2024-07-22",
+      Banque: "SGBCI",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "11223",
+      "Date Encais": "2024-07-23",
+      Banque: "SIB",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "33445",
+      "Date Encais": "2024-07-24",
+      Banque: "NSIA",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "99887",
+      "Date Encais": "2024-07-25",
+      Banque: "SIB",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "77665",
+      "Date Encais": "2024-07-26",
+      Banque: "SGBCI",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "55667",
+      "Date Encais": "2024-07-27",
+      Banque: "ECOBANK",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "44556",
+      "Date Encais": "2024-07-28",
+      Banque: "SGBCI",
+      Statut: "Non-Clôturé",
+    },
+    {
+      Bordereau: "66778",
+      "Date Encais": "2024-07-29",
+      Banque: "ECOBANK",
+      Statut: "Non-Clôturé",
+    },
+  ];
+
+  const getStatusClass = (status: any) => {
+    switch (status) {
+      case "Clôturée":
+        return "bg-green-500"; // Green for "Terminé"
+      case "Non clôturée":
+        return "bg-red-500"; // Red for "En retard"
+      default:
+        return "bg-gray-500";
+    }
+  };
+
+  const getBadgeClass = (status: any) => {
+    switch (status) {
+      case "Clôturée":
+        return "badge-outline-success"; // Badge class for "Terminé"
+      case "Non Clôturée":
+        return "badge-outline-danger"; // Badge class for "En retard"
+      default:
+        return "badge-outline-secondary";
+    }
+  };
+
+  const ecarts = [
+    {
+      name: "Ecart (A-B)",
+      date: "12/12/2023",
+      valeur: 5000,
+      icon: "green",
+      dr: "DRAN",
+    },
+    {
+      name: "Ecart (B-C)",
+      date: "10/12/2023",
+      valeur: -2000,
+      icon: "yellow",
+      dr: "DRABO",
+    },
+    {
+      name: "Ecart (A-B)",
+      date: "08/12/2023",
+      valeur: 3000,
+      icon: "green",
+      dr: "DRYOP",
+    },
+    {
+      name: "Ecart (B-C)",
+      date: "06/12/2023",
+      valeur: 1500,
+      icon: "yellow",
+      dr: "DRAN",
+    },
+    {
+      name: "Ecart (A-B)",
+      date: "04/12/2023",
+      valeur: -1000,
+      icon: "green",
+      dr: "DRABO",
+    },
+    {
+      name: "Ecart (B-C)",
+      date: "02/12/2023",
+      valeur: 2500,
+      icon: "yellow",
+      dr: "DRYOP",
+    },
+  ];
+
+  const getEcartColor = (valeur: any) => {
+    return valeur >= 0 ? "text-green-500" : "text-red-500";
+  };
+
+  const getEcartIcon = (iconType: any) => {
+    return (
+      <span
+        className={`grid h-9 w-9 shrink-0 place-content-center rounded-md bg-${
+          iconType === "yellow" ? "warning" : "success"
+        }-light`}
+      >
+        <IconCashBanknotes />
+      </span>
+    );
   };
 
   return (
@@ -490,6 +637,22 @@ const ComponentsDashboardSales = () => {
               Suivi
             </button>
           </li>
+
+          <div className="ml-auto flex gap-4">
+            <Select
+              placeholder="Filtrer par DR"
+              options={options5}
+              isMulti
+              isSearchable={true}
+            />
+
+            <Select
+              placeholder="Filtrer par Secteurs"
+              options={options6}
+              isMulti
+              isSearchable={true}
+            />
+          </div>
         </ol>
 
         <div className="pt-5">
@@ -610,6 +773,112 @@ const ComponentsDashboardSales = () => {
                   <span className="inline-flex h-5 w-5 animate-spin rounded-full border-2 border-black !border-l-transparent dark:border-white"></span>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+
+        <br />
+        <br />
+
+        <div className="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-2">
+          <div className="panel h-full pb-0 sm:col-span-2 xl:col-span-1">
+            <div className="panel h-full w-full">
+              <div className="mb-5 flex items-center justify-between">
+                <h5 className="text-lg font-semibold dark:text-white-light">
+                  Caisses Non Cloturé
+                </h5>
+              </div>
+              <div className="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th className="ltr:rounded-l-md rtl:rounded-r-md">
+                        Numéro de la Caisse
+                      </th>
+                      <th>Date de la Caisse</th>
+                      <th>Banque</th>
+                      <th className="ltr:rounded-r-md rtl:rounded-l-md">
+                        Statut
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {caissesNonCloturees.map((record, index) => (
+                      <tr
+                        key={index}
+                        className="group text-white-dark hover:text-black dark:hover:text-white-light/90"
+                      >
+                        <td className="min-w-[150px] text-black dark:text-white">
+                          <div className="flex items-center">
+                            <span className="whitespace-nowrap">
+                              {record.Bordereau}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="text-black dark:text-white">
+                          {record["Date Encais"]}
+                        </td>
+                        <td className="text-black dark:text-white">
+                          {record.Banque}
+                        </td>
+                        <td>
+                          <span className="badge bg-danger shadow-md dark:group-hover:bg-transparent">
+                            {record.Statut}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div className="panel h-full w-full">
+            <div className="mb-5 flex items-center justify-between">
+              <h5 className="mb-5 text-lg font-semibold dark:text-white-light">
+                Les Ecarts les plus importants
+              </h5>
+            </div>
+
+            <div className="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th className="ltr:rounded-l-md rtl:rounded-r-md">
+                      Direction Régionale (DR)
+                    </th>
+                    <th>Date</th>
+                    <th>Type d'Ecart</th>
+                    <th>Valeur</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ecarts.map((ecart, index) => (
+                    <tr
+                      key={index}
+                      className="group text-white-dark hover:text-black dark:hover:text-white-light/90"
+                    >
+                      <td className="min-w-[150px] text-black dark:text-white">
+                        {ecart.dr}
+                      </td>
+                      <td className="text-black dark:text-white">
+                        {ecart.date}
+                      </td>
+                      <td className="text-black dark:text-white">
+                        {ecart.name}
+                      </td>
+                      <td
+                        className={`text-black dark:text-white ${getEcartColor(
+                          ecart.valeur
+                        )}`}
+                      >
+                        {ecart.valeur >= 0 ? "+" : ""}
+                        {ecart.valeur.toLocaleString()} FCFA
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

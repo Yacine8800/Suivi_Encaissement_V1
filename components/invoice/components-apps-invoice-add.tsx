@@ -6,6 +6,16 @@ import IconSave from "@/components/icon/icon-save";
 import IconArrowBackward from "../icon/icon-arrow-backward";
 import IconSquareRotated from "../icon/icon-square-rotated";
 import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+import { TAppDispatch, TRootState } from "@/store";
+import { fetchDirectionRegionales } from "@/store/reducers/select/dr.slice";
+import { fetchProfile } from "@/store/reducers/select/profile.slice";
+import { fetchSecteurs } from "@/store/reducers/select/secteur.slice";
+import { addUser } from "@/store/reducers/user/create-user.slice";
+import { Toastify } from "@/utils/toast";
+import { useRouter, useSearchParams } from "next/navigation";
+import { fetchUsers } from "@/store/reducers/user/get.user.slice";
+import { fetchupdateUser } from "@/store/reducers/user/update-user.slice";
 
 // Définition des types pour les options des sélecteurs
 interface Option {
@@ -50,22 +60,128 @@ const ComponentsAppsInvoiceAdd = () => {
   const [availableSecteurs, setAvailableSecteurs] = useState<Option[]>([]);
   const [showDirectionRegional, setShowDirectionRegional] = useState(false);
   const [showSecteur, setShowSecteur] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
+  const areAllDirectionsSelected = () =>
+    accountInfo.dr.length === availableDirections.length - 1;
 
-  // Fonction pour charger les données à partir de l'API
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch<TAppDispatch>();
+
+  const [id, setId] = useState();
+
+  const searchParams: any = useSearchParams();
+  // const id = searchParams.get("id");
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/data"); // API pour récupérer les profils et secteurs
-        const data: DataResponse = await response.json();
-        setProfils(data.profils);
-        setDrSecteurs(data.dr_secteurs);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des données", error);
-      }
-    };
+    setId(searchParams.get("id"));
+  }, [searchParams]);
 
-    fetchData();
-  }, []);
+  const usersDataList: any = useSelector(
+    (state: TRootState) => state.usersData?.data
+  );
+
+  const drData: any = useSelector((state: TRootState) => state.dr?.data);
+
+  console.log(drData);
+  const secteurData: any = useSelector(
+    (state: TRootState) => state.secteur?.data
+  );
+  const profileData: any = useSelector(
+    (state: TRootState) => state.profile?.data
+  );
+
+  const router = useRouter();
+
+  // const loading = useSelector((state: TRootState) => state.useradd.loading);
+
+  useEffect(() => {
+    if (id) {
+      const user = usersDataList?.result?.find((u: any) => u.id === Number(id));
+      if (user) {
+        setPersonalInfo({
+          name: user.firstname,
+          prenom: user.lastname,
+          email: user.email,
+          number: user.phoneNumber,
+        });
+        setAccountInfo({
+          matricule: user.matricule,
+          profil: user.profile,
+          dr: user.directionRegionales.map((dr: string) => ({
+            value: dr,
+            label: dr,
+          })),
+          secteur: user.secteurs.map((secteur: string) => ({
+            value: secteur,
+            label: secteur,
+          })),
+        });
+      }
+    }
+  }, [id, usersDataList]);
+
+  useEffect(() => {
+    dispatch(fetchDirectionRegionales());
+    dispatch(fetchProfile());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (drData) {
+      const directions = [
+        {
+          value: "all",
+          label:
+            accountInfo.dr.length === availableDirections.length - 1
+              ? "Tout désélectionner"
+              : "Tout sélectionner",
+        },
+        ...drData.map((dr: any) => ({
+          value: dr.id,
+          label: `${dr.code} - ${dr.name.trim()}`,
+        })),
+      ];
+      setAvailableDirections(directions);
+    }
+  }, [drData, accountInfo.dr.length, availableDirections.length]);
+
+  useEffect(() => {
+    if (profileData) {
+      const profile = profileData.map((profil: any) => ({
+        value: profil.id,
+        label: `${profil.name.trim()}`,
+      }));
+      setProfils(profile);
+    }
+  }, [profileData]);
+
+  useEffect(() => {
+    if (accountInfo.dr.length > 0) {
+      const drIds = accountInfo.dr.map((dr) => Number(dr.value));
+      dispatch(fetchSecteurs(drIds));
+    } else {
+      setAvailableSecteurs([]);
+    }
+  }, [accountInfo.dr, dispatch]);
+
+  useEffect(() => {
+    if (secteurData) {
+      const secteurs = [
+        {
+          value: "all",
+          label:
+            accountInfo.secteur.length === secteurData.length
+              ? "Tout désélectionner"
+              : "Tout sélectionner",
+        },
+        ...secteurData.map((secteur: any) => ({
+          value: secteur.id,
+          label: secteur.name,
+        })),
+      ];
+      setAvailableSecteurs(secteurs);
+    }
+  }, [secteurData, accountInfo.secteur]);
 
   // Validation des champs obligatoires
   const validateFields = () => {
@@ -152,112 +268,52 @@ const ComponentsAppsInvoiceAdd = () => {
     });
   };
 
-  // Gestion de la soumission du formulaire
   const handleSubmit = async () => {
-    if (validateFields()) {
-      const newUser = {
-        name: personalInfo.name,
-        prenom: personalInfo.prenom,
-        email: personalInfo.email,
-        number: personalInfo.number,
-        matricule: accountInfo.matricule,
-        profil: accountInfo.profil,
-        dr: accountInfo.dr,
-        secteur: accountInfo.secteur,
-      };
+    if (!validateFields()) return;
 
-      try {
-        const response = await fetch("/api/users", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ user: newUser }), // Only send user data, without the id
-        });
+    const userData: any = {
+      email: personalInfo.email,
+      firstname: personalInfo.name,
+      lastname: personalInfo.prenom,
+      matricule: accountInfo.matricule,
+      phoneNumber: personalInfo.number,
+      profileId:
+        profils.find((p) => p.label === accountInfo.profil)?.value || 1,
+      directionRegionales: accountInfo.dr
+        .map((dr) => ({ id: Number(dr.value) }))
+        .filter((dr) => dr.id !== undefined), // Filtrer les `id` invalides
+      secteurs: accountInfo.secteur
+        .map((secteur) => ({ id: Number(secteur.value) }))
+        .filter((secteur) => secteur.id !== undefined), // Filtrer les `id` invalides
+    };
 
-        if (response.ok) {
-          const data = await response.json();
-          showMessage("L'utilisateur a été créé avec succès", "success");
+    setLoading(true);
+
+    try {
+      if (id) {
+        const response = await dispatch(
+          fetchupdateUser({ userId: Number(id), userData })
+        );
+        if (response.meta.requestStatus === "fulfilled") {
+          Toastify("success", "Utilisateur mis à jour avec succès");
+          router.push("/user");
         } else {
-          const errorData = await response.json();
-          showMessage(errorData.message, "error");
+          Toastify("error", "Erreur lors de la mise à jour de l'utilisateur");
         }
-      } catch (error) {
-        showMessage("Erreur lors de la soumission", "error");
-      }
-    }
-  };
-
-  // Gestion de la sélection du profil
-  const handleProfilChange = (selectedProfil: Option | null) => {
-    if (selectedProfil) {
-      if (["Comptable", "AGC"].includes(selectedProfil.value)) {
-        const directions = Object.keys(drSecteurs).map((dr) => ({
-          value: dr,
-          label: dr,
-        }));
-        setShowDirectionRegional(true);
-        setAvailableDirections(directions);
       } else {
-        setShowDirectionRegional(false);
-        setAvailableDirections([]);
-        setAvailableSecteurs([]);
-        setShowSecteur(false);
-        setAccountInfo({ ...accountInfo, dr: [], secteur: [] });
+        const response = await dispatch(addUser(userData));
+        if (response.meta.requestStatus === "fulfilled") {
+          Toastify("success", "Utilisateur ajouté avec succès");
+          router.push("/user");
+        } else {
+          Toastify("error", "Erreur lors de l'ajout de l'utilisateur");
+        }
       }
-      setAccountInfo({ ...accountInfo, profil: selectedProfil.value });
-    } else {
-      setShowDirectionRegional(false);
-      setShowSecteur(false);
-      setAccountInfo({ ...accountInfo, profil: "", dr: [], secteur: [] });
+    } catch (error) {
+      Swal.fire("Erreur", "Une erreur inattendue s'est produite", "error");
+    } finally {
+      setLoading(false);
     }
-  };
-
-  // Gestion de la sélection de la direction régionale
-  const handleDirectionChange = (
-    selectedDirections: MultiValue<Option>,
-    actionMeta: ActionMeta<Option>
-  ) => {
-    const selectedDRs = selectedDirections.map((dr) => dr.value);
-
-    // Filtrer les secteurs sélectionnés en fonction des DR choisies
-    const newSecteurs = accountInfo.secteur.filter((secteur) =>
-      selectedDRs.some((dr) => drSecteurs[dr]?.includes(secteur))
-    );
-
-    const secteursForSelectedDRs = selectedDRs.flatMap(
-      (dr) => drSecteurs[dr] || []
-    );
-
-    setAvailableSecteurs(secteursForSelectedDRs);
-
-    // Afficher ou masquer le sélecteur de secteur en fonction des DR sélectionnées
-    setShowSecteur(selectedDirections.length > 0);
-
-    setAccountInfo((prevState) => ({
-      ...prevState,
-      dr: Array.from(selectedDirections),
-      secteur: newSecteurs,
-    }));
-  };
-
-  // Gestion de la sélection des secteurs
-  const handleSecteurChange = (
-    selectedSecteurs: MultiValue<Option>,
-    actionMeta: ActionMeta<Option>
-  ) => {
-    setAccountInfo({ ...accountInfo, secteur: Array.from(selectedSecteurs) });
-  };
-
-  // Gestion de la modification des informations personnelles
-  const handlePersonalInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value });
-  };
-
-  const handleAccountInfoChange = (
-    e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
-  ) => {
-    setAccountInfo({ ...accountInfo, [e.target.name]: e.target.value });
   };
 
   return (
@@ -271,7 +327,7 @@ const ComponentsAppsInvoiceAdd = () => {
             <IconSquareRotated className="shrink-0 fill-primary" />
           </button>
           <span className="ml-2 text-xl font-thin text-black">
-            Ajouter un utilisateur
+            {id ? `Modifier l'utilisateur` : "Ajouter un utilisateur"}
           </span>
         </p>
         <hr className="my-6 border-white-light dark:border-[#1b2e4b]" />
@@ -283,6 +339,29 @@ const ComponentsAppsInvoiceAdd = () => {
               <div className="text-lg">Information personnelle :</div>
 
               <div className="mt-4 flex items-center">
+                <label htmlFor="acno" className="mb-0 w-1/3 ltr:mr-2 rtl:ml-2">
+                  Matricule<span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="acno"
+                  type="text"
+                  name="matricule"
+                  className="form-input flex-1"
+                  placeholder="Entrer votre matricule"
+                  value={accountInfo.matricule}
+                  onChange={(e) =>
+                    setAccountInfo({
+                      ...accountInfo,
+                      matricule: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              {errors.matricule && (
+                <p className="text-red-500">{errors.matricule}</p>
+              )}
+
+              <div className="mt-4 flex items-center">
                 <label
                   htmlFor="reciever-name"
                   className="mb-0 w-1/3 ltr:mr-2 rtl:ml-2"
@@ -290,12 +369,14 @@ const ComponentsAppsInvoiceAdd = () => {
                   Nom<span className="text-red-500">*</span>
                 </label>
                 <input
-                  id="reciever-name"
                   type="text"
                   name="name"
                   className="form-input flex-1"
                   placeholder="Entrer votre nom"
-                  onChange={handlePersonalInfoChange}
+                  value={personalInfo.name}
+                  onChange={(e) =>
+                    setPersonalInfo({ ...personalInfo, name: e.target.value })
+                  }
                 />
               </div>
               {errors.name && <p className="text-red-500">{errors.name}</p>}
@@ -313,7 +394,10 @@ const ComponentsAppsInvoiceAdd = () => {
                   name="prenom"
                   className="form-input flex-1"
                   placeholder="Entrer votre prénom"
-                  onChange={handlePersonalInfoChange}
+                  value={personalInfo.prenom}
+                  onChange={(e) =>
+                    setPersonalInfo({ ...personalInfo, prenom: e.target.value })
+                  }
                 />
               </div>
               {errors.prenom && <p className="text-red-500">{errors.prenom}</p>}
@@ -331,7 +415,10 @@ const ComponentsAppsInvoiceAdd = () => {
                   name="email"
                   className="form-input flex-1"
                   placeholder="Entrer votre email"
-                  onChange={handlePersonalInfoChange}
+                  value={personalInfo.email}
+                  onChange={(e) =>
+                    setPersonalInfo({ ...personalInfo, email: e.target.value })
+                  }
                 />
               </div>
               {errors.email && <p className="text-red-500">{errors.email}</p>}
@@ -349,7 +436,10 @@ const ComponentsAppsInvoiceAdd = () => {
                   name="number"
                   className="form-input flex-1"
                   placeholder="Entrer votre téléphone"
-                  onChange={handlePersonalInfoChange}
+                  value={personalInfo.number}
+                  onChange={(e) =>
+                    setPersonalInfo({ ...personalInfo, number: e.target.value })
+                  }
                 />
               </div>
               {errors.number && <p className="text-red-500">{errors.number}</p>}
@@ -358,23 +448,6 @@ const ComponentsAppsInvoiceAdd = () => {
             {/* Information Compte */}
             <div className="w-full lg:w-1/2">
               <div className="text-lg">Information Compte :</div>
-
-              <div className="mt-4 flex items-center">
-                <label htmlFor="acno" className="mb-0 w-1/3 ltr:mr-2 rtl:ml-2">
-                  Matricule<span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="acno"
-                  type="text"
-                  name="matricule"
-                  className="form-input flex-1"
-                  placeholder="Entrer votre matricule"
-                  onChange={handleAccountInfoChange}
-                />
-              </div>
-              {errors.matricule && (
-                <p className="text-red-500">{errors.matricule}</p>
-              )}
 
               <div className="mt-4 flex items-center">
                 <label
@@ -386,44 +459,60 @@ const ComponentsAppsInvoiceAdd = () => {
                 <Select
                   placeholder="Choisir un profil"
                   options={profils}
-                  onChange={handleProfilChange}
+                  value={profils.find((p) => p.label === accountInfo.profil)}
+                  onChange={(option) =>
+                    setAccountInfo({
+                      ...accountInfo,
+                      profil: option?.label || "",
+                    })
+                  }
                   isClearable
                 />
               </div>
               {errors.profil && <p className="text-red-500">{errors.profil}</p>}
 
-              {showDirectionRegional && (
-                <div className="mt-4 flex items-center">
-                  <label htmlFor="DR" className="mb-0 w-1/3 ltr:mr-2 rtl:ml-2">
-                    Direction régionale<span className="text-red-500">*</span>
-                  </label>
-                  <Select
-                    placeholder="Sélectionner une direction régionale"
-                    options={availableDirections}
-                    isMulti
-                    onChange={handleDirectionChange}
-                  />
-                </div>
-              )}
+              <div className="mt-4 flex items-center">
+                <label htmlFor="DR" className="mb-0 w-1/3 ltr:mr-2 rtl:ml-2">
+                  Direction régionale<span className="text-red-500">*</span>
+                </label>
+                <Select
+                  placeholder="Choisir une direction régionale"
+                  options={availableDirections}
+                  value={accountInfo.dr}
+                  isMulti
+                  onChange={(selectedOptions) =>
+                    setAccountInfo({
+                      ...accountInfo,
+                      dr: selectedOptions as Option[],
+                    })
+                  }
+                />
+              </div>
+
               {errors.dr && <p className="text-red-500">{errors.dr}</p>}
 
-              {showSecteur && (
-                <div className="mt-4 flex items-center">
-                  <label
-                    htmlFor="secteur"
-                    className="mb-0 w-1/3 ltr:mr-2 rtl:ml-2"
-                  >
-                    Secteur<span className="text-red-500">*</span>
-                  </label>
-                  <Select
-                    placeholder="Sélectionner un secteur"
-                    options={availableSecteurs}
-                    isMulti
-                    onChange={handleSecteurChange}
-                    value={accountInfo.secteur} // Gérer les valeurs sélectionnées
-                  />
-                </div>
-              )}
+              <div className="mt-4 flex items-center">
+                <label
+                  htmlFor="secteur"
+                  className="mb-0 w-1/3 ltr:mr-2 rtl:ml-2"
+                >
+                  Secteur<span className="text-red-500">*</span>
+                </label>
+                <Select
+                  placeholder="Choisir un secteur"
+                  options={availableSecteurs}
+                  value={accountInfo.secteur}
+                  isMulti
+                  onChange={(selectedOptions) =>
+                    setAccountInfo({
+                      ...accountInfo,
+                      secteur: selectedOptions as Option[],
+                    })
+                  }
+                  isDisabled={areAllDirectionsSelected()}
+                />
+              </div>
+
               {errors.secteur && (
                 <p className="text-red-500">{errors.secteur}</p>
               )}
@@ -434,11 +523,15 @@ const ComponentsAppsInvoiceAdd = () => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-1">
               <button
                 type="button"
-                className="btn btn-success w-full gap-2"
+                className={`btn btn-success w-full gap-2 ${
+                  loading ? "opacity-50" : ""
+                }`}
                 onClick={handleSubmit}
+                disabled={loading}
               >
                 <IconSave className="shrink-0 ltr:mr-2 rtl:ml-2" />
-                Ajouter
+
+                {loading ? "En cours..." : id ? "Modifier" : "Ajouter"}
               </button>
 
               <button type="button" className="btn btn-danger w-full gap-2">
@@ -498,27 +591,23 @@ const ComponentsAppsInvoiceAdd = () => {
                 <span className="text-black">{accountInfo.profil}</span>
               </label>{" "}
               <br />
-              {showDirectionRegional && accountInfo.dr.length > 0 && (
-                <>
-                  <label className="text-[#8e8e8e]">
-                    Direction régionale :{" "}
-                    <span className="text-black">
-                      {accountInfo.dr.map((dr: Option) => dr.label).join(", ")}
-                    </span>
-                  </label>{" "}
-                  <br />
-                </>
-              )}
-              {showSecteur && accountInfo.secteur.length > 0 && (
+              <>
                 <label className="text-[#8e8e8e]">
-                  Secteur :{" "}
+                  Direction régionale :{" "}
                   <span className="text-black">
-                    {accountInfo.secteur
-                      .map((secteur: Option) => secteur.label)
-                      .join(", ")}
+                    {accountInfo.dr.map((dr: Option) => dr.label).join(", ")}
                   </span>
-                </label>
-              )}
+                </label>{" "}
+                <br />
+              </>
+              <label className="text-[#8e8e8e]">
+                Secteur :{" "}
+                <span className="text-black">
+                  {accountInfo.secteur
+                    .map((secteur: Option) => secteur.label)
+                    .join(", ")}
+                </span>
+              </label>
             </p>
           </div>
         </div>

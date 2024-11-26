@@ -1,16 +1,21 @@
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import Dropdown from "@/components/dropdown";
+import IconCaretDown from "@/components/icon/icon-caret-down";
+import Tippy from "@tippyjs/react";
 import sortBy from "lodash/sortBy";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
-import Tippy from "@tippyjs/react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import "tippy.js/dist/tippy.css";
-import IconCaretDown from "@/components/icon/icon-caret-down";
-import IconPencil from "@/components/icon/icon-pencil";
 import IconX from "../icon/icon-x";
-import Dropdown from "@/components/dropdown";
-import { IRootState } from "@/store";
-import IconUsersGroup from "../icon/icon-users-group";
+
+import "flatpickr/dist/flatpickr.css";
+import { French } from "flatpickr/dist/l10n/fr.js";
+import Flatpickr from "react-flatpickr";
+import Swal from "sweetalert2";
+import Csv from "../icon/csv";
+import IconExcel from "../icon/excel";
 import IconEye from "../icon/icon-eye";
+import Pdf from "../icon/pdf";
 
 interface RowData {
   id: number;
@@ -26,6 +31,7 @@ interface RowData {
   validated: boolean;
   "Observation caisse"?: string;
   "Observation banque"?: string;
+  caisse: string;
 }
 
 const rowData: RowData[] = [
@@ -40,6 +46,7 @@ const rowData: RowData[] = [
     Bordereau: "12345",
     "Date revelé": "2024-07-22",
     "Montant revelé": 2500000,
+    caisse: "11111",
     validated: false,
   },
   {
@@ -53,6 +60,7 @@ const rowData: RowData[] = [
     Bordereau: "67890",
     "Date revelé": "2024-07-23",
     "Montant revelé": 1800000,
+    caisse: "11112",
     validated: false,
   },
   {
@@ -66,6 +74,7 @@ const rowData: RowData[] = [
     Bordereau: "54321",
     "Date revelé": "2024-07-24",
     "Montant revelé": 3000000,
+    caisse: "11113",
     validated: false,
   },
   {
@@ -79,6 +88,7 @@ const rowData: RowData[] = [
     Bordereau: "11223",
     "Date revelé": "2024-07-25",
     "Montant revelé": 2000000,
+    caisse: "11114",
     validated: false,
   },
   {
@@ -92,6 +102,7 @@ const rowData: RowData[] = [
     Bordereau: "33445",
     "Date revelé": "2024-07-26",
     "Montant revelé": 1500000,
+    caisse: "11115",
     validated: false,
   },
   {
@@ -105,6 +116,7 @@ const rowData: RowData[] = [
     Bordereau: "99887",
     "Date revelé": "2024-07-27",
     "Montant revelé": 3200000,
+    caisse: "11116",
     validated: false,
   },
   {
@@ -118,6 +130,7 @@ const rowData: RowData[] = [
     Bordereau: "77665",
     "Date revelé": "2024-07-28",
     "Montant revelé": 2100000,
+    caisse: "11117",
     validated: false,
   },
   {
@@ -131,6 +144,7 @@ const rowData: RowData[] = [
     Bordereau: "55667",
     "Date revelé": "2024-07-29",
     "Montant revelé": 1900000,
+    caisse: "1111333",
     validated: false,
   },
   {
@@ -144,6 +158,7 @@ const rowData: RowData[] = [
     Bordereau: "44556",
     "Date revelé": "2024-07-30",
     "Montant revelé": 2200000,
+    caisse: "2223",
     validated: false,
   },
   {
@@ -157,6 +172,7 @@ const rowData: RowData[] = [
     Bordereau: "66778",
     "Date revelé": "2024-07-31",
     "Montant revelé": 2500000,
+    caisse: "111132",
     validated: false,
   },
 ];
@@ -177,12 +193,9 @@ const formatDate = (date: string): string => {
 };
 
 const ComponentsDatatablesColumnValider = () => {
-  const themeConfig = useSelector((state: IRootState) => state.themeConfig);
   const dispatch = useDispatch();
 
   const [showSettingModal, setShowSettingModal] = useState(false);
-  const isRtl =
-    useSelector((state: IRootState) => state.themeConfig.rtlClass) === "rtl";
 
   const [initialLoad, setInitialLoad] = useState(true);
   const [savedRecords, setSavedRecords] = useState<RowData[]>([]);
@@ -256,6 +269,14 @@ const ComponentsDatatablesColumnValider = () => {
   };
 
   const cols = [
+    {
+      accessor: "caisse",
+      title: "Caisse",
+      sortable: true,
+      render: ({ caisse }: { caisse: string }) => (
+        <div className="cursor-pointer font-semibold text-primary underline hover:no-underline">{`#${caisse}`}</div>
+      ),
+    },
     { accessor: "Date Encais", title: "Date Encais", sortable: true },
     {
       accessor: "Caisse mode",
@@ -418,23 +439,287 @@ const ComponentsDatatablesColumnValider = () => {
 
   const validatedRecordsExist = validatedRecords.length > 0;
 
+  const showAlert = async () => {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-primary",
+        cancelButton: "btn btn-dark ltr:mr-3 rtl:ml-3",
+        popup: "sweet-alerts",
+      },
+      buttonsStyling: false,
+    });
+    swalWithBootstrapButtons
+      .fire({
+        title: "Etes vous sur de passer en litige?",
+        text: "Cette action mettre l'encaissement en litige",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Confirmer",
+        cancelButtonText: "Annuler",
+        reverseButtons: true,
+        padding: "2em",
+      })
+      .then((result) => {
+        if (result.value) {
+          swalWithBootstrapButtons.fire(
+            "Confirmer",
+            "Votre encaissement est passer en litige",
+            "success"
+          );
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire(
+            "Annuler",
+            "Vous avez annuler",
+            "error"
+          );
+        }
+      });
+  };
+
+  const jour = new Date();
+  const lendemain = new Date();
+  lendemain.setDate(jour.getDate() + 1);
+
+  const formatDate = (date: Date) => {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const [dateRange, setDateRange] = useState<Date[]>([jour, lendemain]);
+
+  const [formattedRange, setFormattedRange] = useState<string>(
+    `De ${formatDate(jour)} à ${formatDate(lendemain)}`
+  );
+
+  useEffect(() => {
+    // Met à jour l'affichage formaté quand la plage de dates change
+    if (dateRange.length === 2) {
+      setFormattedRange(
+        ` De ${formatDate(dateRange[0])} à ${formatDate(dateRange[1])}`
+      );
+    }
+  }, [dateRange]);
+  const DR = [
+    { value: "DRAN", label: "DRAN" },
+    { value: "DRAS", label: "DRAS" },
+    { value: "DRABO", label: "DRABO" },
+  ];
+  const exploitation = [
+    { value: "EXP 1", label: "EXP 1" },
+    { value: "EXP 2", label: "EXP 2" },
+    { value: "EXP 3", label: "EXP 3" },
+  ];
+  const banque = [
+    { value: "BANQ 1", label: "BANQ 1" },
+    { value: "BANQ 2", label: "BANQ 2" },
+    { value: "BANQ 3", label: "BANQ 3" },
+  ];
+  const caisse = [
+    { value: "CAISSE 1", label: "CAISSE 1" },
+    { value: "CAISSE 2", label: "CAISSE 2" },
+    { value: "CAISSE 3", label: "CAISSE 3" },
+  ];
   return (
-    <div className="panel mt-6">
-      <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center">
-        <h5 className="text-lg font-semibold dark:text-white-light">
+    <div className="mt-6">
+      <div className="mb-8 flex w-full">
+        <h5 className=" ml-9 flex w-full flex-wrap items-center gap-6 text-xl font-bold text-orange-400">
           {totalValidatedRecords}
-          {encaissementText}
+          {encaissementText}{" "}
         </h5>
-        <div className="flex items-center gap-5 ltr:ml-auto rtl:mr-auto">
-          <div className="flex flex-col gap-5 md:flex-row md:items-center">
-            <div className="dropdown">
+
+        <div className=" flex items-center justify-center lg:justify-end">
+          <button type="button" className="mr-1">
+            <IconExcel />
+          </button>
+          <button type="button" className="text-white">
+            <Csv />
+          </button>
+          <button type="button" className="mr-7">
+            <Pdf />
+          </button>
+        </div>
+        <div className=" w-5/12 text-right">
+          <input
+            type="text"
+            className="form-input"
+            placeholder="Recherche..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
+      <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-center">
+        <div className="flex w-full items-center justify-center gap-8  ltr:ml-auto rtl:mr-auto">
+          <div className="mb-2 flex w-full flex-col gap-6  md:flex-row md:items-center">
+            <Flatpickr
+              options={{
+                mode: "range",
+                dateFormat: "d-m-Y",
+                locale: French,
+                defaultDate: dateRange,
+              }}
+              className="form-input  w-[220px]"
+              onChange={(selectedDates: Date[]) => {
+                setDateRange(selectedDates);
+              }}
+            />
+
+            <div className="dropdown w-2/12">
               <Dropdown
-                placement={`${isRtl ? "bottom-end" : "bottom-start"}`}
-                btnClassName="!flex items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
+                btnClassName="!flex w-full items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark "
+                button={
+                  <>
+                    <span className="ltr:mr-1 rtl:ml-1">Caisse</span>
+                    <IconCaretDown className="absolute right-3 h-5" />
+                  </>
+                }
+              >
+                <ul className="!min-w-[140px]">
+                  {caisse.map((col, i) => (
+                    <li
+                      key={i}
+                      className="flex flex-col"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center px-4 py-1">
+                        <label className="mb-0 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={true}
+                            className="form-checkbox"
+                            value={col.label}
+                            onChange={(event) => {
+                              showHideColumns(event.target.value);
+                            }}
+                          />
+                          <span className="ltr:ml-2 rtl:mr-2">{col.value}</span>
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Dropdown>
+            </div>
+            <div className="dropdown w-2/12">
+              <Dropdown
+                btnClassName="!flex w-full items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
+                button={
+                  <>
+                    <span className="ltr:mr-1 rtl:ml-1">Banque</span>
+                    <IconCaretDown className="h-5bg-black-dark-light absolute right-3 " />
+                  </>
+                }
+              >
+                <ul className="!min-w-[140px]">
+                  {banque.map((col, i) => (
+                    <li
+                      key={i}
+                      className="flex flex-col"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center px-4 py-1">
+                        <label className="mb-0 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={true}
+                            className="form-checkbox"
+                            value={col.label}
+                            onChange={(event) => {
+                              showHideColumns(event.target.value);
+                            }}
+                          />
+                          <span className="ltr:ml-2 rtl:mr-2">{col.value}</span>
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Dropdown>
+            </div>
+            <div className="dropdown w-2/12">
+              <Dropdown
+                btnClassName="!flex w-full items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
+                button={
+                  <>
+                    <span className="ltr:mr-1 rtl:ml-1">Exploitation</span>
+                    <IconCaretDown className="absolute right-3 justify-end " />
+                  </>
+                }
+              >
+                <ul className="!min-w-[140px]">
+                  {exploitation.map((col, i) => (
+                    <li
+                      key={i}
+                      className="flex flex-col"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center px-4 py-1">
+                        <label className="mb-0 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={true}
+                            className="form-checkbox"
+                            value={col.label}
+                            onChange={(event) => {
+                              showHideColumns(event.target.value);
+                            }}
+                          />
+                          <span className="ltr:ml-2 rtl:mr-2">{col.value}</span>
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Dropdown>
+            </div>
+            <div className="dropdown w-2/12">
+              <Dropdown
+                btnClassName="!flex w-full items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
+                button={
+                  <>
+                    <span className="ltr:mr-1 rtl:ml-1">
+                      Direction régional
+                    </span>
+                    <IconCaretDown className="absolute right-3 justify-end " />
+                  </>
+                }
+              >
+                <ul className="!min-w-[140px]">
+                  {DR.map((col, i) => (
+                    <li
+                      key={i}
+                      className="flex flex-col"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center px-4 py-1">
+                        <label className="mb-0 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={true}
+                            className="form-checkbox"
+                            value={col.label}
+                            onChange={(event) => {
+                              showHideColumns(event.target.value);
+                            }}
+                          />
+                          <span className="ltr:ml-2 rtl:mr-2">{col.value}</span>
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Dropdown>
+            </div>
+
+            <div className="dropdown w-2/12">
+              <Dropdown
+                btnClassName="!flex w-full items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
                 button={
                   <>
                     <span className="ltr:mr-1 rtl:ml-1">Colonne</span>
-                    <IconCaretDown className="h-5 w-[100px]" />
+                    <IconCaretDown className="absolute right-3 justify-end " />
                   </>
                 }
               >
@@ -465,21 +750,13 @@ const ComponentsDatatablesColumnValider = () => {
               </Dropdown>
             </div>
           </div>
-          <div className="text-right">
-            <input
-              type="text"
-              className="form-input w-[400px]"
-              placeholder="Search..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
         </div>
       </div>
+
       <div className="datatables">
         <DataTable
           className="table-hover whitespace-nowrap"
-          records={validatedRecords}
+          records={rowData}
           columns={cols.map((col) => ({
             ...col,
             hidden: hideCols.includes(col.accessor),
@@ -526,11 +803,22 @@ const ComponentsDatatablesColumnValider = () => {
                 </button>
 
                 <h1 className="mb-1 text-[20px] dark:text-white">
-                  Formulaire d'édition
+                  Formulaire de visualisation
                 </h1>
                 <p className="text-white-dark">
-                  Modifiez vos encaissements s'ils ne sont pas terminés.
+                  Vous permet de voir vos encaissements terminés.
                 </p>
+              </div>
+              <div className="mb-5">
+                <div className="flex ">
+                  <button
+                    type="button"
+                    className="btn btn-danger w-full"
+                    onClick={() => showAlert()}
+                  >
+                    {"Passer en litige"}
+                  </button>
+                </div>
               </div>
 
               <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">
@@ -751,18 +1039,6 @@ const ComponentsDatatablesColumnValider = () => {
                   ></textarea>
                 </div>
               </div>
-
-              {/* <div className="mb-4 mt-10">
-                <div className="flex flex-col gap-4">
-                  <button
-                    type="button"
-                    className="btn btn-success h-[50px] w-full border-none bg-[#ED6C03] shadow-sm"
-                    onClick={handleValidate}
-                  >
-                    VALIDER
-                  </button>
-                </div>
-              </div> */}
             </div>
           </nav>
         </div>

@@ -1,12 +1,7 @@
 "use client";
-import React, {
-  ReactNode,
-  PropsWithChildren,
-  useEffect,
-  useState,
-} from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { IRootState } from "@/store";
+
 import {
   toggleRTL,
   toggleTheme,
@@ -16,11 +11,15 @@ import {
   toggleNavbar,
   toggleSemidark,
 } from "@/store/themeConfigSlice";
-import Loading from "./components/layouts/loading";
-import { getTranslation } from "./i18n";
+import Loading from "@/components/layouts/loading";
+import { getTranslation } from "@/i18n";
 
-function App({ children }: PropsWithChildren<{}>): JSX.Element {
-  const themeConfig = useSelector((state: IRootState) => state.themeConfig);
+import { TRootState } from "./store";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+function App({ children }: PropsWithChildren) {
+  const themeConfig = useSelector((state: TRootState) => state.themeConfig);
   const dispatch = useDispatch();
   const { initLocale } = getTranslation();
   const [isLoading, setIsLoading] = useState(true);
@@ -71,6 +70,7 @@ function App({ children }: PropsWithChildren<{}>): JSX.Element {
       } main-section relative font-nunito text-sm font-normal antialiased`}
     >
       {isLoading ? <Loading /> : children}
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }

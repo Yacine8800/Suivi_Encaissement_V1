@@ -5,8 +5,11 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // experimental: {
+  //   serverActions: true,
+  // },
   experimental: {
-    serverActions: true,
+    outputFileTracing: true,
   },
 };
 

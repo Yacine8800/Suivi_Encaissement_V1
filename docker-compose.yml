@@ -1,0 +1,9 @@
+services:
+  suivi-encaissement_web:
+    image: dstdcie17/suivi_encaissement_web:1.0.4
+    container_name: suivi_encaissement_web
+    ports:
+      - "2403:2403"
+    restart: unless-stopped
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://20.93.150.129:2402

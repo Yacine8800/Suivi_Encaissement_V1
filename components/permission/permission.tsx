@@ -8,10 +8,10 @@ import IconCaretDown from "@/components/icon/icon-caret-down";
 import IconFolder from "@/components/icon/icon-folder";
 import IconVideo from "@/components/icon/icon-video";
 import IconEdit from "@/components/icon/icon-edit";
-import IconDroplet from "@/components/icon/icon-droplet";
 import AnimateHeight from "react-animate-height";
 import IconTxtFile from "../icon/icon-txt-file";
 import IconTrashLines from "../icon/icon-trash-lines";
+import IconClipboardText from "../icon/icon-clipboard-text";
 
 // Définition des types pour les options des sélecteurs
 interface Option {
@@ -47,7 +47,7 @@ const Permission = () => {
       text: "Encaissement valider",
       description: "Responsable Commercial",
     },
-    { id: 9, text: "Profils", description: "Directeur Régional" },
+    { id: 9, text: "Habilitations", description: "Directeur Régional" },
     {
       id: 10,
       text: "Utilisateurs",
@@ -163,7 +163,7 @@ const Permission = () => {
                               IconComponent = IconSave;
                               break;
                             case "LECTURE":
-                              IconComponent = IconVideo;
+                              IconComponent = IconClipboardText;
                               break;
                             case "MODIFICATION":
                               IconComponent = IconEdit;
