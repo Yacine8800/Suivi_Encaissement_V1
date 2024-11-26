@@ -1,10 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select, { MultiValue } from "react-select";
 import { French } from "flatpickr/dist/l10n/fr.js";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
+import { useDispatch, useSelector } from "react-redux";
+import { TAppDispatch, TRootState } from "@/store";
+import { fetchDirectionRegionales } from "@/store/reducers/select/dr.slice";
 
 type SelectedOptionsType = {
   DR: MultiValue<{ value: string; label: string }>;
@@ -14,6 +17,13 @@ type SelectedOptionsType = {
 };
 
 const Filtre = () => {
+  const dispatch = useDispatch<TAppDispatch>();
+  const drData: any = useSelector((state: TRootState) => state.dr.data);
+
+  useEffect(() => {
+    dispatch(fetchDirectionRegionales());
+  }, [dispatch]);
+
   const [date3, setDate3] = useState<string[]>(["2022-07-05", "2022-07-10"]);
   const [showFilters, setShowFilters] = useState(true);
   const [selectedOptions, setSelectedOptions] = useState<SelectedOptionsType>({
@@ -23,13 +33,19 @@ const Filtre = () => {
     Reglement: [],
   });
 
-  const optionsDR = [
-    { value: "dr-option1", label: "DR Option 1" },
-    { value: "dr-option2", label: "DR Option 2" },
-    { value: "dr-option3", label: "DR Option 3" },
-    { value: "dr-option4", label: "DR Option 4" },
-    { value: "dr-option5", label: "DR Option 5" },
-  ];
+  const [optionsDR, setOptionsDR] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  useEffect(() => {
+    if (drData) {
+      const directions = drData.map((dr: any) => ({
+        value: dr.id,
+        label: dr.name,
+      }));
+      setOptionsDR(directions);
+    }
+  }, [drData]);
 
   const optionsExploitation = [
     { value: "exploitation-option1", label: "Exploitation Option 1" },
@@ -110,7 +126,7 @@ const Filtre = () => {
                 options={optionsDR}
                 isMulti
                 isSearchable={true}
-                className="w-full"
+                className="z-50 w-full"
                 onChange={(selected) => handleSelectChange(selected, "DR")}
                 value={selectedOptions.DR}
               />
@@ -121,7 +137,7 @@ const Filtre = () => {
                 options={optionsExploitation}
                 isMulti
                 isSearchable={true}
-                className="w-full"
+                className="z-50 w-full"
                 onChange={(selected) =>
                   handleSelectChange(selected, "Exploitation")
                 }
@@ -134,7 +150,7 @@ const Filtre = () => {
                 options={optionsEnergie}
                 isMulti
                 isSearchable={true}
-                className="w-full"
+                className="z-50 w-full"
                 onChange={(selected) => handleSelectChange(selected, "Energie")}
                 value={selectedOptions.Energie}
               />
@@ -145,7 +161,7 @@ const Filtre = () => {
                 options={optionsReglement}
                 isMulti
                 isSearchable={true}
-                className="w-full"
+                className="z-50 w-full"
                 onChange={(selected) =>
                   handleSelectChange(selected, "Reglement")
                 }

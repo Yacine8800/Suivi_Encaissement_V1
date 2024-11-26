@@ -51,6 +51,10 @@ const ComponentsAppsUsers: React.FC = () => {
     (state: TRootState) => state.userUpdate.loading
   );
 
+  const ProfilList: any = useSelector(
+    (state: TRootState) => state.profile.data
+  );
+
   const [addUserModal, setAddUserModal] = useState(false);
   const [isDeleteUserModal, setIsDeleteUserModal] = useState(false);
   const [value, setValue] = useState<"list" | "grid">("list");
@@ -61,10 +65,7 @@ const ComponentsAppsUsers: React.FC = () => {
   const [search, setSearch] = useState("");
   const [filteredItems, setFilteredItems] = useState<User[]>([]);
   const [params, setParams] = useState<Partial<User>>({});
-  const [availableProfiles] = useState([
-    { value: "ADMIN", label: "ADMIN" },
-    { value: "USER", label: "USER" },
-  ]);
+  const [availableProfiles, setAvailableProfiles] = useState<Option[]>([]);
 
   const router = useRouter();
 
@@ -72,13 +73,25 @@ const ComponentsAppsUsers: React.FC = () => {
     (state: TRootState) => state.useGetPatch.data
   );
 
+  useEffect(() => {
+    if (ProfilList) {
+      const profiles = ProfilList?.map((profil: any) => ({
+        value: profil.id,
+        label: profil.name,
+      }));
+      setAvailableProfiles(profiles);
+    }
+  }, [ProfilList]);
+
   const [editUserData, setEditUserData] = useState<any>(null);
 
   useEffect(() => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  console.log(editUserPatch);
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
 
   useEffect(() => {
     if (usersDataList) {

@@ -67,9 +67,12 @@ const Role = () => {
     "SUPPRESSION",
   ];
 
-  const [individualSwitches, setIndividualSwitches] = useState(
-    items2?.map(() => permissionNames?.map(() => false))
+  const [individualSwitches, setIndividualSwitches] = useState(() =>
+    items2 && permissionNames
+      ? items2.map(() => permissionNames?.map(() => false))
+      : []
   );
+
   const [globalSwitch, setGlobalSwitch] = useState(false);
   const [treeview, setTreeview] = useState<string[]>([]);
 
@@ -104,6 +107,14 @@ const Role = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (items2 && permissionNames) {
+  //     setIndividualSwitches(
+  //       items2?.map(() => permissionNames?.map(() => false))
+  //     );
+  //   }
+  // }, [items2, permissionNames]);
+
   // Render Permission TreeView (Folders and Files with Icons)
   const renderPermissionTree = () => {
     return (
@@ -129,9 +140,9 @@ const Role = () => {
             height={treeview.includes(personalInfo.libelle) ? "auto" : 0}
           >
             <ul className="ltr:pl-14 rtl:pr-14">
-              {items2.map((role: { text: any; id: any }, roleIndex: any) => {
+              {items2?.map((role: { text: any; id: any }, roleIndex: any) => {
                 // Check if any permission switch is on for this role
-                const isRoleVisible = individualSwitches[roleIndex].some(
+                const isRoleVisible = individualSwitches[roleIndex]?.some(
                   (state: any) => state
                 );
                 if (!isRoleVisible) return null;
@@ -296,6 +307,7 @@ const Role = () => {
                                 type="checkbox"
                                 className="custom_switch peer absolute z-10 h-full w-full cursor-pointer opacity-0"
                                 checked={
+                                  individualSwitches[roleIndex] &&
                                   individualSwitches[roleIndex][permIndex]
                                 }
                                 onChange={() =>
