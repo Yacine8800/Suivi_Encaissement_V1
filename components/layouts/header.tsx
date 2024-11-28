@@ -139,7 +139,7 @@ const Header = () => {
             <div className="dropdown flex shrink-0">
               <div className="mr-6">
                 <div className="font-bold text-gray-800">{`${lastname} ${firstname}`}</div>
-                <div className="text-sm text-gray-600">{newProfile}</div>
+                <div className="text-sm text-gray-600">{matricule}</div>
               </div>
               <Dropdown
                 offset={[0, 8]}
@@ -165,15 +165,12 @@ const Header = () => {
                         <h4 className="text-base">
                           {`${lastname} ${firstname}`}
                         </h4>
-                        <span className="text-sm font-thin text-black hover:text-primary dark:text-dark-light/60 dark:hover:text-white">
-                          {email}
-                        </span>
-                        <div className="mt-1 flex gap-2">
+                        <div className="flex gap-2">
+                          <span className="text-sm font-thin text-black hover:text-primary dark:text-dark-light/60 dark:hover:text-white">
+                            {email}
+                          </span>
                           <span className="rounded bg-success-light px-1 text-xs text-success ">
                             {newProfile}
-                          </span>
-                          <span className="rounded bg-danger-light px-1 text-xs text-danger ">
-                            {matricule}
                           </span>
                         </div>
                       </div>
