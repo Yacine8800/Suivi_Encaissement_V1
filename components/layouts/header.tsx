@@ -26,9 +26,15 @@ const Header = () => {
   const router = useRouter();
   const { t, i18n } = getTranslation();
 
-  const { email, matricule, phoneNumber, firstname, lastname } = user;
+  const {
+    email = "",
+    matricule = "",
+    phoneNumber = "",
+    firstname = "",
+    lastname = "",
+  } = user || {};
 
-  const profile = user.profile.name;
+  const profile = user?.profile?.name;
 
   useEffect(() => {
     const selector = document.querySelector(
