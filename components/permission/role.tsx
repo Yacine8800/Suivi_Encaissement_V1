@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect, useMemo } from "react";
 import IconSave from "@/components/icon/icon-save";
 import IconArrowBackward from "../icon/icon-arrow-backward";
@@ -17,6 +16,11 @@ import { TAppDispatch, TRootState } from "@/store";
 import { fetchObjet } from "@/store/reducers/permission/objet-get-slice";
 import { fetchpermissions } from "@/store/reducers/permission/list-crud.slice";
 import { fetchAddRole } from "@/store/reducers/permission/create-habilitation.slice";
+import { Metadata } from "next";
+import { fetchUpdateRole } from "@/store/reducers/permission/edit-habilitations.slice";
+import { fetchProfile } from "@/store/reducers/select/profile.slice";
+import { handleApiError } from "@/utils/apiErrorHandler";
+import { toast } from "react-toastify";
 
 // Définition des types pour les options des sélecteurs
 interface Option {
@@ -41,13 +45,32 @@ interface Permission {
   description?: string;
 }
 
-const Role = () => {
-  const dispatch = useDispatch<TAppDispatch>();
+interface RoleProps {
+  modalEdit: boolean;
+  onClose: () => void;
+  selectedRole?: {
+    id: number;
+    text: string;
+    name: string;
+    permissions: { objectId: number; permissionId: number }[];
+  };
+}
 
-  const [personalInfo, setPersonalInfo] = useState({
-    libelle: "",
-    description: "",
+export const metadata: Metadata = {
+  title: "Ajouter un rôle",
+};
+
+const Role = ({ modalEdit, selectedRole, onClose }: RoleProps) => {
+  const dispatch = useDispatch<TAppDispatch>();
+  console.log('selectedRole', selectedRole);
+
+  const [personalInfo, setPersonalInfo] = useState<any>({
+    libelle: modalEdit && selectedRole ? selectedRole.text : "",
+    description: modalEdit && selectedRole ? selectedRole.name : "",
+    permissions: (modalEdit && selectedRole?.permissions) || [],
   });
+
+  console.log('personalInfo.permissions', personalInfo.permissions);
 
   const [errors, setErrors] = useState({
     libelle: "",
@@ -128,7 +151,7 @@ const Role = () => {
         items2?.map(() => permissionNames?.map(() => false))
       );
     }
-  }, [items2.length, permissionNames.length]);
+  }, [items2, items2?.length, permissionNames, permissionNames?.length]);
 
   const generateSelectedPermissions = () => {
     const selectedPermissions: { objectId: number; permissionId: number }[] =
@@ -148,7 +171,28 @@ const Role = () => {
     return selectedPermissions;
   };
 
-  const handleSave = () => {
+  const handlePermissionChange = (objetId: number, permissionId: number) => {
+    setPersonalInfo((prevState : any) => {
+      const isSelected = prevState.permissions.some(
+        (perm: { objectId: number; permissionId: number }) =>
+          perm.objectId === objetId && perm.permissionId === permissionId
+      );
+
+      const updatedPermissions = isSelected
+        ? prevState.permissions.filter(
+            (perm: { objectId: number; permissionId: number }) =>
+              !(perm.objectId === objetId && perm.permissionId === permissionId)
+          )
+        : [
+            ...prevState.permissions,
+            { objectId: objetId, permissionId: permissionId },
+          ];
+
+      return { ...prevState, permissions: updatedPermissions };
+    });
+  };
+
+  const handleSave = async () => {
     const selectedPermissions = generateSelectedPermissions();
 
     // Exemple d'envoi des données à une API
@@ -158,8 +202,44 @@ const Role = () => {
       permissions: selectedPermissions,
     };
 
-    // Dispatch vers une action Redux ou un appel API
-    dispatch(fetchAddRole(roleData));
+    if (modalEdit) {
+      // Cas de la modification du rôle
+      try {
+        if (selectedRole?.id) {
+          // Si un ID est présent, on passe l'ID dans le payload de fetchUpdateRole
+          await dispatch(
+            fetchUpdateRole({ roleData, id: selectedRole.id })
+          ).unwrap();
+
+          // Notification de succès
+          toast.success("Les informations ont été mises à jour avec succès !");
+          onClose();
+
+          // Rafraîchir la liste
+          await dispatch(fetchProfile());
+        } else {
+          toast.error("ID du rôle manquant pour la mise à jour.");
+        }
+      } catch (err: any) {
+        const errorMessage = handleApiError(err); // Utilisation de la fonction
+        toast.error(
+          errorMessage || "Une erreur s'est produite lors de la mise à jour."
+        );
+      }
+    } else {
+      // Cas de la création d'un nouveau rôle
+      try {
+        await dispatch(fetchAddRole(roleData)).unwrap();
+        toast.success("Profile ajouté avec succès !");
+        onClose();
+        await dispatch(fetchProfile());
+      } catch (err: any) {
+        const errorMessage = handleApiError(err); // Utilisation de la fonction
+        toast.error(
+          errorMessage || "Une erreur s'est produite lors de la création."
+        );
+      }
+    }
   };
 
   // Render Permission TreeView (Folders and Files with Icons)
@@ -186,7 +266,10 @@ const Role = () => {
             duration={300}
             height={treeview.includes(personalInfo.libelle) ? "auto" : 0}
           >
-            <ul className="ltr:pl-14 rtl:pr-14">
+            <ul
+              className="ltr:pl-14 rtl:pr-14"
+              style={{ overflowY: "auto", maxHeight: "440px" }}
+            >
               {items2?.map((role: { text: any; id: any }, roleIndex: any) => {
                 // Check if any permission switch is on for this role
                 const isRoleVisible = individualSwitches[roleIndex]?.some(
@@ -266,7 +349,9 @@ const Role = () => {
             <IconSquareRotated className="shrink-0 fill-primary" />
           </button>
           <span className="ml-2 text-xl font-thin text-black">
-            Ajouter un profil
+            {modalEdit
+              ? `Modifier le profil ${personalInfo?.libelle}`
+              : "Ajouter un profil"}
           </span>
         </p>
         <hr className="my-6 border-white-light dark:border-[#1b2e4b]" />
@@ -286,6 +371,7 @@ const Role = () => {
                   id="libelle"
                   type="text"
                   name="libelle"
+                  value={personalInfo.libelle}
                   className="form-input flex-1"
                   placeholder="Entrer le libelle"
                   onChange={handlePersonalInfoChange}
@@ -306,6 +392,7 @@ const Role = () => {
                   id="description"
                   type="text"
                   name="description"
+                  value={personalInfo.description}
                   className="form-input flex-1"
                   placeholder="Entrer la Description"
                   onChange={handlePersonalInfoChange}
@@ -353,13 +440,18 @@ const Role = () => {
                               <input
                                 type="checkbox"
                                 className="custom_switch peer absolute z-10 h-full w-full cursor-pointer opacity-0"
-                                checked={
-                                  individualSwitches[roleIndex] &&
-                                  individualSwitches[roleIndex][permIndex]
-                                }
-                                onChange={() =>
-                                  handleIndividualSwitch(roleIndex, permIndex)
-                                }
+                                // checked={
+                                //   individualSwitches[roleIndex] &&
+                                //   individualSwitches[roleIndex][permIndex]
+                                // }
+                                // onChange={() =>
+                                //   handleIndividualSwitch(roleIndex, permIndex)
+                                // }
+                                checked={personalInfo.permissions.some(
+                                  (perm: { objectId: number; permissionId: number }) =>
+                                    perm.objectId === role.id && perm.permissionId === permIndex
+                                )}
+                                onChange={() => handlePermissionChange(role.id, permIndex)}
                               />
                               <span className="outline_checkbox bg-icon block h-full rounded-full border-2 border-[#ebedf2] before:absolute before:bottom-1 before:left-1 before:h-4 before:w-4 before:rounded-full before:bg-[#ebedf2] before:bg-[url(/assets/images/close.svg)] before:bg-center before:bg-no-repeat before:transition-all before:duration-300 peer-checked:border-success peer-checked:before:left-7 peer-checked:before:bg-success peer-checked:before:bg-[url(/assets/images/checked.svg)] dark:border-white-dark dark:before:bg-white-dark"></span>
                             </label>
@@ -375,19 +467,45 @@ const Role = () => {
 
           <div className="mb-10 mt-10">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-1">
-              <button
-                type="button"
-                className="btn btn-success w-full gap-2"
-                onClick={handleSave}
-              >
-                <IconSave className="shrink-0 ltr:mr-2 rtl:ml-2" />
-                Ajouter
-              </button>
-
-              <button type="button" className="btn btn-danger w-full gap-2">
-                <IconArrowBackward className="shrink-0 ltr:mr-2 rtl:ml-2" />
-                Retour
-              </button>
+              {modalEdit ? (
+                <>
+                  <button
+                    type="button"
+                    className="btn btn-success w-full gap-2"
+                    onClick={handleSave}
+                  >
+                    <IconSave className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                    Modifier
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-danger w-full gap-2"
+                    onClick={onClose}
+                  >
+                    <IconArrowBackward className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                    Annuler
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="btn btn-success w-full gap-2"
+                    onClick={handleSave}
+                  >
+                    <IconSave className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                    Ajouter
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-danger w-full gap-2"
+                    onClick={onClose}
+                  >
+                    <IconArrowBackward className="shrink-0 ltr:mr-2 rtl:ml-2" />
+                    Retour
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
