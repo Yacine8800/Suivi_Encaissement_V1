@@ -8,7 +8,6 @@ import Dropdown from "@/components/dropdown";
 import { usePathname, useRouter } from "next/navigation";
 import { getTranslation } from "@/i18n";
 import IconMenu from "@/components/icon/icon-menu";
-import IconUser from "@/components/icon/icon-user";
 
 import IconLogout from "@/components/icon/icon-logout";
 import IconMenuDashboard from "@/components/icon/menu/icon-menu-dashboard";
@@ -18,6 +17,7 @@ import IconMenuComponents from "@/components/icon/menu/icon-menu-components";
 
 import React from "react";
 import IconSquareRotated from "../icon/icon-square-rotated";
+import IconSettings from "../icon/icon-settings";
 
 const Header = () => {
   const user = useSelector((state: TRootState) => state.auth?.user);
@@ -199,6 +199,13 @@ const Header = () => {
                       </div>
                     </Link>
                   </li> */}
+
+                  <li className="border-t border-white-light dark:border-white-light/10">
+                    <Link href="" className="!py-3 text-primary">
+                      <IconSettings className="h-4.5 w-4.5 shrink-0 rotate-90 ltr:mr-2 rtl:ml-2" />
+                      Changer de mot de passe
+                    </Link>
+                  </li>
 
                   <li className="border-t border-white-light dark:border-white-light/10">
                     <Link href="/login" className="!py-3 text-danger">
