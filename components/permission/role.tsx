@@ -62,7 +62,7 @@ export const metadata: Metadata = {
 
 const Role = ({ modalEdit, selectedRole, onClose }: RoleProps) => {
   const dispatch = useDispatch<TAppDispatch>();
-  console.log('selectedRole', selectedRole);
+  console.log("selectedRole", selectedRole);
 
   const [personalInfo, setPersonalInfo] = useState<any>({
     libelle: modalEdit && selectedRole ? selectedRole.text : "",
@@ -70,7 +70,7 @@ const Role = ({ modalEdit, selectedRole, onClose }: RoleProps) => {
     permissions: (modalEdit && selectedRole?.permissions) || [],
   });
 
-  console.log('personalInfo.permissions', personalInfo.permissions);
+  console.log("personalInfo.permissions", personalInfo.permissions);
 
   const [errors, setErrors] = useState({
     libelle: "",
@@ -81,7 +81,7 @@ const Role = ({ modalEdit, selectedRole, onClose }: RoleProps) => {
     (state: TRootState) => state.ListHabilitation?.data
   );
 
-  const permissionList = useSelector(
+  const permissionList: Permission[] = useSelector(
     (state: TRootState) => state.permissionCrud.data
   );
 
@@ -147,11 +147,29 @@ const Role = ({ modalEdit, selectedRole, onClose }: RoleProps) => {
 
   useEffect(() => {
     if (items2?.length > 0 && permissionNames?.length > 0) {
-      setIndividualSwitches(
-        items2?.map(() => permissionNames?.map(() => false))
+      // Initialise les switches
+      const updatedSwitches = items2.map(
+        () => permissionNames.map(() => false) // Initialiser toutes les cases à décochées
       );
+
+      // Mettre à jour les switches en fonction des permissions
+      personalInfo.permissions.forEach(
+        (perm: { objectId: number; permissionId: number }) => {
+          const roleIndex = items2.findIndex(
+            (item: { id: number }) => item.id === perm.objectId
+          );
+          const permIndex = permissionList.findIndex(
+            (p: Permission) => p.id === perm.permissionId
+          );
+          if (roleIndex !== -1 && permIndex !== -1) {
+            updatedSwitches[roleIndex][permIndex] = true; // Marquer la case comme cochée
+          }
+        }
+      );
+
+      setIndividualSwitches(updatedSwitches); // Mettre à jour l'état
     }
-  }, [items2, items2?.length, permissionNames, permissionNames?.length]);
+  }, [items2, permissionNames, personalInfo.permissions]);
 
   const generateSelectedPermissions = () => {
     const selectedPermissions: { objectId: number; permissionId: number }[] =
@@ -171,21 +189,25 @@ const Role = ({ modalEdit, selectedRole, onClose }: RoleProps) => {
     return selectedPermissions;
   };
 
-  const handlePermissionChange = (objetId: number, permissionId: number) => {
-    setPersonalInfo((prevState : any) => {
-      const isSelected = prevState.permissions.some(
+  const handlePermissionChange = (roleId: number, permIndex: number) => {
+    const permissionId = permissionList[permIndex]?.id;
+
+    if (permissionId === undefined) return;
+
+    setPersonalInfo((prevState: { permissions: any[] }) => {
+      const existingPermission = prevState.permissions.find(
         (perm: { objectId: number; permissionId: number }) =>
-          perm.objectId === objetId && perm.permissionId === permissionId
+          perm.objectId === roleId && perm.permissionId === permissionId
       );
 
-      const updatedPermissions = isSelected
+      const updatedPermissions = existingPermission
         ? prevState.permissions.filter(
             (perm: { objectId: number; permissionId: number }) =>
-              !(perm.objectId === objetId && perm.permissionId === permissionId)
+              perm.objectId !== roleId || perm.permissionId !== permissionId
           )
         : [
             ...prevState.permissions,
-            { objectId: objetId, permissionId: permissionId },
+            { objectId: roleId, permissionId: permissionId },
           ];
 
       return { ...prevState, permissions: updatedPermissions };
@@ -437,7 +459,7 @@ const Role = ({ modalEdit, selectedRole, onClose }: RoleProps) => {
                         {permissionNames?.map((permission, permIndex) => (
                           <td key={permIndex} className="px-4 py-2">
                             <label className="relative h-6 w-12">
-                              <input
+                              {/* <input
                                 type="checkbox"
                                 className="custom_switch peer absolute z-10 h-full w-full cursor-pointer opacity-0"
                                 // checked={
@@ -448,11 +470,28 @@ const Role = ({ modalEdit, selectedRole, onClose }: RoleProps) => {
                                 //   handleIndividualSwitch(roleIndex, permIndex)
                                 // }
                                 checked={personalInfo.permissions.some(
-                                  (perm: { objectId: number; permissionId: number }) =>
-                                    perm.objectId === role.id && perm.permissionId === permIndex
+                                  (perm: {
+                                    objectId: number;
+                                    permissionId: number;
+                                  }) =>
+                                    perm.objectId === role.id &&
+                                    perm.permissionId === permIndex
                                 )}
-                                onChange={() => handlePermissionChange(role.id, permIndex)}
+                                onChange={() =>
+                                  handlePermissionChange(role.id, permIndex)
+                                }
+                              /> */}
+                              <input
+                                type="checkbox"
+                                className="custom_switch peer absolute z-10 h-full w-full cursor-pointer opacity-0"
+                                checked={
+                                  individualSwitches[roleIndex]?.[permIndex]
+                                }
+                                onChange={() =>
+                                  handleIndividualSwitch(roleIndex, permIndex)
+                                }
                               />
+
                               <span className="outline_checkbox bg-icon block h-full rounded-full border-2 border-[#ebedf2] before:absolute before:bottom-1 before:left-1 before:h-4 before:w-4 before:rounded-full before:bg-[#ebedf2] before:bg-[url(/assets/images/close.svg)] before:bg-center before:bg-no-repeat before:transition-all before:duration-300 peer-checked:border-success peer-checked:before:left-7 peer-checked:before:bg-success peer-checked:before:bg-[url(/assets/images/checked.svg)] dark:border-white-dark dark:before:bg-white-dark"></span>
                             </label>
                           </td>

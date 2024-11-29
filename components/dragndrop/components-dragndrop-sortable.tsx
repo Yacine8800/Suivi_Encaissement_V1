@@ -24,6 +24,7 @@ const ComponentsDragndropSortable = () => {
     (state: TRootState) => state.profile?.data
   );
   const [sortable1, setSortable1] = useState<any[]>([]);
+  const [selectedPermissions, setSelectedPermissions] = useState<any[]>([]);
 
   useEffect(() => {
     dispatch(fetchProfile());
@@ -35,7 +36,7 @@ const ComponentsDragndropSortable = () => {
         id: profile.id,
         text: profile.name,
         name: profile.description || "Pas de description",
-        permissions: profile?.permissions
+        permissions: profile?.permissions,
       }));
       setSortable1(formattedProfiles);
     }
@@ -68,9 +69,19 @@ const ComponentsDragndropSortable = () => {
     setSelectedRole(role);
     if (isEdit) {
       setModalEdit(true);
+      setSelectedPermissions(role?.permissions || []);
     } else {
       setModalAdd(true);
     }
+  };
+
+  const handlePermissionChange = (permissionId: number) => {
+    setSelectedPermissions(
+      (prevPermissions) =>
+        prevPermissions.includes(permissionId)
+          ? prevPermissions.filter((id) => id !== permissionId) // Désactiver la permission
+          : [...prevPermissions, permissionId] // Activer la permission
+    );
   };
 
   return (
