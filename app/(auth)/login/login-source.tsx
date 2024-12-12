@@ -99,7 +99,7 @@ const ComponentsAuthLoginForm = () => {
     >
       {/* Bouton flottant pour uploader l'image */}
       <div className="fixed bottom-0 right-0 z-30 -translate-y-1/2 transform">
-        <label htmlFor="file-upload" className="cursor-pointer">
+        <label htmlFor="file-upload" className="mr-4 cursor-pointer">
           <div className="flex items-center gap-2 rounded-[10px] bg-white p-3 shadow-lg hover:bg-orange-100">
             <IconDownload className="h-6 w-6 text-orange-500" />
             <span className="text-sm font-medium text-orange-500">

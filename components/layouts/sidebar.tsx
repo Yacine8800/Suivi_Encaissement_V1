@@ -11,11 +11,8 @@ import { usePathname } from "next/navigation";
 import { getTranslation } from "@/i18n";
 import IconDesktop from "../icon/icon-desktop";
 import IconNotesEdit from "../icon/icon-notes-edit";
-import IconMessagesDot from "../icon/icon-messages-dot";
 import IconMenuCharts from "../icon/menu/icon-menu-charts";
-import IconMenuWidgets from "../icon/menu/icon-menu-widgets";
 import IconBellBing from "../icon/icon-bell-bing";
-import IconListCheck from "../icon/icon-list-check";
 import IconLink from "../icon/icon-link";
 import IconUsersGroup from "../icon/icon-users-group";
 
@@ -155,11 +152,11 @@ const Sidebar = () => {
               </li>
 
               <li className="menu nav-item">
-                <Link href="/litiges" className="group">
+                <Link href="/reclamation" className="group">
                   <div className="flex items-center">
                     <IconBellBing className="shrink-0 group-hover:!text-primary" />
                     <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
-                      {t("Litiges")}
+                      {t("Reclamations")}
                     </span>
                   </div>
                 </Link>

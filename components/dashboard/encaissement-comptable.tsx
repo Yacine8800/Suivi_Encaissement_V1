@@ -6,6 +6,7 @@ import ComponentsDatatablesColumnChooser from "../datatables/components-datatabl
 import IconZipFile from "../icon/icon-zip-file";
 import IconCircleCheck from "../icon/icon-circle-check";
 import { TRootState } from "@/store";
+import { ITotal, Pagination } from "@/utils/interface";
 
 interface RecordType {
   validated: boolean;
@@ -15,27 +16,24 @@ interface RecordType {
   [key: string]: any;
 }
 
-const EncaissementComptable = () => {
-  const isDark = useSelector(
-    (state: TRootState) =>
-      state.themeConfig.theme === "dark" || state.themeConfig.isDarkMode
-  );
-  const isRtl =
-    useSelector((state: TRootState) => state.themeConfig.rtlClass) === "rtl";
-  const [completionRate, setCompletionRate] = useState<number>(0);
+interface EncaissementComptableProps {
+  statutValidation: number;
+  data: any[];
+  total: ITotal;
+  paginate: Pagination;
+  loading: boolean;
+}
+
+const EncaissementComptable: React.FC<EncaissementComptableProps> = ({
+  statutValidation,
+  data,
+  total,
+  paginate,
+  loading,
+}) => {
   const [expensesPercentage, setExpensesPercentage] = useState<number>(0);
   const [validatedRecords, setValidatedRecords] = useState<number>(0);
   const [totalRecords, setTotalRecords] = useState<number>(0);
-
-  const [totals, setTotals] = useState<{
-    totalCaisse: number;
-    totalBordereau: number;
-    totalReleve: number;
-  }>({
-    totalCaisse: 0,
-    totalBordereau: 0,
-    totalReleve: 0,
-  });
 
   const formatDate = (date: Date): string => {
     const dt = new Date(date);
@@ -48,16 +46,10 @@ const EncaissementComptable = () => {
   const today = formatDate(new Date());
 
   const formatNumber = (number: number): string => {
-    return number.toLocaleString("fr-FR", {
+    return number?.toLocaleString("fr-FR", {
       useGrouping: true,
       maximumFractionDigits: 0,
     });
-  };
-
-  const calculateTotal = (records: RecordType[], key: string): number => {
-    return records
-      .filter((record) => !record.validated)
-      .reduce((total, record) => total + (record[key] || 0), 0);
   };
 
   const getColorClass = (value: number): string => {
@@ -66,60 +58,6 @@ const EncaissementComptable = () => {
     return "text-black";
   };
 
-  const updateMetrics = () => {
-    const savedRecordsString = localStorage.getItem("validatedRecords");
-    const savedRecords: RecordType[] = savedRecordsString
-      ? JSON.parse(savedRecordsString)
-      : [];
-
-    const totalRecordsCount = savedRecords.length;
-    const validatedRecordsCount = savedRecords.filter(
-      (record) => record.validated
-    ).length;
-
-    setTotalRecords(totalRecordsCount);
-    setValidatedRecords(validatedRecordsCount);
-
-    const completionRateValue =
-      totalRecordsCount > 0
-        ? (validatedRecordsCount / totalRecordsCount) * 100
-        : 0;
-    setCompletionRate(completionRateValue);
-
-    // Calcul des dépenses
-    const totalExpenses = savedRecords.reduce(
-      (acc, record) => acc + (record["Montant caisse"] || 0),
-      0
-    );
-    const validatedExpenses = savedRecords
-      .filter((record) => record.validated)
-      .reduce((acc, record) => acc + (record["Montant caisse"] || 0), 0);
-
-    const expensesPercentageValue =
-      totalExpenses > 0 ? (validatedExpenses / totalExpenses) * 100 : 0;
-
-    setExpensesPercentage(expensesPercentageValue);
-
-    // Calcul des totaux pour les enregistrements non validés
-    const totalCaisse = calculateTotal(savedRecords, "Montant caisse");
-    const totalBordereau = calculateTotal(savedRecords, "Montant bordereau");
-    const totalReleve = calculateTotal(savedRecords, "Montant revelé");
-
-    setTotals({ totalCaisse, totalBordereau, totalReleve });
-  };
-
-  useEffect(() => {
-    // Initialisation des valeurs
-    updateMetrics();
-
-    // Écouter les changements dans localStorage
-    window.addEventListener("storage", updateMetrics);
-
-    // Nettoyage de l'écouteur d'événement
-    return () => {
-      window.removeEventListener("storage", updateMetrics);
-    };
-  }, []);
   return (
     <div>
       <div className="grid pt-5">
@@ -185,10 +123,12 @@ const EncaissementComptable = () => {
                   <div className="text-white-black">Total Montant Caisse</div>
                   <div
                     className={`mt-2 text-xl font-light ${getColorClass(
-                      totals.totalCaisse
+                      total.totalMontantRestitutionCaisse
                     )}`}
                   >
-                    {`${formatNumber(totals.totalCaisse)} F CFA`}
+                    {`${formatNumber(
+                      total.totalMontantRestitutionCaisse
+                    )} F CFA`}
                   </div>
                 </div>
                 <div>
@@ -197,20 +137,20 @@ const EncaissementComptable = () => {
                   </div>
                   <div
                     className={`mt-2 text-xl font-light ${getColorClass(
-                      totals.totalBordereau
+                      total.totalMontantBordereauBanque
                     )}`}
                   >
-                    {`${formatNumber(totals.totalBordereau)} F CFA`}
+                    {`${formatNumber(total.totalMontantBordereauBanque)} F CFA`}
                   </div>
                 </div>
                 <div>
                   <div className="text-white-black">Total Montant Relevé</div>
                   <div
                     className={`mt-2 text-xl font-light ${getColorClass(
-                      totals.totalReleve
+                      total.totalMontantReleve
                     )}`}
                   >
-                    {`${formatNumber(totals.totalReleve)} F CFA`}
+                    {`${formatNumber(total.totalMontantReleve)} F CFA`}
                   </div>
                 </div>
               </div>
@@ -220,7 +160,11 @@ const EncaissementComptable = () => {
       </div>
 
       <div>
-        <ComponentsDatatablesColumnChooser />
+        <ComponentsDatatablesColumnChooser
+          statutValidation={statutValidation}
+          data={data}
+          loading={loading}
+        />
       </div>
     </div>
   );

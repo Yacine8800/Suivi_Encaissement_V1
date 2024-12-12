@@ -1,9 +1,9 @@
-import ComponentsAppsMailbox from "@/components/litiges/components-apps-mailbox";
+import ComponentsAppsMailbox from "@/components/reclamation/components-apps-mailbox";
 import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Litiges",
+  title: "Reclamation",
 };
 
 const Litige = () => {

@@ -1,14 +1,9 @@
 "use client";
-import Dropdown from "@/components/dropdown";
 import Iconcloture from "@/components/icon/icon-archive";
 import IconArrowBackward from "@/components/icon/icon-arrow-backward";
 import IconArrowForward from "@/components/icon/icon-arrow-forward";
 import IconArrowLeft from "@/components/icon/icon-arrow-left";
-import IconBookmark from "@/components/icon/icon-bookmark";
 import IconCaretDown from "@/components/icon/icon-caret-down";
-import IconDownload from "@/components/icon/icon-download";
-import IconFolder from "@/components/icon/icon-folder";
-import IconGallery from "@/components/icon/icon-gallery";
 import IconInfoHexagon from "@/components/icon/icon-info-hexagon";
 import IconMail from "@/components/icon/icon-mail";
 import IconMenu from "@/components/icon/icon-menu";
@@ -16,30 +11,63 @@ import IconPrinter from "@/components/icon/icon-printer";
 import IconRefresh from "@/components/icon/icon-refresh";
 import IconRestore from "@/components/icon/icon-restore";
 import IconSearch from "@/components/icon/icon-search";
-import IconStar from "@/components/icon/icon-star";
 import IconTag from "@/components/icon/icon-tag";
 import IconTrash from "@/components/icon/icon-trash";
-import IconTxtFile from "@/components/icon/icon-txt-file";
 import IconUser from "@/components/icon/icon-user";
 import IconUsers from "@/components/icon/icon-users";
-import IconZipFile from "@/components/icon/icon-zip-file";
-import { TRootState } from "@/store";
+import { TAppDispatch, TRootState } from "@/store";
 import Tippy from "@tippyjs/react";
 import React, { Fragment, useEffect, useState } from "react";
 import ReactQuill from "react-quill";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "tippy.js/dist/tippy.css";
 import "react-quill/dist/quill.snow.css";
 import DayCounter from "@/utils/Daycounter";
 import { Dialog, Transition } from "@headlessui/react";
-import ComponentsDatatablesColumnValider from "../datatables/components-datatables-column-valider";
 import { EncaissementTerminer } from "@/types/litigeVisualisation.types";
-import DetailEncaissmentvalider from "../datatables/detail-encaissement-validate";
 import DatatablesLitigesView from "../datatables/components-datatables-litiges-view";
 
+import { fetchDataReleve } from "@/store/reducers/encaissements/relevé-slice";
+import { EStatutEncaissement } from "@/utils/enums";
+
+type DataReverse = Array<{
+  id: string;
+  caisse: string;
+  numeroBordereau: string;
+  validationEncaissement: {
+    dateValidation: string;
+    observationReclamation: string;
+    montantReleve: number;
+    ecartReleve: number;
+    statutValidation: string;
+  };
+  directionRegionale: string;
+  codeExpl: string;
+  produit: string;
+  montantRestitutionCaisse: number;
+  modeReglement: string;
+  banque: string;
+  compteBanque: string;
+  montantBordereauBanque: number;
+  dateEncaissement: string;
+  dateRemiseBanque: string;
+}>;
+
 const ComponentsAppsMailbox = () => {
+  const dispatch = useDispatch<TAppDispatch>();
+
+  const dataReclamation: DataReverse = useSelector(
+    (state: any) => state.encaissementReleve.data?.result
+  );
+
+  useEffect(() => {
+    dispatch(
+      fetchDataReleve({ id: EStatutEncaissement.RECLAMATION.toString() })
+    );
+  }, [dispatch]);
+
   const mailModal: EncaissementTerminer[] = [
     {
       detailsMontants: {
@@ -59,90 +87,110 @@ const ComponentsAppsMailbox = () => {
     },
   ];
 
-  // const [mailModal, setMailModal] = useState<EncaissementTerminer[]>([
-  // 	{
-  // 		detailsMontants: {
-  // 			montantCaisses: 25000000,
-  // 			montantBordereaux: 2500000,
-  // 			ecart1: 22500000,
-  // 			observationEcartCaisseBordereau: "RAS",
-  // 		},
-  // 		releveBancaire: {
-  // 			dateReleve: "2024-07-21",
-  // 			montantBordereaux: 2500000,
-  // 			nomBanque: "BNP Paribas",
-  // 			montantBanque: 2500000,
-  // 			ecart2: 0,
-  // 			observationEcartCaisseBanque: "", // Pas d'observation pour l'écart 2
-  // 		},
-  // 	},
-  // ]);
+  const transformDataToMailList = (dataReclamation: any | DataReverse) => {
+    return dataReclamation?.map(
+      (reclamation: {
+        id: any;
+        caisse: any;
+        numeroBordereau: any;
+        validationEncaissement: {
+          dateValidation: any;
+          observationReclamation: any;
+          montantReleve: any;
+          ecartReleve: any;
+          statutValidation: any;
+        };
+        directionRegionale: any;
+        codeExpl: any;
+        produit: any;
+        montantRestitutionCaisse: any;
+        modeReglement: any;
+        banque: any;
+        compteBanque: any;
+        montantBordereauBanque: any;
+        dateEncaissement: any;
+        dateRemiseBanque: any;
+      }) => {
+        const {
+          id,
+          caisse,
+          numeroBordereau,
+          validationEncaissement: {
+            dateValidation,
+            observationReclamation,
+            montantReleve,
+            ecartReleve,
+          },
+          directionRegionale,
+          codeExpl,
+          produit,
+          montantRestitutionCaisse,
+          modeReglement,
+          banque,
+          compteBanque,
+          montantBordereauBanque,
+          dateEncaissement,
+          dateRemiseBanque,
+        } = reclamation;
 
-  const [mailList, setMailList] = useState([
-    {
-      id: 1,
-      path: "profile-15.jpeg",
-      titre: "Justificatif",
-      caisse: "Caisse",
-      nomCaisse: "Ano Raymond",
-      email: "laurieFox@mail.com",
-      date: new Date(),
-      time: "27-07-2024",
-      title: "234XXX...",
-      displayDescription:
-        "La justification de l'ecart entre le montant banque et le montant relevé n'est pas cohérent j'ai besoin de plus d'eclairssiement a ce sujet",
-      type: "Message",
-      isImportant: false,
-      isStar: true,
-      group: "En cours",
-      attachments: [
-        {
-          name: "Confirm File.txt",
-          size: "450KB",
-          type: "file",
-        },
-        {
-          name: "Important Docs.xml",
-          size: "2.1MB",
-          type: "file",
-        },
-      ],
-      description: `
-                              <p class="mail-content">Montant sur le relevé bancaire : 1 500 000 FCFA
-                                Montant dans le système Saphir/Jade : 1 700 000 FCFA
-                                Bordereau joint : Mentionne deux virements :
-                                Virement 1 : 100 000 FCFA
-                                Virement 2 : 100 000 FCFA
-                                Écart :
-                                Le système comptable affiche un montant supérieur de 200 000 FCFA (1 700 000 - 1 500 000 FCFA).
-                                <br />
+        const formattedDescription = `
+          <p>
+            L’opération a été enregistrée par la caisse <strong>${caisse}</strong> de la direction régionale 
+            <strong>${directionRegionale}</strong>, pour le produit <strong>${produit}</strong> (code exploitation : 
+            <strong>${codeExpl}</strong>). Le règlement a été effectué par <strong>${modeReglement}</strong> via la 
+            banque <strong>${banque}</strong> avec le numero de compte (<strong>${compteBanque}</strong>). Le montant bordereau en banque est de 
+            <strong>${montantBordereauBanque.toLocaleString()} FCFA</strong>, enregistré le 
+            <strong>${new Date(
+              dateEncaissement
+            ).toLocaleDateString()}</strong> et remis à la banque le 
+            <strong>${new Date(
+              dateRemiseBanque
+            ).toLocaleDateString()}</strong>. L'écart caisse-banque est de 
+            <strong>${ecartReleve?.toLocaleString()} FCFA</strong>. La validation, réalisée le 
+            <strong>${new Date(
+              dateValidation
+            ).toLocaleDateString()}</strong>. Le montant de restitution en caisse est de 
+            <strong>${montantRestitutionCaisse.toLocaleString()} FCFA</strong>, et le montant relevé est de 
+            <strong>${montantReleve.toLocaleString()} FCFA</strong>. Observation : 
+            <strong>${observationReclamation || "Aucune observation"}</strong>.
+          </p>
+        `;
 
-Justification de l'écart :
-Dans ce cas, il apparaît que le système Saphir ou Jade a déjà comptabilisé deux virements, chacun de 100 000 FCFA (mentionnés sur le bordereau), qui n'ont pas encore été pris en compte par la banque. Ces virements sont encore en attente de traitement par la banque et ne figurent donc pas encore sur le relevé bancaire.
-
-Montant en banque : 1 500 000 FCFA
-Montant dans Saphir/Jade (y compris les virements en attente) : 1 700 000 FCFA
-Écart : 200 000 FCFA (qui correspond aux virements en attente)
-<br />
-L’écart de 200 000 FCFA s’explique par le fait que les virements figurant sur le bordereau n'ont pas encore été pris en compte sur le relevé bancaire. Ces virements sont enregistrés dans Saphir/Jade mais apparaîtront sur le relevé lors de leur traitement effectif par la banque.
-
- </p>
-                              <div class="gallery text-center">
-                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" className="mb-4 mt-4" style="width: 250px; height: 180px;" />
-                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" className="mb-4 mt-4" style="width: 250px; height: 180px;" />
-                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" className="mb-4 mt-4" style="width: 250px; height: 180px;" />
-                                  <img alt="image-gallery" src="${"/assets/images/caisse1.jpeg"}" className="mb-4 mt-4" style="width: 250px; height: 180px;" />
-                        
-                              </div>
-                              <p>L’écart de 200 000 FCFA entre le montant en banque et le montant relevé dans Saphir/Jade est dû à deux virements de 100 000 FCFA chacun, mentionnés dans le bordereau joint. Ces virements sont en cours de traitement par la banque et ne figurent pas encore sur le relevé bancaire. Une fois ces virements encaissés, l’écart sera résorbé.</p>
-                              `,
-    },
-  ]);
-  const [isZoomed, setIsZoomed] = useState(false);
-
-  const handleClick = () => {
-    setIsZoomed(!isZoomed);
+        return {
+          id,
+          path: "profile-15.jpeg", // Peut être remplacé par une image réelle
+          caisse: caisse,
+          email: "example@mail.com", // Peut être remplacé par une adresse email réelle
+          date: new Date(dateEncaissement), // Conversion de dateEncaissement
+          time: new Date(dateValidation).toLocaleDateString(), // Format de dateValidation
+          title: numeroBordereau,
+          displayDescription: observationReclamation || "Pas d'observation",
+          type: "Message",
+          isImportant: false,
+          isStar: true,
+          group: "En cours", // Peut être adapté
+          attachments: [
+            {
+              name: "Document.pdf",
+              size: "2MB",
+              type: "file",
+            },
+          ],
+          description: formattedDescription,
+        };
+      }
+    );
   };
+
+  // Utilisation
+  const [mailList, setMailList] = useState([]);
+
+  useEffect(() => {
+    if (dataReclamation) {
+      const transformedData = transformDataToMailList(dataReclamation);
+      setMailList(transformedData);
+    }
+  }, [dataReclamation]);
 
   const defaultParams = {
     id: null,
@@ -159,7 +207,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
   const [isEdit, setIsEdit] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Message");
   const [filteredMailList, setFilteredMailList] = useState<any>(
-    mailList.filter((d) => d.type === "Message")
+    mailList?.filter((d: { type: string }) => d.type === "Message")
   );
   const [ids, setIds] = useState<any>([]);
   const [searchText, setSearchText] = useState<any>("");
@@ -168,9 +216,6 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
     JSON.parse(JSON.stringify(defaultParams))
   );
   const [pagedMails, setPagedMails] = useState<any>([]);
-
-  const isRtl =
-    useSelector((state: TRootState) => state.themeConfig.rtlClass) === "rtl";
 
   const [pager] = useState<any>({
     currentPage: 1,
@@ -182,13 +227,10 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
   // Popup qui s'affiche lorsqu'un élément est selectionner et qu'on click sur le
   const [modal2, setModal2] = useState(false);
 
-  useEffect(() => {
-    searchMails();
-  }, [selectedTab, searchText, mailList]);
+  useEffect(() => {}, [selectedTab, searchText, mailList]);
 
   const refreshMails = () => {
     setSearchText("");
-    searchMails(false);
   };
 
   const setcloture = () => {
@@ -202,7 +244,6 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
       } else {
         showMessage(ids.length + " Mail has been added to cloture.");
       }
-      searchMails(false);
     }
   };
 
@@ -217,7 +258,6 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
       } else {
         showMessage(ids.length + " Mail has been added to inapproprie.");
       }
-      searchMails(false);
     }
   };
 
@@ -232,7 +272,6 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
           item.isStar = false;
           item.isImportant = false;
           showMessage(totalSelected + " Mail has been deleted.");
-          searchMails(false);
         } else if (type === "read") {
           item.isUnread = false;
           showMessage(totalSelected + " Mail has been marked as Read.");
@@ -253,11 +292,9 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
         else if (type === "restore") {
           item.type = "Message";
           showMessage(totalSelected + " Mail Restored.");
-          searchMails(false);
         } else if (type === "delete") {
           setMailList(mailList.filter((d: any) => d.id != item.id));
           showMessage(totalSelected + " Mail Permanently Deleted.");
-          searchMails(false);
         }
       }
       clearSelection();
@@ -276,26 +313,6 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
       }
     } else {
       setSelectedMail("");
-    }
-  };
-
-  const setStar = (mailId: number) => {
-    if (mailId) {
-      let item = filteredMailList.find((d: any) => d.id === mailId);
-      item.isStar = !item.isStar;
-      setTimeout(() => {
-        searchMails(false);
-      });
-    }
-  };
-
-  const setImportant = (mailId: number) => {
-    if (mailId) {
-      let item = filteredMailList.find((d: any) => d.id === mailId);
-      item.isImportant = !item.isImportant;
-      setTimeout(() => {
-        searchMails(false);
-      });
     }
   };
 
@@ -371,144 +388,6 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
     setIsEdit(true);
   };
 
-  const searchMails = (isResetPage = true) => {
-    if (isResetPage) {
-      pager.currentPage = 1;
-    }
-
-    let res;
-    if (selectedTab === "important") {
-      res = mailList.filter((d) => d.isImportant);
-    } else if (selectedTab === "star") {
-      res = mailList.filter((d) => d.isStar);
-    } else if (
-      selectedTab === "En cours" ||
-      selectedTab === "Transmis" ||
-      selectedTab === "Terminer"
-    ) {
-      res = mailList.filter((d) => d.group === selectedTab);
-    } else {
-      res = mailList.filter((d) => d.type === selectedTab);
-    }
-
-    let filteredRes = res.filter(
-      (d) =>
-        (d.title && d.title.toLowerCase().includes(searchText)) ||
-        (d.titre && d.titre.toLowerCase().includes(searchText)) ||
-        (d.caisse && d.caisse.toLowerCase().includes(searchText)) ||
-        (d.displayDescription &&
-          d.displayDescription.toLowerCase().includes(searchText))
-    );
-
-    setFilteredMailList([
-      ...res.filter(
-        (d) =>
-          (d.title && d.title.toLowerCase().includes(searchText)) ||
-          (d.titre && d.titre.toLowerCase().includes(searchText)) ||
-          (d.caisse && d.caisse.toLowerCase().includes(searchText)) ||
-          (d.displayDescription &&
-            d.displayDescription.toLowerCase().includes(searchText))
-      ),
-    ]);
-
-    if (filteredRes.length) {
-      pager.totalPages =
-        pager.pageSize < 1 ? 1 : Math.ceil(filteredRes.length / pager.pageSize);
-      if (pager.currentPage > pager.totalPages) {
-        pager.currentPage = 1;
-      }
-      pager.startIndex = (pager.currentPage - 1) * pager.pageSize;
-      pager.endIndex = Math.min(
-        pager.startIndex + pager.pageSize - 1,
-        filteredRes.length - 1
-      );
-      setPagedMails([
-        ...filteredRes.slice(pager.startIndex, pager.endIndex + 1),
-      ]);
-    } else {
-      setPagedMails([]);
-      pager.startIndex = -1;
-      pager.endIndex = -1;
-    }
-    clearSelection();
-  };
-
-  const saveMail = (type: any, id: any) => {
-    if (!params.to) {
-      showMessage("To email address is required.", "error");
-      return false;
-    }
-    if (!params.title) {
-      showMessage("Title of email is required.", "error");
-      return false;
-    }
-
-    let maxId = 0;
-    if (!params.id) {
-      maxId = mailList.length
-        ? mailList.reduce(
-            (max, character) => (character.id > max ? character.id : max),
-            mailList[0].id
-          )
-        : 0;
-    }
-    let cDt = new Date();
-
-    let obj: any = {
-      id: maxId + 1,
-      path: "",
-      titre: "",
-      caisse: "",
-      email: params.to,
-      date: cDt.getMonth() + 1 + "/" + cDt.getDate() + "/" + cDt.getFullYear(),
-      time: cDt.toLocaleTimeString(),
-      title: params.title,
-      displayDescription: params.displayDescription,
-      type: "draft",
-      isImportant: false,
-      group: "",
-      isUnread: false,
-      description: params.description,
-    };
-
-    if (type === "save" || type === "save_reply" || type === "save_forward") {
-      //saved to draft
-      obj.type = "draft";
-      mailList.splice(0, 0, obj);
-      searchMails();
-      showMessage("Mail has been saved successfully to draft.");
-    } else if (type === "send" || type === "reply" || type === "forward") {
-      //saved to sent mail
-      obj.type = "sent_mail";
-      mailList.splice(0, 0, obj);
-      searchMails();
-      showMessage("Mail has been sent successfully.");
-    }
-
-    setSelectedMail(null);
-    setIsEdit(false);
-  };
-
-  const getFileSize = (file_type: any) => {
-    let type = "file";
-    if (file_type.includes("image/")) {
-      type = "image";
-    } else if (file_type.includes("application/x-zip")) {
-      type = "zip";
-    }
-    return type;
-  };
-
-  const getFileType = (total_bytes: number) => {
-    let size = "";
-    if (total_bytes < 1000000) {
-      size = Math.floor(total_bytes / 1000) + "KB";
-    } else {
-      size = Math.floor(total_bytes / 1000000) + "MB";
-    }
-    return size;
-  };
-
   const clearSelection = () => {
     setIds([]);
   };
@@ -538,7 +417,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
   };
 
   const checkAllCheckbox = () => {
-    if (filteredMailList.length && ids.length === filteredMailList.length) {
+    if (filteredMailList?.length && ids.length === filteredMailList.length) {
       return true;
     } else {
       return false;
@@ -548,7 +427,6 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
   const closeMsgPopUp = () => {
     setIsEdit(false);
     setSelectedTab("Message");
-    searchMails();
   };
 
   const showMessage = (msg = "", type = "success") => {
@@ -565,6 +443,31 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
       padding: "10px 20px",
     });
   };
+
+  useEffect(() => {
+    if (filteredMailList?.length) {
+      const pagedData = filteredMailList.slice(
+        pager.startIndex,
+        pager.endIndex + 1
+      );
+      setPagedMails(pagedData);
+    } else {
+      setPagedMails([]);
+    }
+  }, [filteredMailList, pager]);
+
+  useEffect(() => {
+    if (dataReclamation && dataReclamation.length > 0) {
+      const transformedData = transformDataToMailList(dataReclamation);
+      setMailList(transformedData);
+      setFilteredMailList(
+        transformedData.filter((d: { type: string }) => d.type === "Message")
+      );
+    } else {
+      setMailList([]);
+      setFilteredMailList([]);
+    }
+  }, [dataReclamation]);
 
   return (
     <div>
@@ -597,11 +500,13 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                 >
                   <div className="flex items-center">
                     <IconMail className="h-5 w-5 shrink-0" />
-                    <div className="ltr:ml-3 rtl:mr-3">Litiges</div>
+                    <div className="ltr:ml-3 rtl:mr-3">Réclamations</div>
                   </div>
-                  <div className="whitespace-nowrap rounded-md bg-primary-light px-2 py-0.5 font-semibold dark:bg-[#060818]">
+                  <div className="whitespace-nowrap rounded-md bg-red-500 px-2 py-0.5 font-semibold text-white dark:bg-[#060818]">
                     {mailList &&
-                      mailList.filter((d) => d.type === "Message").length}
+                      mailList.filter(
+                        (d: { type: string }) => d.type === "Message"
+                      ).length}
                   </div>
                 </button>
 
@@ -619,7 +524,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                     }}
                   >
                     <Iconcloture className="shrink-0" />
-                    <div className="ltr:ml-3 rtl:mr-3">Litiges Clos</div>
+                    <div className="ltr:ml-3 rtl:mr-3">Réclamations Clos</div>
                   </button>
                 </li>
                 <li className="list-none">
@@ -638,7 +543,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                     <div className="flex items-center">
                       <IconInfoHexagon className="shrink-0" />
                       <div className="ltr:ml-3 rtl:mr-3">
-                        Litiges inappropriés
+                        Réclamations inappropriés
                       </div>
                     </div>
                   </button>
@@ -765,10 +670,10 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                       <input
                         type="text"
                         className="peer form-input ltr:pr-8 rtl:pl-8"
-                        placeholder="Rechercher un litige..."
+                        placeholder="Rechercher une reclamation..."
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
-                        onKeyUp={() => searchMails()}
+                        // onKeyUp={() => searchMails()}
                       />
                       <div className="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
                         <IconSearch />
@@ -893,7 +798,7 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                         "-" +
                         (pager.endIndex + 1) +
                         " of " +
-                        filteredMailList.length}
+                        filteredMailList?.length}
                     </div>
                     <button
                       type="button"
@@ -901,7 +806,6 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                       className="rounded-md bg-[#f4f4f4] p-1 enabled:hover:bg-primary-light disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white-dark/20 enabled:dark:hover:bg-white-dark/30 ltr:mr-3 rtl:ml-3"
                       onClick={() => {
                         pager.currentPage--;
-                        searchMails(false);
                       }}
                     >
                       <IconCaretDown className="h-5 w-5 rotate-90 rtl:-rotate-90" />
@@ -912,7 +816,6 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                       className="rounded-md bg-[#f4f4f4] p-1 enabled:hover:bg-primary-light disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white-dark/20 enabled:dark:hover:bg-white-dark/30"
                       onClick={() => {
                         pager.currentPage++;
-                        searchMails(false);
                       }}
                     >
                       <IconCaretDown className="h-5 w-5 -rotate-90 rtl:rotate-90" />
@@ -1214,7 +1117,6 @@ L’écart de 200 000 FCFA s’explique par le fait que les virements figurant s
                   <button
                     type="button"
                     className="btn btn-success ltr:mr-3 rtl:ml-3"
-                    onClick={() => saveMail("save", null)}
                   >
                     Enregistrer
                   </button>

@@ -22,11 +22,15 @@ import objetReducer from "./permission/objet-get-slice";
 import permissionsReducer from "./permission/list-crud.slice";
 import deleteProfileReducer from "./permission/delete-habilitation.slice";
 
+//encaissement
+import datareleveReducer from "./encaissements/relevé-slice";
+import encaissementValidationReducer from "./encaissements/soumission.slice";
+
 import themeConfigSlice from "../themeConfigSlice";
 
 // Configuration pour persister uniquement les slices "auth" et "mail"
 const persistConfig = {
-  key: "smart_control_v2",
+  key: "suivi-encaissement",
   storage,
   whitelist: ["auth", "mail"],
   blacklist: [],
@@ -55,6 +59,10 @@ const topReducer = combineReducers({
   ListHabilitation: objetReducer,
   permissionCrud: permissionsReducer,
   deleteProfile: deleteProfileReducer,
+
+  //encaissement
+  encaissementReleve: datareleveReducer,
+  validationEncaissement: encaissementValidationReducer,
 });
 
 const rootReducer = (state: any, action: any) => {

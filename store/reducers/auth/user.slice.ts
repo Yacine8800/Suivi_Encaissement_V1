@@ -1,4 +1,3 @@
-// store/authSlice.ts
 import { API_AUTH_SUIVI } from "@/config/constants";
 import axios from "@/utils/axios";
 import { setCookie, deleteCookie } from "cookies-next";
@@ -40,6 +39,27 @@ const decodeToken = (token: string): any => {
   }
 };
 
+// Fonction pour récupérer la localisation utilisateur
+const getLocation = async (): Promise<{
+  latitude: number;
+  longitude: number;
+}> => {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      },
+      (error) => {
+        console.error("Erreur de géolocalisation :", error);
+        resolve({ latitude: 0, longitude: 0 }); // Valeurs par défaut si échec
+      }
+    );
+  });
+};
+
 // Thunk pour la connexion
 export const login = createAsyncThunk(
   "auth/login",
@@ -49,10 +69,20 @@ export const login = createAsyncThunk(
         login: credentials.credential,
         password: credentials.password,
       };
+
+      // Récupérer la localisation
+      const location = await getLocation();
+
       const response = await axios.post<AuthResponse>(
         `${API_AUTH_SUIVI}/auth/sign-in`,
-        loginPayload
+        loginPayload,
+        {
+          headers: {
+            location: `${location.latitude},${location.longitude}`, // Ajout de la localisation aux headers
+          },
+        }
       );
+
       return response.data.acces_token;
     } catch (error: any) {
       return rejectWithValue(error);

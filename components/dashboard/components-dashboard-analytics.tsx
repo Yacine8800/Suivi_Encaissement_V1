@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import IconBox from "../icon/icon-box";
 import IconHome from "@/components/icon/icon-home";
 import IconPhone from "@/components/icon/icon-phone";
@@ -16,6 +16,12 @@ import IconTrendingUp from "../icon/icon-trending-up";
 import EncaissementsRapproche from "./encaissements-rapproche";
 import IconChecks from "../icon/icon-checks";
 import IconCircleCheck from "../icon/icon-circle-check";
+import { TAppDispatch, TRootState } from "@/store";
+import { fetchDataReleve } from "@/store/reducers/encaissements/relevé-slice";
+import { fetchUsers } from "@/store/reducers/user/get.user.slice";
+import getUserId from "@/utils/idUser";
+import { DataReverse } from "@/utils/interface";
+import { EStatutEncaissement } from "@/utils/enums";
 
 interface RecordType {
   validated: boolean;
@@ -26,10 +32,58 @@ interface RecordType {
 }
 
 const ComponentsDashboardValider = () => {
+  const dispatch = useDispatch<TAppDispatch>();
+
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const dataReverse: DataReverse = useSelector(
+    (state: any) => state.encaissementReleve.data
+  );
+
+  const dataReverseloading: any = useSelector(
+    (state: any) => state.encaissementReleve.loading
+  );
+
+  const [activeTab, setActiveTab] = useState<EStatutEncaissement>(
+    EStatutEncaissement.EN_ATTENTE
+  );
+
+  const tabs = [
+    {
+      id: EStatutEncaissement.EN_ATTENTE,
+      label: "Encaissements Reversés",
+      icon: IconBarChart,
+    },
+    {
+      id: EStatutEncaissement.TRAITE,
+      label: "Encaissements Traités",
+      icon: IconChecks,
+    },
+    {
+      id: EStatutEncaissement.REJETE,
+      label: "Encaissements Rejetés",
+      icon: IconXCircle,
+    },
+    {
+      id: EStatutEncaissement.VALIDE,
+      label: "Encaissements Validés",
+      icon: IconCircleCheck,
+    },
+  ];
+
+  useEffect(() => {
+    if (isMounted) {
+      dispatch(fetchDataReleve({ id: activeTab.toString() }));
+    }
+  }, [dispatch, activeTab, isMounted]);
+
+  const dataEncaissementReverse = dataReverse?.result || [];
+  const Totaldata = dataReverse?.totals || [];
+  const paginate = dataReverse?.pagination || [];
+
   return (
     <div>
       <div className="mb-5">
@@ -53,74 +107,37 @@ const ComponentsDashboardValider = () => {
 
       <div className="panel mb-5">
         {isMounted && (
-          <Tab.Group>
+          <Tab.Group onChange={(index) => setActiveTab(tabs[index].id)}>
             <Tab.List className="mt-3 flex flex-wrap border-b border-white-light dark:border-[#191e3a]">
-              <Tab as={Fragment}>
-                {({ selected }) => (
-                  <button
-                    className={`${
-                      selected
-                        ? "text-primary !outline-none before:!w-full"
-                        : ""
-                    }relative -mb-[1px] flex items-center p-5 py-3 before:absolute before:bottom-0 before:left-0 before:right-0 before:m-auto before:inline-block before:h-[1px] before:w-0 before:bg-primary before:transition-all before:duration-700 hover:text-primary hover:before:w-full`}
-                  >
-                    <IconBarChart className="ltr:mr-2 rtl:ml-2" />
-                    Encaissements Reversés
-                  </button>
-                )}
-              </Tab>
-              <Tab as={Fragment}>
-                {({ selected }) => (
-                  <button
-                    className={`${
-                      selected
-                        ? "text-primary !outline-none before:!w-full"
-                        : ""
-                    }relative -mb-[1px] flex items-center p-5 py-3 before:absolute before:bottom-0 before:left-0 before:right-0 before:m-auto before:inline-block before:h-[1px] before:w-0 before:bg-primary before:transition-all before:duration-700 hover:text-primary hover:before:w-full`}
-                  >
-                    <IconChecks className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-                    Encaissements Traités
-                  </button>
-                )}
-              </Tab>
-              <Tab as={Fragment}>
-                {({ selected }) => (
-                  <button
-                    className={`${
-                      selected
-                        ? "text-primary !outline-none before:!w-full"
-                        : ""
-                    }relative -mb-[1px] flex items-center p-5 py-3 before:absolute before:bottom-0 before:left-0 before:right-0 before:m-auto before:inline-block before:h-[1px] before:w-0 before:bg-primary before:transition-all before:duration-700 hover:text-primary hover:before:w-full`}
-                  >
-                    <IconCircleCheck className="ltr:mr-2 rtl:ml-2" />
-                    Encaissements Validés
-                  </button>
-                )}
-              </Tab>
+              {tabs.map((tab) => (
+                <Tab as={Fragment} key={tab.id}>
+                  {({ selected }) => (
+                    <button
+                      className={`${
+                        selected
+                          ? "text-primary !outline-none before:!w-full"
+                          : ""
+                      }relative -mb-[1px] flex items-center p-5 py-3`}
+                    >
+                      <tab.icon className="ltr:mr-2 rtl:ml-2" />
+                      {tab.label}
+                    </button>
+                  )}
+                </Tab>
+              ))}
             </Tab.List>
             <Tab.Panels>
-              <Tab.Panel>
-                <div>
-                  <EncaissementComptable />
-                </div>
-              </Tab.Panel>
-              <Tab.Panel>
-                <div>
-                  <EncaissementsRapproche />
-                </div>
-              </Tab.Panel>
-              <Tab.Panel>
-                <div className="pt-5">
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Incidunt dolor impedit labore consectetur libero. Nesciunt
-                    deleniti, facilis animi at provident perspiciatis, optio
-                    officia, totam veritatis impedit labore repudiandae nisi
-                    hic.
-                  </p>
-                </div>
-              </Tab.Panel>
-              <Tab.Panel>Disabled</Tab.Panel>
+              {tabs.map((tab) => (
+                <Tab.Panel key={tab.id}>
+                  <EncaissementComptable
+                    statutValidation={tab.id}
+                    data={dataEncaissementReverse || []}
+                    total={Totaldata}
+                    paginate={paginate}
+                    loading={dataReverseloading}
+                  />
+                </Tab.Panel>
+              ))}
             </Tab.Panels>
           </Tab.Group>
         )}

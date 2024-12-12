@@ -83,7 +83,6 @@ const ComponentsAppsInvoiceAdd = () => {
 
   const drData: any = useSelector((state: TRootState) => state.dr?.data);
 
-  console.log(drData);
   const secteurData: any = useSelector(
     (state: TRootState) => state.secteur?.data
   );
@@ -251,21 +250,6 @@ const ComponentsAppsInvoiceAdd = () => {
 
     setErrors(newErrors);
     return isValid;
-  };
-
-  const showMessage = (msg = "", type = "success") => {
-    const toast: any = Swal.mixin({
-      toast: true,
-      position: "top",
-      showConfirmButton: false,
-      timer: 3000,
-      customClass: { container: "toast" },
-    });
-    toast.fire({
-      icon: type,
-      title: msg,
-      padding: "10px 20px",
-    });
   };
 
   const handleSubmit = async () => {
