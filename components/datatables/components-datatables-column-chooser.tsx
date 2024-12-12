@@ -1439,13 +1439,19 @@ const ComponentsDatatablesColumnChooser: React.FC<
           }
           noRecordsText={
             loading ? (
-              <div className="mt-2 flex items-center justify-center space-x-2">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-primary"></span>
-                <span className="h-2 w-2 animate-pulse rounded-full bg-primary delay-200"></span>
-                <span className="delay-400 h-2 w-2 animate-pulse rounded-full bg-primary"></span>
-                <span className="delay-600 h-2 w-2 animate-pulse rounded-full bg-primary"></span>
-                <span className="delay-800 h-2 w-2 animate-pulse rounded-full bg-primary"></span>
-              </div>
+              <>
+                <span className="delay-800 mt-2 animate-pulse text-black">
+                  {" "}
+                  Chargement en cours
+                </span>
+                <div className="mt-2 flex items-center justify-center space-x-2">
+                  <span className="h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+                  <span className="h-2 w-2 animate-pulse rounded-full bg-primary delay-200"></span>
+                  <span className="delay-400 h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+                  <span className="delay-600 h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+                  <span className="delay-800 h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+                </div>
+              </>
             ) : (
               "Aucune donnée disponible"
             )
@@ -2186,8 +2192,8 @@ const ComponentsDatatablesColumnChooser: React.FC<
             <div className="flex min-h-screen items-start justify-center px-4">
               <Dialog.Panel className="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-5 text-black dark:text-white-dark">
                 <div className="flex items-center justify-center p-5 text-base font-medium text-[#1f2937] dark:text-white-dark/70">
-                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#f1f2f3] dark:bg-white/10">
-                    <IconMail className="h-7 w-7 text-orange-500" />
+                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 dark:bg-white/10">
+                    <IconMail className="h-7 w-7 bg-orange-100 text-orange-500" />
                   </span>
                 </div>
                 <div className="mb-4">

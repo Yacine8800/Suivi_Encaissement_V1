@@ -151,7 +151,7 @@ const ComponentsAppsMailbox = () => {
               dateValidation
             ).toLocaleDateString()}</strong>. Le montant de restitution en caisse est de 
             <strong>${montantRestitutionCaisse.toLocaleString()} FCFA</strong>, et le montant relevé est de 
-            <strong>${montantReleve.toLocaleString()} FCFA</strong>. Observation : 
+            <strong>${montantReleve?.toLocaleString()} FCFA</strong>. Observation : 
             <strong>${observationReclamation || "Aucune observation"}</strong>.
           </p>
         `;
