@@ -4,22 +4,15 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import IconBox from "../icon/icon-box";
 import IconHome from "@/components/icon/icon-home";
-import IconPhone from "@/components/icon/icon-phone";
-import IconUser from "@/components/icon/icon-user";
-import PanelCodeHighlight from "@/components/panel-code-highlight";
 import { Tab } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
 import EncaissementComptable from "./encaissement-comptable";
 import IconBarChart from "../icon/icon-bar-chart";
 import IconXCircle from "../icon/icon-x-circle";
-import IconTrendingUp from "../icon/icon-trending-up";
-import EncaissementsRapproche from "./encaissements-rapproche";
 import IconChecks from "../icon/icon-checks";
 import IconCircleCheck from "../icon/icon-circle-check";
-import { TAppDispatch, TRootState } from "@/store";
+import { TAppDispatch } from "@/store";
 import { fetchDataReleve } from "@/store/reducers/encaissements/relevé-slice";
-import { fetchUsers } from "@/store/reducers/user/get.user.slice";
-import getUserId from "@/utils/idUser";
 import { DataReverse } from "@/utils/interface";
 import { EStatutEncaissement } from "@/utils/enums";
 
@@ -70,6 +63,11 @@ const ComponentsDashboardValider = () => {
     {
       id: EStatutEncaissement.VALIDE,
       label: "Encaissements Validés",
+      icon: IconCircleCheck,
+    },
+    {
+      id: EStatutEncaissement.CLOTURE,
+      label: "Encaissements Cloturés",
       icon: IconCircleCheck,
     },
   ];

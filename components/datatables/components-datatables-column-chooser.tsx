@@ -43,6 +43,9 @@ import { Transition, Dialog, Tab } from "@headlessui/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
 import { ToastError, ToastSuccess } from "@/utils/toast";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import IconRefresh from "../icon/icon-refresh";
 
 interface DataReverse {
   id: number;
@@ -66,6 +69,7 @@ interface DataReverse {
   "Observation(B-C)"?: string;
   compteBanque: string;
 }
+
 const formatNumber = (num: number | undefined): string => {
   if (num === undefined) return "N/A";
   const formatted = new Intl.NumberFormat("fr-FR", {
@@ -94,8 +98,6 @@ const ComponentsDatatablesColumnChooser: React.FC<
   const secteurData: any[] = useSelector(
     (state: TRootState) => state.secteur?.data
   );
-
-  console.log(loading);
 
   useEffect(() => {
     dispatch(fetchDirectionRegionales());
@@ -311,11 +313,6 @@ const ComponentsDatatablesColumnChooser: React.FC<
         </div>
       ),
     },
-
-    { accessor: "DR", title: "DR", sortable: true },
-    { accessor: "EXP", title: "Code Exp", sortable: true },
-    { accessor: "Produit", title: "Produit", sortable: true },
-    { accessor: "Date Encais", title: "Date Encaissement", sortable: true },
     { accessor: "banque", title: "Banque", sortable: true },
     {
       accessor: "compteBanque",
@@ -327,6 +324,12 @@ const ComponentsDatatablesColumnChooser: React.FC<
         </div>
       ),
     },
+
+    { accessor: "DR", title: "DR", sortable: true },
+    { accessor: "EXP", title: "Code Exp", sortable: true },
+    { accessor: "Produit", title: "Produit", sortable: true },
+    { accessor: "Date Encais", title: "Date Encaissement", sortable: true },
+
     {
       accessor: "Montant caisse (A)",
       title: "Montant Restitution Caisse (A)",
@@ -505,6 +508,12 @@ const ComponentsDatatablesColumnChooser: React.FC<
     { value: "CAISSE 3", label: "CAISSE 3" },
   ];
 
+  const modeReglement = [
+    { value: "Espece", label: "Espece" },
+    { value: "Cheque", label: "Cheque" },
+    { value: "Virement", label: "Virement" },
+  ];
+
   const getStatutLibelle = (
     statut: EStatutEncaissement,
     count: number
@@ -519,6 +528,8 @@ const ComponentsDatatablesColumnChooser: React.FC<
         return isPlural ? "traités" : "traité";
       case EStatutEncaissement.VALIDE:
         return isPlural ? "validés" : "validé";
+      case EStatutEncaissement.CLOTURE:
+        return isPlural ? "cloturés" : "cloturé";
       default:
         return isPlural ? "inconnus" : "inconnu";
     }
@@ -1031,51 +1042,67 @@ const ComponentsDatatablesColumnChooser: React.FC<
   const handleExportPDF = () => {
     const doc = new jsPDF({ orientation: "landscape" });
 
-    const visibleColumns = cols.filter(
-      (col) => col.accessor !== "Actions" && !hideCols.includes(col.accessor)
-    );
+    const imgUrl = "/assets/images/logo.png";
 
-    const headers = [visibleColumns.map((col) => col.title)];
+    // Créer une nouvelle Image
+    const img = new Image();
+    img.src = imgUrl;
 
-    const body = filteredData.map((row) =>
-      visibleColumns.map((col) => {
-        const accessor = col.accessor;
+    img.onload = () => {
+      // Ajouter l'image au PDF
+      doc.addImage(img, "PNG", 10, 5, 30, 15);
 
-        if (row.hasOwnProperty(accessor)) {
-          const value = row[accessor];
-          return typeof value === "number"
-            ? formatNumber(value)
-            : value || "N/A";
-        }
+      // Ajouter le titre après l'image
+      doc.text("Encaissements - Rapport détaillé", 50, 15);
 
-        if (accessor === "modeEtJournee") {
-          return `${row.journeeCaisse || "N/A"} - ${
-            row.modeReglement || "N/A"
-          }`;
-        }
+      const visibleColumns = cols.filter(
+        (col) => col.accessor !== "Actions" && !hideCols.includes(col.accessor)
+      );
 
-        return "N/A";
-      })
-    );
+      const headers = [visibleColumns.map((col) => col.title)];
 
-    doc.text("Encaissements - Rapport détaillé", 14, 10);
+      const body = filteredData.map((row) =>
+        visibleColumns.map((col) => {
+          const accessor = col.accessor;
 
-    doc.autoTable({
-      head: headers,
-      body: body,
-      startY: 20,
-      theme: "grid",
-      headStyles: { fillColor: [54, 162, 235], textColor: 255 },
-      bodyStyles: { fontSize: 8 },
-      styles: {
-        fontSize: 8,
-        cellPadding: 3,
-        overflow: "linebreak",
-      },
-      margin: { top: 20, left: 10, right: 10 },
-    });
+          if (row.hasOwnProperty(accessor)) {
+            const value = row[accessor];
+            return typeof value === "number"
+              ? formatNumber(value)
+              : value || "N/A";
+          }
 
-    doc.save("encaissements_complet.pdf");
+          if (accessor === "modeEtJournee") {
+            return `${row.journeeCaisse || "N/A"} - ${
+              row.modeReglement || "N/A"
+            }`;
+          }
+
+          return "N/A";
+        })
+      );
+
+      doc.autoTable({
+        head: headers,
+        body: body,
+        startY: 25,
+        theme: "grid",
+        headStyles: { fillColor: [54, 162, 235], textColor: 255 },
+        bodyStyles: { fontSize: 8 },
+        styles: {
+          fontSize: 8,
+          cellPadding: 3,
+          overflow: "linebreak",
+        },
+        margin: { top: 20, left: 10, right: 10 },
+      });
+
+      doc.save("encaissements_complet.pdf");
+    };
+
+    img.onerror = () => {
+      console.error("Erreur lors du chargement de l'image.");
+    };
   };
 
   const handleSubmit = () => {
@@ -1110,6 +1137,19 @@ const ComponentsDatatablesColumnChooser: React.FC<
       });
   };
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await dispatch(fetchDataReleve({ id: statutValidation.toString() }));
+    } catch (error) {
+      console.error("Erreur lors de l'actualisation :", error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   return (
     <div className=" mt-9">
       <div className="flex w-full">
@@ -1130,7 +1170,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
                 locale: French,
                 defaultDate: dateRange,
               }}
-              className="form-input  w-[220px]"
+              className="form-input  w-[270px]"
               onChange={(selectedDates: Date[]) => {
                 setDateRange(selectedDates);
               }}
@@ -1172,6 +1212,44 @@ const ComponentsDatatablesColumnChooser: React.FC<
                 </ul>
               </Dropdown>
             </div>
+
+            <div className="dropdown w-2/12">
+              <Dropdown
+                btnClassName="!flex w-full items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
+                button={
+                  <>
+                    <span className="ltr:mr-1 rtl:ml-1">Mode de reglement</span>
+                    <IconCaretDown className="h-5bg-black-dark-light absolute right-3 " />
+                  </>
+                }
+              >
+                <ul className="!min-w-[140px]">
+                  {modeReglement.map((col, i) => (
+                    <li
+                      key={i}
+                      className="flex flex-col"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center px-4 py-1">
+                        <label className="mb-0 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={true}
+                            className="form-checkbox"
+                            value={col.label}
+                            onChange={(event) => {
+                              showHideColumns(event.target.value);
+                            }}
+                          />
+                          <span className="ltr:ml-2 rtl:mr-2">{col.value}</span>
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Dropdown>
+            </div>
+
             <div className="dropdown w-2/12">
               <Dropdown
                 btnClassName="!flex w-full items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
@@ -1344,79 +1422,102 @@ const ComponentsDatatablesColumnChooser: React.FC<
       </div>
 
       <div className="panel datatables">
-        <div className="mb-8 flex items-center justify-center gap-1  lg:justify-end">
-          <button
-            type="button"
-            className="mr-1"
-            onClick={handleExportExcel}
-            title="Export Excel"
-          >
-            <IconExcel />
-          </button>
-          <button
-            type="button"
-            className="text-white"
-            onClick={handleExportCSV}
-            title="Export CSV"
-          >
-            <Csv />
-          </button>
-          <button
-            type="button"
-            className="mr-7"
-            onClick={handleExportPDF}
-            title="Export Pdf"
-          >
-            <Pdf />
-          </button>
-
-          <div className="text-right">
-            <input
-              type="text"
-              className="form-input w-[400px]"
-              placeholder="Recherche..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            {isRefreshing ? (
+              <button
+                type="button"
+                className="btn btn-success flex items-center gap-2"
+                disabled
+              >
+                <span className="h-4 w-4 animate-spin rounded-full border-t-2 border-solid border-white"></span>
+                Chargement...
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn btn-success flex items-center gap-2"
+                onClick={handleRefresh}
+              >
+                <IconRefresh /> Actualiser
+              </button>
+            )}
           </div>
-
-          <div className="dropdown w-2/12 ">
-            <Dropdown
-              btnClassName="!flex w-full items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
-              button={
-                <>
-                  <span className="ltr:mr-1 rtl:ml-1">Colonne</span>
-                  <IconCaretDown className="absolute right-3 justify-end " />
-                </>
-              }
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              className="mr-1"
+              onClick={handleExportExcel}
+              title="Export Excel"
             >
-              <ul className="!min-w-[140px]">
-                {cols.map((col, i) => (
-                  <li
-                    key={i}
-                    className="flex flex-col"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="flex items-center px-4 py-1">
-                      <label className="mb-0 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={!hideCols.includes(col.accessor)}
-                          className="form-checkbox"
-                          value={col.accessor}
-                          onChange={(event) => {
-                            showHideColumns(event.target.value);
-                          }}
-                        />
-                        <span className="ltr:ml-2 rtl:mr-2">{col.title}</span>
-                      </label>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </Dropdown>
+              <IconExcel />
+            </button>
+            <button
+              type="button"
+              className="text-white"
+              onClick={handleExportCSV}
+              title="Export CSV"
+            >
+              <Csv />
+            </button>
+            <button
+              type="button"
+              className="mr-7"
+              onClick={handleExportPDF}
+              title="Export Pdf"
+            >
+              <Pdf />
+            </button>
+
+            <div className="text-right">
+              <input
+                type="text"
+                className="form-input w-[300px]"
+                placeholder="Recherche..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            <div className="dropdown w-[200px]">
+              <Dropdown
+                btnClassName="!flex w-full items-center border font-semibold border-white-light dark:border-[#253b5c] rounded-md px-4 py-2 text-sm dark:bg-[#1b2e4b] dark:text-white-dark"
+                button={
+                  <>
+                    <span className="ltr:mr-1 rtl:ml-1">Colonne</span>
+                    <IconCaretDown className="absolute right-3 justify-end" />
+                  </>
+                }
+              >
+                <ul className="!min-w-[140px]">
+                  {cols.map((col, i) => (
+                    <li
+                      key={i}
+                      className="flex flex-col"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center px-4 py-1">
+                        <label className="mb-0 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!hideCols.includes(col.accessor)}
+                            className="form-checkbox"
+                            value={col.accessor}
+                            onChange={(event) => {
+                              showHideColumns(event.target.value);
+                            }}
+                          />
+                          <span className="ltr:ml-2 rtl:mr-2">{col.title}</span>
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </Dropdown>
+            </div>
           </div>
         </div>
+
         <DataTable
           className="table-hover whitespace-nowrap"
           records={!loading && filteredData?.length > 0 ? filteredData : []}
@@ -1463,10 +1564,8 @@ const ComponentsDatatablesColumnChooser: React.FC<
           {statutValidation === 0 ? (
             <div>
               <div
-                className={`${
-                  showCustomizer && "!block"
-                } fixed inset-0 z-[51] hidden bg-[black]/60 px-4 transition-[display]`}
-                onClick={() => setShowCustomizer(false)}
+                className={`fixed inset-0 z-50 bg-black/30 backdrop-blur-sm`}
+                onClick={() => setShowSettingModal(false)}
               ></div>
               <nav
                 className={`fixed bottom-0 top-0 z-[51] w-full max-w-[600px] bg-white p-4 shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-[right] duration-300 dark:bg-black ${
@@ -1840,9 +1939,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
           ) : (
             <div>
               <div
-                className={`${
-                  showCustomizer && "!block"
-                } fixed inset-0 z-[51] hidden bg-[black]/60 px-4 transition-[display]`}
+                className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm"
                 onClick={() => setShowCustomizer(false)}
               ></div>
               <nav
@@ -2100,7 +2197,6 @@ const ComponentsDatatablesColumnChooser: React.FC<
                   </div>
                   <div className="mt-8">
                     <div className="flex gap-2">
-                      {/* Si statutValidation = 3 */}
                       {statutValidation === 3 && (
                         <>
                           <button
@@ -2187,10 +2283,15 @@ const ComponentsDatatablesColumnChooser: React.FC<
         </div>
       )}
       <Transition appear show={modal17} as={Fragment}>
-        <Dialog as="div" open={modal17} onClose={() => setModal17(false)}>
+        <Dialog
+          as="div"
+          open={modal17}
+          className={"fixed inset-0 z-50 bg-black/30 backdrop-blur-sm"}
+          onClose={() => setModal17(false)}
+        >
           <div className="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60">
             <div className="flex min-h-screen items-start justify-center px-4">
-              <Dialog.Panel className="panel my-8 w-full max-w-lg overflow-hidden rounded-lg border-0 p-5 text-black dark:text-white-dark">
+              <Dialog.Panel className="panel my-8 w-[2200px] max-w-4xl overflow-hidden rounded-lg border-0 p-5 text-black dark:text-white-dark">
                 <div className="flex items-center justify-center p-5 text-base font-medium text-[#1f2937] dark:text-white-dark/70">
                   <span className="flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 dark:bg-white/10">
                     <IconMail className="h-7 w-7 bg-orange-100 text-orange-500" />
@@ -2238,7 +2339,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
                     />
                   </div>
                 </div>
-                <div className="mb-4 h-fit">
+                {/* <div className="mb-4 h-fit">
                   <label className="block text-sm font-medium text-gray-700">
                     Contenu du message
                   </label>
@@ -2254,6 +2355,22 @@ const ComponentsDatatablesColumnChooser: React.FC<
                     }
                     placeholder="Saisissez votre message ici"
                   ></textarea>
+                </div> */}
+
+                <div className="h-fit">
+                  <ReactQuill
+                    theme="snow"
+                    value={params.description || ""}
+                    defaultValue={params.description || ""}
+                    onChange={(content, delta, source, editor) => {
+                      params.description = content;
+                      params.displayDescription = editor.getText();
+                      setParams({
+                        ...params,
+                      });
+                    }}
+                    style={{ minHeight: "200px" }}
+                  />
                 </div>
 
                 <div className="mt-4 flex items-center justify-end">
