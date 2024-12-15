@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import ComponentsDatatablesColumnChooser from "../datatables/components-datatables-column-chooser";
+import ComponentsDatatablesColumnChooser from "../datatables/components-datatables-encaissement";
 import IconZipFile from "../icon/icon-zip-file";
 import IconCircleCheck from "../icon/icon-circle-check";
 import { TRootState } from "@/store";
-import { ITotal, Pagination } from "@/utils/interface";
+import { ITotal, Paginations } from "@/utils/interface";
 
 interface RecordType {
   validated: boolean;
@@ -20,7 +20,7 @@ interface EncaissementComptableProps {
   statutValidation: number;
   data: any[];
   total: ITotal;
-  paginate: Pagination;
+  paginate: Paginations;
   loading: boolean;
 }
 
@@ -111,7 +111,7 @@ const EncaissementComptable: React.FC<EncaissementComptableProps> = ({
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-lg font-bold">Total des montants</div>
-                <div className="text-primary"> À la date du {today} </div>
+                <div className="text-primary">À la date du {today}</div>
               </div>
             </div>
             <div className="relative mt-10">
@@ -119,40 +119,78 @@ const EncaissementComptable: React.FC<EncaissementComptableProps> = ({
                 <IconCircleCheck className="-ml-7 -mt-[25px] h-full w-full text-success opacity-20" />
               </div>
               <div className="grid grid-cols-2 gap-6 md:grid-cols-3">
-                <div>
-                  <div className="text-white-black">Total Montant Caisse</div>
-                  <div
-                    className={`mt-2 text-xl font-light ${getColorClass(
-                      total.totalMontantRestitutionCaisse
-                    )}`}
-                  >
-                    {`${formatNumber(
-                      total.totalMontantRestitutionCaisse
-                    )} F CFA`}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-white-black">
-                    Total Montant Bordereau
-                  </div>
-                  <div
-                    className={`mt-2 text-xl font-light ${getColorClass(
-                      total.totalMontantBordereauBanque
-                    )}`}
-                  >
-                    {`${formatNumber(total.totalMontantBordereauBanque)} F CFA`}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-white-black">Total Montant Relevé</div>
-                  <div
-                    className={`mt-2 text-xl font-light ${getColorClass(
-                      total.totalMontantReleve
-                    )}`}
-                  >
-                    {`${formatNumber(total.totalMontantReleve)} F CFA`}
-                  </div>
-                </div>
+                {loading ? (
+                  <>
+                    {/* Skeleton loaders pour chaque champ */}
+                    <div>
+                      <div className="text-white-black">
+                        Total Montant Caisse
+                      </div>
+                      <div className="mt-2 text-xl font-light">
+                        <div className="h-2 w-32 animate-pulse rounded bg-gray-300"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-white-black">
+                        Total Montant Bordereau
+                      </div>
+                      <div className="mt-2 text-xl font-light">
+                        <div className="h-2 w-32 animate-pulse rounded bg-gray-300"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-white-black">
+                        Total Montant Relevé
+                      </div>
+                      <div className="mt-2 text-xl font-light">
+                        <div className="h-2 w-32 animate-pulse rounded bg-gray-300"></div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <div className="text-white-black">
+                        Total Montant Caisse
+                      </div>
+                      <div
+                        className={`mt-2 text-xl font-light ${getColorClass(
+                          total.totalMontantRestitutionCaisse
+                        )}`}
+                      >
+                        {`${formatNumber(
+                          total.totalMontantRestitutionCaisse
+                        )} F CFA`}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-white-black">
+                        Total Montant Bordereau
+                      </div>
+                      <div
+                        className={`mt-2 text-xl font-light ${getColorClass(
+                          total.totalMontantBordereauBanque
+                        )}`}
+                      >
+                        {`${formatNumber(
+                          total.totalMontantBordereauBanque
+                        )} F CFA`}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-white-black">
+                        Total Montant Relevé
+                      </div>
+                      <div
+                        className={`mt-2 text-xl font-light ${getColorClass(
+                          total.totalMontantReleve
+                        )}`}
+                      >
+                        {`${formatNumber(total.totalMontantReleve)} F CFA`}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -164,6 +202,7 @@ const EncaissementComptable: React.FC<EncaissementComptableProps> = ({
           statutValidation={statutValidation}
           data={data}
           loading={loading}
+          paginate={paginate}
         />
       </div>
     </div>

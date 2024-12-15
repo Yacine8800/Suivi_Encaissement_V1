@@ -1,4 +1,4 @@
-import ComponentsDashboardAnalytics from "@/components/dashboard/components-dashboard-analytics";
+import ComponentsDashboardAnalytics from "@/components/dashboard/parent-encaissement";
 import ComponentsDashboardValider from "@/components/dashboard/components-dashboard-valider";
 import { Metadata } from "next";
 import React from "react";

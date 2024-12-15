@@ -1,4 +1,4 @@
-import ComponentsDashboardSales from "@/components/dashboard/components-dashboard-sales";
+import ComponentsDashboardSales from "@/components/dashboard/components-dashboard-encaissement";
 import { Metadata } from "next";
 import React from "react";
 

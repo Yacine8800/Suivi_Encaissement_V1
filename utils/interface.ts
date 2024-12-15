@@ -28,7 +28,7 @@ export interface Result {
   validationEncaissement: ValidationEncaissement;
 }
 
-export interface Pagination {
+export interface Paginations {
   currentPage: number;
   previousPage: number | null;
   nextPage: number | null;
@@ -43,7 +43,7 @@ export interface ITotal {
 }
 
 export interface DataReverse {
-  pagination: Pagination;
+  pagination: Paginations;
   result: Result[];
   totals: ITotal;
 }
