@@ -18,6 +18,7 @@ import IconMenuComponents from "@/components/icon/menu/icon-menu-components";
 import React from "react";
 import IconSquareRotated from "../icon/icon-square-rotated";
 import IconSettings from "../icon/icon-settings";
+import getUserHabilitation from "@/utils/getHabilitation";
 
 const Header = () => {
   const user = useSelector((state: TRootState) => state.auth?.user);

@@ -47,6 +47,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import IconRefresh from "../icon/icon-refresh";
 import { Paginations } from "@/utils/interface";
+import getUserId from "@/utils/idUser";
+import getUserPermission from "@/utils/user-info";
 
 interface DataReverse {
   id: number;
@@ -86,11 +88,12 @@ interface EncaissementComptableProps {
   data: any[];
   loading: boolean;
   paginate: Paginations;
+  habilitation: any[];
 }
 
 const ComponentsDatatablesColumnChooser: React.FC<
   EncaissementComptableProps
-> = ({ statutValidation, data, loading, paginate }) => {
+> = ({ statutValidation, data, loading, paginate, habilitation }) => {
   const dispatch = useDispatch<TAppDispatch>();
 
   const [selectedSecteurIds, setSelectedSecteurIds] = useState<number[]>([]);
@@ -310,6 +313,13 @@ const ComponentsDatatablesColumnChooser: React.FC<
     }));
   };
 
+  const hasPermission = (habilitationName: string, permission: string) => {
+    const foundHabilitation = habilitation.find(
+      (h) => h.name === habilitationName
+    );
+    return foundHabilitation?.[permission] || false;
+  };
+
   const baseCols = [
     {
       accessor: "caisse",
@@ -453,31 +463,37 @@ const ComponentsDatatablesColumnChooser: React.FC<
       accessor: "Actions",
       title: "Actions",
       sortable: false,
-      render: (row: DataReverse) => (
-        <Tippy content={statutValidation === 0 ? "Modifier" : "Voir"}>
-          <button type="button" onClick={() => handleEdit(row)}>
-            {statutValidation === 0 ? (
-              <div className="flex items-center gap-2">
-                <IconPencil className="ltr:mr-2 rtl:ml-2" />
-                <Tippy content="Envoyer un mail">
-                  <button
-                    type="button"
-                    className="text-red-500 focus:outline-none"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModal17(true);
-                    }}
-                  >
-                    <IconMail className="ltr:mr-2 rtl:ml-2 " />
-                  </button>
-                </Tippy>
-              </div>
-            ) : (
-              <IconEye className="ltr:mr-2 rtl:ml-2" />
-            )}
-          </button>
-        </Tippy>
-      ),
+      render: (row: DataReverse) => {
+        const canEditComptable =
+          statutValidation === 0 &&
+          hasPermission("ENCAISSEMENT REVERSE", "MODIFIER");
+
+        return (
+          <Tippy content={statutValidation === 0 ? "Modifier" : "Voir"}>
+            <button type="button" onClick={() => handleEdit(row)}>
+              {canEditComptable ? (
+                <div className="flex items-center gap-2">
+                  <IconPencil className="ltr:mr-2 rtl:ml-2" />
+                  <Tippy content="Envoyer un mail">
+                    <button
+                      type="button"
+                      className="text-red-500 focus:outline-none"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModal17(true);
+                      }}
+                    >
+                      <IconMail className="ltr:mr-2 rtl:ml-2 " />
+                    </button>
+                  </Tippy>
+                </div>
+              ) : (
+                <IconEye className="ltr:mr-2 rtl:ml-2" />
+              )}
+            </button>
+          </Tippy>
+        );
+      },
     },
   ];
 
@@ -516,12 +532,12 @@ const ComponentsDatatablesColumnChooser: React.FC<
   const lendemain = new Date();
   lendemain.setDate(jour.getDate() + 1);
 
-  const formatDate = (date: Date) => {
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  };
+  // const formatDate = (date: Date) => {
+  //   const day = date.getDate().toString().padStart(2, "0");
+  //   const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  //   const year = date.getFullYear();
+  //   return `${day}-${month}-${year}`;
+  // };
 
   const [dateRange, setDateRange] = useState<Date[]>([jour, lendemain]);
 

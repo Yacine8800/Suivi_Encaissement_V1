@@ -4,9 +4,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
 import { toggleSidebar } from "@/store/themeConfigSlice";
-import { useState, useEffect } from "react";
-import IconCaretsDown from "@/components/icon/icon-carets-down";
-import IconMinus from "@/components/icon/icon-minus";
+import { useState, useEffect, Key } from "react";
 import { usePathname } from "next/navigation";
 import { getTranslation } from "@/i18n";
 import IconDesktop from "../icon/icon-desktop";
@@ -15,18 +13,60 @@ import IconMenuCharts from "../icon/menu/icon-menu-charts";
 import IconBellBing from "../icon/icon-bell-bing";
 import IconLink from "../icon/icon-link";
 import IconUsersGroup from "../icon/icon-users-group";
+import IconMinus from "@/components/icon/icon-minus";
+import IconCaretsDown from "@/components/icon/icon-carets-down";
+import getUserHabilitation from "@/utils/getHabilitation";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const { t } = getTranslation();
   const pathname = usePathname();
-  const [currentMenu, setCurrentMenu] = useState<string>("");
+  const habilitation = getUserHabilitation();
 
-  const toggleMenu = (value: string) => {
-    setCurrentMenu((oldValue) => {
-      return oldValue === value ? "" : value;
-    });
-  };
+  const allowedMenus = [
+    {
+      id: 1,
+      name: "DASHBOARD",
+      icon: <IconDesktop />,
+      path: "/dashboard",
+      section: "Tableau de bord",
+    },
+    {
+      id: 2,
+      name: "MES ENCAISEMENTS",
+      icon: <IconNotesEdit />,
+      path: "/encaissement",
+      section: "Encaissements",
+    },
+    {
+      id: 11,
+      name: "RECLAMATION",
+      icon: <IconBellBing />,
+      path: "/reclamation",
+      section: "Encaissements",
+    },
+    {
+      id: 12,
+      name: "RAPPROCHEMENT",
+      icon: <IconLink />,
+      path: "/rapprochement",
+      section: "Encaissements",
+    },
+    {
+      id: 5,
+      name: "HABILITATIONS",
+      icon: <IconMenuCharts />,
+      path: "/profil",
+      section: "Administration",
+    },
+    {
+      id: 4,
+      name: "UTILISATEURS",
+      icon: <IconUsersGroup />,
+      path: "/user",
+      section: "Administration",
+    },
+  ];
 
   useEffect(() => {
     const selector = document.querySelector(
@@ -67,6 +107,53 @@ const Sidebar = () => {
     selector?.classList.add("active");
   };
 
+  const translateMenuName = (name: string) => {
+    switch (name) {
+      case "DASHBOARD":
+        return t("Tableau de bord");
+      case "MES ENCAISEMENTS":
+        return t("Encaissements");
+      case "RECLAMATION":
+        return t("Réclamation");
+      case "RAPPROCHEMENT":
+        return t("Rapprochement");
+      case "HABILITATIONS":
+        return t("Habilitations");
+      case "UTILISATEURS":
+        return t("Utilisateurs");
+      default:
+        return t(name);
+    }
+  };
+
+  const renderMenu = (section: string) => {
+    return habilitation
+      .filter((item: { name: string; LIRE: any }) => {
+        const menu = allowedMenus.find(
+          (menu) =>
+            menu.name === item.name && menu.section === section && item.LIRE
+        );
+        return !!menu;
+      })
+      .map((item: { name: string; id: Key | null | undefined }) => {
+        const menu = allowedMenus.find((menu) => menu.name === item.name);
+        return (
+          menu && (
+            <li key={menu.id} className="sub-menu nav-item">
+              <Link href={menu.path} className="group">
+                <div className="flex items-center">
+                  {menu.icon}
+                  <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
+                    {translateMenuName(menu.name)}
+                  </span>
+                </div>
+              </Link>
+            </li>
+          )
+        );
+      });
+  };
+
   return (
     <div className="dark">
       <nav
@@ -94,101 +181,24 @@ const Sidebar = () => {
             </button>
           </div>
 
-          <br />
-          <br />
           <PerfectScrollbar className="relative h-[calc(100vh-80px)]">
-            <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
+            <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold dark:bg-dark dark:bg-opacity-[0.08]">
               <IconMinus className="hidden h-5 w-4 flex-none" />
               <span>{t("Tableau de bord")}</span>
             </h2>
+            <ul className="list-none">{renderMenu("Tableau de bord")}</ul>
 
-            <ul className="list-none">
-              <li className="sub-menu nav-item">
-                <Link href="/dashboard" className="group">
-                  <div className="flex items-center">
-                    <IconDesktop className="shrink-0 group-hover:!text-primary" />
-                    <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
-                      {t("Tableau de board")}
-                    </span>
-                  </div>
-                </Link>
-              </li>
+            <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold dark:bg-dark dark:bg-opacity-[0.08]">
+              <IconMinus className="hidden h-5 w-4 flex-none" />
+              <span>{t("Encaissements")}</span>
+            </h2>
+            <ul className="list-none">{renderMenu("Encaissements")}</ul>
 
-              <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
-                <IconMinus className="hidden h-5 w-4 flex-none" />
-                <span>{t("Encaissements")}</span>
-              </h2>
-
-              <li className="sub-menu nav-item">
-                <Link href="/encaissement" className="group">
-                  <div className="flex items-center">
-                    <IconNotesEdit className="shrink-0 group-hover:!text-primary" />
-                    <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
-                      {t("Encaissements")}
-                    </span>
-                  </div>
-                </Link>
-              </li>
-
-              {/* <li className="sub-menu nav-item">
-                <Link href="/valider" className="group">
-                  <div className="flex items-center">
-                    <IconListCheck className="shrink-0 group-hover:!text-primary" />
-                    <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
-                      {t("Encaissement Valider")}
-                    </span>
-                  </div>
-                </Link>
-              </li> */}
-              <li className="sub-menu nav-item">
-                <Link href="/rapprochement" className="group">
-                  <div className="flex items-center">
-                    <IconLink className="shrink-0 group-hover:!text-primary" />
-                    <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
-                      {t("Rapprochements")}
-                    </span>
-                  </div>
-                </Link>
-              </li>
-
-              <li className="menu nav-item">
-                <Link href="/reclamation" className="group">
-                  <div className="flex items-center">
-                    <IconBellBing className="shrink-0 group-hover:!text-primary" />
-                    <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
-                      {t("Reclamations")}
-                    </span>
-                  </div>
-                </Link>
-              </li>
-
-              <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
-                <IconMinus className="hidden h-5 w-4 flex-none" />
-                <span>{t("Administration")}</span>
-              </h2>
-
-              <li className="menu nav-item">
-                <Link href="/profil" className="group">
-                  <div className="flex items-center">
-                    <IconMenuCharts className="shrink-0 group-hover:!text-primary" />
-                    <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
-                      {t("Habilitations")}
-                    </span>
-                  </div>
-                </Link>
-              </li>
-
-              <li className="menu nav-item">
-                <Link href="/user" className="group">
-                  <div className="flex items-center">
-                    <IconUsersGroup className="shrink-0 group-hover:!text-primary" />
-                    <span className="text-[#506690] dark:text-white-dark ltr:pl-3 rtl:pr-3">
-                      {t("Utilisateurs")}
-                    </span>
-                  </div>
-                </Link>
-              </li>
-            </ul>
+            <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold dark:bg-dark dark:bg-opacity-[0.08]">
+              <IconMinus className="hidden h-5 w-4 flex-none" />
+              <span>{t("Administration")}</span>
+            </h2>
+            <ul className="list-none">{renderMenu("Administration")}</ul>
 
             <div className="mt-auto p-4">
               <img

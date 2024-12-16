@@ -15,17 +15,12 @@ import { TAppDispatch } from "@/store";
 import { fetchDataReleve } from "@/store/reducers/encaissements/relevé-slice";
 import { DataReverse } from "@/utils/interface";
 import { EStatutEncaissement } from "@/utils/enums";
-
-interface RecordType {
-  validated: boolean;
-  "Montant caisse"?: number;
-  "Montant bordereau"?: number;
-  "Montant revelé"?: number;
-  [key: string]: any;
-}
+import getUserHabilitation from "@/utils/getHabilitation";
 
 const ComponentsDashboardValider = () => {
   const dispatch = useDispatch<TAppDispatch>();
+
+  const habilitation = getUserHabilitation();
 
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
@@ -44,33 +39,45 @@ const ComponentsDashboardValider = () => {
     EStatutEncaissement.EN_ATTENTE
   );
 
-  const tabs = [
+  const allTabs = [
     {
       id: EStatutEncaissement.EN_ATTENTE,
       label: "Encaissements Reversés",
       icon: IconBarChart,
+      habilitationName: "ENCAISSEMENT REVERSE",
     },
     {
       id: EStatutEncaissement.TRAITE,
       label: "Encaissements Traités",
       icon: IconChecks,
+      habilitationName: "ENCAISSEMENT TRAITÉ",
     },
     {
       id: EStatutEncaissement.REJETE,
       label: "Encaissements Rejetés",
       icon: IconXCircle,
+      habilitationName: "ENCAISSEMENT REJETE",
     },
     {
       id: EStatutEncaissement.VALIDE,
       label: "Encaissements Validés",
       icon: IconCircleCheck,
+      habilitationName: "ENCAISSEMENT VALIDE",
     },
     {
       id: EStatutEncaissement.CLOTURE,
-      label: "Encaissements Cloturés",
+      label: "Encaissements Clôturés",
       icon: IconCircleCheck,
+      habilitationName: "ENCAISSEMENT CLOTURE",
     },
   ];
+
+  const filteredTabs = allTabs.filter((tab) =>
+    habilitation.some(
+      (h: { name: string; LIRE: boolean }) =>
+        h.name === tab.habilitationName && h.LIRE === true
+    )
+  );
 
   useEffect(() => {
     if (isMounted) {
@@ -90,14 +97,15 @@ const ComponentsDashboardValider = () => {
             <button className="flex items-center justify-center rounded-md border border-gray-500/20 p-2.5 shadow hover:text-gray-500/70 dark:border-0 dark:bg-[#191e3a] dark:hover:text-white-dark/70">
               <Link className="flex" href="/encaissement">
                 <IconHome className="shrink-0 ltr:mr-2 rtl:ml-2" />
-                Encaissement
+                Encaissements
               </Link>
             </button>
           </li>
           <li className="flex items-center before:relative before:-top-0.5 before:mx-4 before:inline-block before:h-1 before:w-1 before:rounded-full before:bg-primary">
             <button className="flex items-center justify-center rounded-md border border-gray-500/20 p-2.5 text-primary shadow dark:border-0 dark:bg-[#191e3a]">
               <IconBox className="shrink-0 ltr:mr-2 rtl:ml-2" />
-              {tabs.find((tab) => tab.id === activeTab)?.label || "Reversé"}
+              {filteredTabs.find((tab) => tab.id === activeTab)?.label ||
+                "Reversé"}
             </button>
           </li>
         </ol>
@@ -105,9 +113,9 @@ const ComponentsDashboardValider = () => {
 
       <div className="panel mb-5">
         {isMounted && (
-          <Tab.Group onChange={(index) => setActiveTab(tabs[index].id)}>
+          <Tab.Group onChange={(index) => setActiveTab(filteredTabs[index].id)}>
             <Tab.List className="mt-3 flex flex-wrap border-b border-white-light dark:border-[#191e3a]">
-              {tabs.map((tab) => (
+              {filteredTabs.map((tab) => (
                 <Tab as={Fragment} key={tab.id}>
                   {({ selected }) => (
                     <button
@@ -125,7 +133,7 @@ const ComponentsDashboardValider = () => {
               ))}
             </Tab.List>
             <Tab.Panels>
-              {tabs.map((tab) => (
+              {filteredTabs.map((tab) => (
                 <Tab.Panel key={tab.id}>
                   <EncaissementComptable
                     statutValidation={tab.id}
@@ -133,6 +141,7 @@ const ComponentsDashboardValider = () => {
                     total={Totaldata}
                     paginate={paginate}
                     loading={dataReverseloading}
+                    habilitation={habilitation}
                   />
                 </Tab.Panel>
               ))}

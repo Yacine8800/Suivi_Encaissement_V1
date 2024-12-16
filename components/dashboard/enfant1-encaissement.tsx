@@ -22,6 +22,7 @@ interface EncaissementComptableProps {
   total: ITotal;
   paginate: Paginations;
   loading: boolean;
+  habilitation: any[];
 }
 
 const EncaissementComptable: React.FC<EncaissementComptableProps> = ({
@@ -30,6 +31,7 @@ const EncaissementComptable: React.FC<EncaissementComptableProps> = ({
   total,
   paginate,
   loading,
+  habilitation,
 }) => {
   const [expensesPercentage, setExpensesPercentage] = useState<number>(0);
   const [validatedRecords, setValidatedRecords] = useState<number>(0);
@@ -203,6 +205,7 @@ const EncaissementComptable: React.FC<EncaissementComptableProps> = ({
           data={data}
           loading={loading}
           paginate={paginate}
+          habilitation={habilitation}
         />
       </div>
     </div>
