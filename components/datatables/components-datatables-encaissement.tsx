@@ -469,29 +469,45 @@ const ComponentsDatatablesColumnChooser: React.FC<
           hasPermission("ENCAISSEMENT REVERSE", "MODIFIER");
 
         return (
-          <Tippy content={statutValidation === 0 ? "Modifier" : "Voir"}>
-            <button type="button" onClick={() => handleEdit(row)}>
-              {canEditComptable ? (
-                <div className="flex items-center gap-2">
-                  <IconPencil className="ltr:mr-2 rtl:ml-2" />
-                  <Tippy content="Envoyer un mail">
-                    <button
-                      type="button"
-                      className="text-red-500 focus:outline-none"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setModal17(true);
-                      }}
-                    >
-                      <IconMail className="ltr:mr-2 rtl:ml-2 " />
-                    </button>
-                  </Tippy>
-                </div>
-              ) : (
-                <IconEye className="ltr:mr-2 rtl:ml-2" />
-              )}
-            </button>
-          </Tippy>
+          <>
+            {canEditComptable ? (
+              <div className="flex items-center gap-2">
+                <Tippy content="Modifier">
+                  <button
+                    type="button"
+                    className="focus:outline-none"
+                    onClick={() => handleEdit(row)}
+                  >
+                    <IconPencil className="ltr:mr-2 rtl:ml-2" />
+                  </button>
+                </Tippy>
+                <Tippy content="Envoyer un mail">
+                  <button
+                    type="button"
+                    className="text-red-500 focus:outline-none"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setModal17(true);
+                    }}
+                  >
+                    <IconMail className="ltr:mr-2 rtl:ml-2 " />
+                  </button>
+                </Tippy>
+              </div>
+            ) : (
+              statutValidation !== 0 && (
+                <Tippy content="Voir">
+                  <button
+                    type="button"
+                    className="focus:outline-none"
+                    onClick={() => handleEdit(row)}
+                  >
+                    <IconEye className="ltr:mr-2 rtl:ml-2" />
+                  </button>
+                </Tippy>
+              )
+            )}
+          </>
         );
       },
     },

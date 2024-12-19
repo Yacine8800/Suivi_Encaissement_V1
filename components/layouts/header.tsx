@@ -19,6 +19,7 @@ import React from "react";
 import IconSquareRotated from "../icon/icon-square-rotated";
 import IconSettings from "../icon/icon-settings";
 import getUserHabilitation from "@/utils/getHabilitation";
+import IconUser from "../icon/icon-user";
 
 const Header = () => {
   const user = useSelector((state: TRootState) => state.auth?.user);
@@ -147,21 +148,13 @@ const Header = () => {
                 placement={`${isRtl ? "bottom-start" : "bottom-end"}`}
                 btnClassName="relative group block"
                 button={
-                  <img
-                    className="h-8 w-8 rounded-full object-cover saturate-50 group-hover:saturate-100"
-                    src="/assets/images/user.png"
-                    alt="userProfile"
-                  />
+                  <IconUser className="h-8 w-8 shrink-0 justify-center" />
                 }
               >
                 <ul className="w-[430px] !py-0 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
                   <li>
                     <div className="flex items-center px-4 py-4">
-                      <img
-                        className="h-10 w-10 rounded-md object-cover"
-                        src="/assets/images/user.png"
-                        alt="userProfile"
-                      />
+                      <IconUser className="h-8 w-8 shrink-0 justify-center" />
                       <div className="truncate ltr:pl-4 rtl:pr-4">
                         <h4 className="text-base">
                           {`${lastname} ${firstname}`}
