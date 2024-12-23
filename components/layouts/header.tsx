@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import { TRootState } from "@/store";
-import { toggleSidebar, toggleRTL } from "@/store/themeConfigSlice";
+import { toggleSidebar } from "@/store/themeConfigSlice";
 import Dropdown from "@/components/dropdown";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { getTranslation } from "@/i18n";
 import IconMenu from "@/components/icon/icon-menu";
 
@@ -18,7 +18,6 @@ import IconMenuComponents from "@/components/icon/menu/icon-menu-components";
 import React from "react";
 import IconSquareRotated from "../icon/icon-square-rotated";
 import IconSettings from "../icon/icon-settings";
-import getUserHabilitation from "@/utils/getHabilitation";
 import IconUser from "../icon/icon-user";
 import IconArrowDown from "../icon/icon-arrow-down";
 
@@ -26,13 +25,11 @@ const Header = () => {
   const user = useSelector((state: TRootState) => state.auth?.user);
   const pathname = usePathname();
   const dispatch = useDispatch();
-  const router = useRouter();
-  const { t, i18n } = getTranslation();
+  const { t } = getTranslation();
 
   const {
     email = "",
     matricule = "",
-    phoneNumber = "",
     firstname = "",
     lastname = "",
   } = user || {};
@@ -75,14 +72,6 @@ const Header = () => {
     useSelector((state: TRootState) => state.themeConfig.rtlClass) === "rtl";
 
   const themeConfig = useSelector((state: TRootState) => state.themeConfig);
-  const setLocale = (flag: string) => {
-    if (flag.toLowerCase() === "ae") {
-      dispatch(toggleRTL("rtl"));
-    } else {
-      dispatch(toggleRTL("ltr"));
-    }
-    router.refresh();
-  };
 
   const [search, setSearch] = useState(false);
 

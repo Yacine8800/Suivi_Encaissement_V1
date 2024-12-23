@@ -47,8 +47,6 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import IconRefresh from "../icon/icon-refresh";
 import { Paginations } from "@/utils/interface";
-import getUserId from "@/utils/idUser";
-import getUserPermission from "@/utils/user-info";
 
 interface DataReverse {
   id: number;
@@ -98,7 +96,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
 
   const [selectedSecteurIds, setSelectedSecteurIds] = useState<number[]>([]);
   const [selectedDRIds, setSelectedDRIds] = useState<number[]>([]); // Liste des IDs sélectionnés
-  const [filteredSecteurs, setFilteredSecteurs] = useState<any[]>([]);
+  // const [filteredSecteurs, setFilteredSecteurs] = useState<any[]>([]);
 
   const drData: any[] = useSelector((state: TRootState) => state.dr?.data);
 
@@ -126,7 +124,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
     const secteurs = secteurData.filter((secteur) =>
       selectedDRIds.includes(secteur.directionRegionaleId)
     );
-    setFilteredSecteurs(secteurs);
+    // setFilteredSecteurs(secteurs);
   }, [secteurData, selectedDRIds]);
 
   const handleDRSelection = (id: number) => {

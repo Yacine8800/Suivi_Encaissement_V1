@@ -1,20 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
 import ComponentsDatatablesColumnChooser from "../datatables/components-datatables-encaissement";
 import IconZipFile from "../icon/icon-zip-file";
 import IconCircleCheck from "../icon/icon-circle-check";
-import { TRootState } from "@/store";
 import { ITotal, Paginations } from "@/utils/interface";
-
-interface RecordType {
-  validated: boolean;
-  "Montant caisse"?: number;
-  "Montant bordereau"?: number;
-  "Montant revelé"?: number;
-  [key: string]: any;
-}
 
 interface EncaissementComptableProps {
   statutValidation: number;
