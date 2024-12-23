@@ -20,6 +20,7 @@ import IconSquareRotated from "../icon/icon-square-rotated";
 import IconSettings from "../icon/icon-settings";
 import getUserHabilitation from "@/utils/getHabilitation";
 import IconUser from "../icon/icon-user";
+import IconArrowDown from "../icon/icon-arrow-down";
 
 const Header = () => {
   const user = useSelector((state: TRootState) => state.auth?.user);
@@ -138,7 +139,7 @@ const Header = () => {
               ></form>
             </div>
 
-            <div className="dropdown flex shrink-0">
+            <div className="dropdown right-5 flex shrink-0">
               <div className="mr-6">
                 <div className="font-bold text-gray-800">{`${lastname} ${firstname}`}</div>
                 <div className="text-sm text-gray-600">{matricule}</div>
@@ -170,29 +171,6 @@ const Header = () => {
                       </div>
                     </div>
                   </li>
-                  {/* <li>
-                    <Link href="" className="dark:hover:text-white">
-                      <IconUser className="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2" />
-                    </Link>
-                  </li> */}
-
-                  {/* <li className="border-t border-white-light dark:border-white-light/10">
-                    <Link href="" className="dark:hover:text-white">
-                      <div className="dark:hover:text-whit mt-5 text-black">
-                        <label className="mb-0 inline-flex">
-                          <input
-                            type="checkbox"
-                            className="form-checkbox"
-                            checked={themeConfig.semidark}
-                            onChange={(e) =>
-                              dispatch(toggleSemidark(e.target.checked))
-                            }
-                          />
-                          <span>Menu Noir</span>
-                        </label>
-                      </div>
-                    </Link>
-                  </li> */}
 
                   <li className="border-t border-white-light dark:border-white-light/10">
                     <Link href="" className="!py-3 text-primary">
@@ -209,6 +187,8 @@ const Header = () => {
                   </li>
                 </ul>
               </Dropdown>
+
+              <IconArrowDown className="absolute -right-5 top-2 h-5 w-5 cursor-pointer" />
             </div>
           </div>
         </div>
