@@ -136,15 +136,15 @@ const Header = () => {
               <Dropdown
                 offset={[0, 8]}
                 placement={`${isRtl ? "bottom-start" : "bottom-end"}`}
-                btnClassName="relative group block"
-                button={
-                  <IconUser className="h-8 w-8 shrink-0 justify-center" />
-                }
+                btnClassName="relative group block top-2"
               >
                 <ul className="w-[430px] !py-0 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
                   <li>
                     <div className="flex items-center px-4 py-4">
-                      <IconUser className="h-8 w-8 shrink-0 justify-center" />
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#ff6c17]">
+                        <IconUser className="h-6 w-6 text-white" />
+                      </div>
+
                       <div className="truncate ltr:pl-4 rtl:pr-4">
                         <h4 className="text-base">
                           {`${lastname} ${firstname}`}
@@ -176,14 +176,16 @@ const Header = () => {
                   </li>
                 </ul>
               </Dropdown>
-
-              <IconArrowDown className="absolute -right-5 top-2 h-5 w-5 cursor-pointer" />
+              <div className="flex items-center space-x-2">
+                <IconUser className="h-6 w-6" />
+                <IconArrowDown className="h-5 w-5 cursor-pointer" />
+              </div>
             </div>
           </div>
         </div>
 
         {/* horizontal menu */}
-        <ul className="horizontal-menu hidden border-t border-[#ebedf2] bg-white px-6 py-1.5 font-semibold text-black dark:border-[#191e3a] dark:bg-black dark:text-white-dark lg:space-x-1.5 xl:space-x-8 rtl:space-x-reverse">
+        <ul className="horizontal-menu border-top hidden border-[#ebedf2] bg-white px-6 py-1.5 font-semibold text-black dark:border-[#191e3a] dark:bg-black dark:text-white-dark lg:space-x-1.5 xl:space-x-8 rtl:space-x-reverse">
           <li className="menu nav-item relative">
             <button type="button" className="nav-link">
               <div className="flex items-center">

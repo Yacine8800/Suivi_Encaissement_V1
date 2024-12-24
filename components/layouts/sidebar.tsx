@@ -114,9 +114,9 @@ const Sidebar = () => {
       case "MES ENCAISEMENTS":
         return t("Encaissements");
       case "RECLAMATION":
-        return t("Réclamation");
+        return t("Réclamations");
       case "RAPPROCHEMENT":
-        return t("Rapprochement");
+        return t("Rapprochements");
       case "HABILITATIONS":
         return t("Habilitations");
       case "UTILISATEURS":
