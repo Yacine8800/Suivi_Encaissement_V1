@@ -1,14 +1,22 @@
-import ComponentsDashboardAnalytics from "@/components/dashboard/parent-encaissement";
-import DetailEncaissmentvalider from "@/components/datatables/detail-encaissement-validate";
-import { Metadata } from "next";
+// import ComponentsDashboardAnalytics from "@/components/dashboard/parent-encaissement";
+
+// import { Metadata } from "next";
+// import React from "react";
+
+// export const metadata: Metadata = {
+//   title: "Détail",
+// };
+
+// const View = () => {
+//   return <DetailEncaissmentvalider />;
+// };
+
+// export default View;
+
 import React from "react";
 
-export const metadata: Metadata = {
-  title: "Détail",
+const page = () => {
+  return <div></div>;
 };
 
-const View = () => {
-  return <DetailEncaissmentvalider />;
-};
-
-export default View;
+export default page;

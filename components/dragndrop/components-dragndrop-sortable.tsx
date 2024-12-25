@@ -136,7 +136,7 @@ const ComponentsDragndropSortable = () => {
                           <Link
                             href="#"
                             className="btn btn-success btn-sm px-5 py-2"
-                            onClick={() => openRoleModal(true, item)} // mode modification
+                            onClick={() => openRoleModal(true, item)}
                           >
                             Modifier
                           </Link>
