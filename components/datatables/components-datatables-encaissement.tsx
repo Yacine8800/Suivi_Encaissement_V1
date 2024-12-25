@@ -1724,15 +1724,11 @@ const ComponentsDatatablesColumnChooser: React.FC<
               loading ? (
                 <>
                   <span className="delay-800 mt-2 animate-pulse text-black">
-                    {" "}
                     Chargement en cours
                   </span>
                   <div className="mt-2 flex items-center justify-center space-x-2">
                     <span className="h-2 w-2 animate-pulse rounded-full bg-primary"></span>
-                    <span className="h-2 w-2 animate-pulse rounded-full bg-primary delay-200"></span>
-                    <span className="delay-400 h-2 w-2 animate-pulse rounded-full bg-primary"></span>
-                    <span className="delay-600 h-2 w-2 animate-pulse rounded-full bg-primary"></span>
-                    <span className="delay-800 h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+                    ...
                   </div>
                 </>
               ) : (
