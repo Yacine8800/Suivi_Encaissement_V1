@@ -137,6 +137,9 @@ const Header = () => {
                 offset={[0, 8]}
                 placement={`${isRtl ? "bottom-start" : "bottom-end"}`}
                 btnClassName="relative group block top-2"
+                button={
+                  <IconUser className=" h-6 w-8 shrink-0 items-center justify-center align-middle" />
+                }
               >
                 <ul className="w-[430px] !py-0 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
                   <li>
@@ -177,7 +180,6 @@ const Header = () => {
                 </ul>
               </Dropdown>
               <div className="flex items-center space-x-2">
-                <IconUser className="h-6 w-6" />
                 <IconArrowDown className="h-5 w-5 cursor-pointer" />
               </div>
             </div>
