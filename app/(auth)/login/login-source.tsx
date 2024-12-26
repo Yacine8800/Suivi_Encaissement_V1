@@ -7,7 +7,9 @@ import ForgotPasswordModal from "@/components/auth/components/modals/ForgotPassw
 import { useRouter } from "next/navigation";
 import IconDownload from "@/components/icon/icon-download";
 import { login } from "@/store/reducers/auth/user.slice";
-import { useAppDispatch } from "@/store";
+import { TRootState, useAppDispatch } from "@/store";
+import { Toastify } from "@/utils/toast";
+import { useSelector } from "react-redux";
 
 const ComponentsAuthLoginForm = () => {
   const router = useRouter();
@@ -23,21 +25,11 @@ const ComponentsAuthLoginForm = () => {
   const [background, setBackground] = useState(defaultBackground);
   const [isCustomBackground, setIsCustomBackground] = useState(false);
 
-  // useEffect(() => {
-  //   const savedBackground = localStorage.getItem("userBackground");
-  //   if (savedBackground) {
-  //     setBackground(savedBackground);
-  //     setIsCustomBackground(true);
-  //   }
-  // }, []);
-
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedBackground = localStorage.getItem("userBackground");
-      if (savedBackground) {
-        setBackground(savedBackground);
-        setIsCustomBackground(true);
-      }
+    const savedBackground = localStorage.getItem("userBackground");
+    if (savedBackground) {
+      setBackground(savedBackground);
+      setIsCustomBackground(true);
     }
   }, []);
 
@@ -67,12 +59,18 @@ const ComponentsAuthLoginForm = () => {
     }
   };
 
-  const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  const user = useSelector((state: TRootState) => state.auth?.user);
 
+  const { firstname = "", lastname = "" } = user || {};
+
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const submitForm = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!credential || !password) {
-      alert("Veuillez entrer un email ou un matricule et un mot de passe.");
+      Toastify(
+        "error",
+        "Veuillez entrer un email ou un matricule et un mot de passe."
+      );
       return;
     }
 
@@ -80,10 +78,14 @@ const ComponentsAuthLoginForm = () => {
 
     const result = await dispatch(login({ credential, password }));
     if (login.fulfilled.match(result)) {
+      Toastify(
+        "success",
+        `Félicitation ${firstname} ${lastname} vous etes connecté avec succès`
+      );
       router.push("/dashboard");
     } else {
       setIsAnimating(false);
-      alert("Échec de la connexion. Vérifiez vos identifiants.");
+      Toastify("error", "Échec de la connexion. Vérifiez vos identifiants.");
     }
   };
 
@@ -99,7 +101,7 @@ const ComponentsAuthLoginForm = () => {
     >
       {/* Bouton flottant pour uploader l'image */}
       <div className="fixed bottom-0 right-0 z-30 -translate-y-1/2 transform">
-        <label htmlFor="file-upload" className="mr-4 cursor-pointer">
+        <label htmlFor="file-upload" className="cursor-pointer">
           <div className="flex items-center gap-2 rounded-[10px] bg-white p-3 shadow-lg hover:bg-orange-100">
             <IconDownload className="h-6 w-6 text-orange-500" />
             <span className="text-sm font-medium text-orange-500">
