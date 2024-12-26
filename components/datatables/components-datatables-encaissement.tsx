@@ -1721,19 +1721,23 @@ const ComponentsDatatablesColumnChooser: React.FC<
               `Affichage de ${from} à ${to} sur ${totalRecords} entrées`
             }
             noRecordsText={
-              loading ? (
-                <>
-                  <span className="delay-800 mt-2 animate-pulse text-black">
-                    Chargement en cours
-                  </span>
-                  <div className="mt-2 flex items-center justify-center space-x-2">
-                    <span className="h-2 w-2 animate-pulse rounded-full bg-primary"></span>
-                    ...
-                  </div>
-                </>
-              ) : (
-                "Aucune donnée disponible"
-              )
+              loading
+                ? ((
+                    <>
+                      <span className="delay-800 mt-2 animate-pulse text-black">
+                        Chargement en cours
+                      </span>
+                      <div className="mt-2 flex items-center justify-center space-x-2">
+                        <span className="h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+                        <span className="h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+                        <span className="h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+                        <span className="h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+                        <span className="h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+                        <span className="h-2 w-2 animate-pulse rounded-full bg-primary"></span>
+                      </div>
+                    </>
+                  ) as unknown as string)
+                : ("Aucune donnée disponible" as string)
             }
           />
         </div>
