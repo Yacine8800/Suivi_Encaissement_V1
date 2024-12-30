@@ -1299,9 +1299,11 @@ const ComponentsDatatablesColumnChooser: React.FC<
         </div>
       )}
       {isConnectionWeak && !isOffline && (
-        <div className="fixed left-0 top-12 flex w-full bg-red-500 py-2 text-center  text-black">
-          Votre connexion Internet est faible. Certaines fonctionnalités
-          pourraient être affectées.
+        <div className="fixed left-0 top-12 flex w-full justify-center">
+          <div className="bg-red-500 px-4 py-2 text-center text-black">
+            Votre connexion Internet est faible. Certaines fonctionnalités
+            pourraient être affectées.
+          </div>
         </div>
       )}
       <div className=" mt-9">

@@ -16,6 +16,7 @@ import { fetchDataReleve } from "@/store/reducers/encaissements/relevé-slice";
 import { DataReverse } from "@/utils/interface";
 import { EStatutEncaissement } from "@/utils/enums";
 import getUserHabilitation from "@/utils/getHabilitation";
+import IconArchive from "../icon/icon-archive";
 
 const ComponentsDashboardValider = () => {
   const dispatch = useDispatch<TAppDispatch>();
@@ -67,7 +68,7 @@ const ComponentsDashboardValider = () => {
     {
       id: EStatutEncaissement.CLOTURE,
       label: "Encaissements Clôturés",
-      icon: IconCircleCheck,
+      icon: IconArchive,
       habilitationName: "ENCAISSEMENT CLOTURE",
     },
   ];
