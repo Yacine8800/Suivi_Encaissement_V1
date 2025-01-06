@@ -77,9 +77,7 @@ export const login = createAsyncThunk(
         `${API_AUTH_SUIVI}/auth/sign-in`,
         loginPayload,
         {
-          headers: {
-            location: `${location.latitude},${location.longitude}`, // Ajout de la localisation aux headers
-          },
+          headers: { location: `${location.latitude},${location.longitude}` },
         }
       );
 
