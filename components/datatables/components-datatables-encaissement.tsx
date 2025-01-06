@@ -69,6 +69,7 @@ interface DataReverse {
   "Ecart(B-C)"?: any;
   "Observation(A-B)"?: string;
   "Observation(B-C)"?: string;
+  "Observation rejet"?: string;
   compteBanque: string;
 }
 
@@ -276,6 +277,8 @@ const ComponentsDatatablesColumnChooser: React.FC<
   const [selectedRow, setSelectedRow] = useState<DataReverse | null>(null);
   const [observationCaisse, setObservationCaisse] = useState("");
   const [observationBanque, setObservationBanque] = useState("");
+
+  console.log(selectedRow);
 
   const swiperRef = useRef<any>();
 
@@ -2153,6 +2156,16 @@ const ComponentsDatatablesColumnChooser: React.FC<
                       <p className="text-white-dark">
                         Vous permet de voir vos encaissements terminés.
                       </p>
+                    </div>
+
+                    <div className="mb-3 flex flex-wrap items-center justify-center gap-2 rounded-md border border-dashed border-white-light p-4 text-lg">
+                      <label className="font-semibold text-black">
+                        Cause du rejet :
+                      </label>
+                      <span className="whitespace-normal break-words text-center text-red-500">
+                        {/* {selectedRow["Observation rejet"]} */}
+                        Très long message qui doit aller à la ligne...
+                      </span>
                     </div>
 
                     <div className="mb-3 rounded-md border border-dashed border-white-light p-3 dark:border-[#1b2e4b]">

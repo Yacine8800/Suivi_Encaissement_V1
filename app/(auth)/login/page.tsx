@@ -1,5 +1,5 @@
+import ComponentsAuthLoginForm from "@/components/auth/login/loginUser";
 import React from "react";
-import ComponentsAuthLoginForm from "./login-source";
 
 const Page = () => {
   return (
