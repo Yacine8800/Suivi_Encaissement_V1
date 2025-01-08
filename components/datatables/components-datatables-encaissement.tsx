@@ -996,7 +996,19 @@ const ComponentsDatatablesColumnChooser: React.FC<
     displayDescription: "",
   });
 
-  const [ccEmails, setCcEmails] = useState<string[]>([]);
+  const dataDr = getUserPermission();
+
+  const emailConnecte = dataDr?.email;
+
+  const drData = dataDr?.directionRegionales;
+
+  const [principalEmail, setPrincipalEmail] = useState<string>("");
+  const [ccEmails, setCcEmails] = useState<string[]>([emailConnecte]);
+  const [emailSubject, setEmailSubject] = useState<string>("");
+  const [uploadedFiles, setUploadedFiles] = useState<
+    { file: File; preview: string }[]
+  >([]);
+
   const [emailInput, setEmailInput] = useState("");
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -1044,10 +1056,6 @@ const ComponentsDatatablesColumnChooser: React.FC<
     const allData = filterAndMapData(data, statutValidation);
     setRecordsData(allData);
   }, [data, statutValidation]);
-
-  const dataDr = getUserPermission();
-
-  const drData = dataDr?.directionRegionales;
 
   const selectedDRs = drData?.filter((dr: { id: number }) =>
     selectedDRIds.includes(dr.id)
@@ -1170,6 +1178,32 @@ const ComponentsDatatablesColumnChooser: React.FC<
       });
   };
 
+  const handleMultipleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const newFiles = files.map((file) => {
+      const preview =
+        file.type.startsWith("image/") || file.type === "application/pdf"
+          ? URL.createObjectURL(file)
+          : "";
+      return { file, preview };
+    });
+    setUploadedFiles((prevFiles) => [...prevFiles, ...newFiles]);
+  };
+
+  const removeFile = (index: number) => {
+    setUploadedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
+  const clearPreviews = () => {
+    uploadedFiles.forEach((file) => URL.revokeObjectURL(file.preview));
+    setUploadedFiles([]);
+  };
+
+  const handleCloseModal = () => {
+    clearPreviews();
+    setModal17(false);
+  };
+
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = async () => {
@@ -1271,6 +1305,16 @@ const ComponentsDatatablesColumnChooser: React.FC<
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (!modal17) {
+      setPrincipalEmail("");
+      setCcEmails([emailConnecte]);
+      setEmailSubject("");
+      setParams({ description: "", displayDescription: "" });
+      setUploadedFiles([]);
+    }
+  }, [modal17, emailConnecte]);
 
   return (
     <>
@@ -2477,41 +2521,50 @@ const ComponentsDatatablesColumnChooser: React.FC<
             <div className="fixed inset-0 z-[999] overflow-y-auto bg-[black]/60">
               <div className="flex min-h-screen items-start justify-center px-4">
                 <Dialog.Panel className="panel my-8 w-[2200px] max-w-4xl overflow-hidden rounded-lg border-0 p-5 text-black dark:text-white-dark">
-                  <div className="flex items-center justify-center p-5 text-base font-medium text-[#1f2937] dark:text-white-dark/70">
+                  <div className="flex items-center justify-center gap-2 p-5 text-base font-medium text-[#1f2937] dark:text-white-dark/70">
                     <span className="flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 dark:bg-white/10">
                       <IconMail className="h-7 w-7 bg-orange-100 text-orange-500" />
                     </span>
+                    <h1 className="flex justify-center text-2xl font-bold">
+                      NOTIFIER LE BANQUIER
+                    </h1>
                   </div>
+
+                  {/* Email principal */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       À (Email principal)
                     </label>
                     <input
                       type="email"
-                      value={email}
-                      readOnly
-                      className="form-input mt-1 block w-full rounded-md border-gray-300 bg-gray-200 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+                      value={principalEmail}
+                      onChange={(e) => setPrincipalEmail(e.target.value)}
+                      placeholder="Saisissez l'email principal"
+                      className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
                     />
                   </div>
 
+                  {/* CC (Emails supplémentaires) */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       CC (Emails supplémentaires)
                     </label>
-                    <div className="form-input mt-1  flex w-full flex-wrap items-center rounded-md border border-gray-300 bg-white p-2 shadow-sm focus-within:ring-2 focus-within:ring-orange-500 sm:text-sm">
+                    <div className="form-input mt-1 flex w-full flex-wrap items-center rounded-md border border-gray-300 bg-white p-2 shadow-sm focus-within:ring-2 focus-within:ring-orange-500 sm:text-sm">
                       {ccEmails.map((email, index) => (
                         <div
                           key={index}
                           className="mb-1 mr-2 flex items-center rounded bg-orange-100 px-2 py-1 text-sm text-orange-800"
                         >
                           {email}
-                          <button
-                            type="button"
-                            className="ml-2 text-red-500 hover:text-red-700"
-                            onClick={() => removeEmail(index)}
-                          >
-                            &times;
-                          </button>
+                          {email !== emailConnecte && (
+                            <button
+                              type="button"
+                              className="ml-2 text-red-500 hover:text-red-700"
+                              onClick={() => removeEmail(index)}
+                            >
+                              &times;
+                            </button>
+                          )}
                         </div>
                       ))}
                       <input
@@ -2524,25 +2577,23 @@ const ComponentsDatatablesColumnChooser: React.FC<
                       />
                     </div>
                   </div>
-                  {/* <div className="mb-4 h-fit">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Contenu du message
-                  </label>
-                  <textarea
-                    className="form-textarea mt-1 h-48 w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
-                    value={params.description || ""}
-                    onChange={(e) =>
-                      setParams({
-                        ...params,
-                        description: e.target.value,
-                        displayDescription: e.target.value,
-                      })
-                    }
-                    placeholder="Saisissez votre message ici"
-                  ></textarea>
-                </div> */}
 
-                  <div className="h-fit">
+                  {/* Objet */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Objet
+                    </label>
+                    <input
+                      type="text"
+                      value={emailSubject}
+                      onChange={(e) => setEmailSubject(e.target.value)}
+                      placeholder="Saisissez l'objet"
+                      className="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm"
+                    />
+                  </div>
+
+                  {/* Contenu du message */}
+                  <div className="mb-4 h-fit">
                     <ReactQuill
                       theme="snow"
                       value={params.description || ""}
@@ -2558,6 +2609,61 @@ const ComponentsDatatablesColumnChooser: React.FC<
                     />
                   </div>
 
+                  {/* Upload multiple files */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Joindre des fichiers
+                    </label>
+                    <input
+                      type="file"
+                      multiple
+                      onChange={(e) => handleMultipleFileUpload(e)}
+                      className="form-input p-0 file:border-0 file:bg-primary/90 file:px-4 file:py-2 file:font-semibold file:text-white file:hover:bg-primary ltr:file:mr-5 rtl:file:ml-5"
+                    />
+                    <div className="mt-4 grid grid-cols-4 gap-4">
+                      {uploadedFiles.map(({ file, preview }, index) => (
+                        <div
+                          key={index}
+                          className="relative rounded-md border bg-gray-50 p-2"
+                        >
+                          <button
+                            type="button"
+                            className="absolute right-1 top-1 text-red-500 hover:text-red-700"
+                            onClick={() => removeFile(index)}
+                          >
+                            &times;
+                          </button>
+                          {file.type.startsWith("image/") ? (
+                            <img
+                              src={preview}
+                              alt="Aperçu"
+                              className="mx-auto max-h-20 w-auto"
+                            />
+                          ) : file.type === "application/pdf" ? (
+                            <iframe
+                              src={preview}
+                              className="h-20 w-full"
+                              title={`Aperçu PDF ${index}`}
+                            ></iframe>
+                          ) : file.name.endsWith(".xls") ||
+                            file.name.endsWith(".xlsx") ? (
+                            <p className="text-center text-sm text-gray-700">
+                              Aperçu indisponible (Excel)
+                            </p>
+                          ) : (
+                            <p className="text-center text-sm text-gray-700">
+                              Aperçu non pris en charge
+                            </p>
+                          )}
+                          <p className="mt-2 truncate text-center text-xs text-gray-600">
+                            {file.name}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
                   <div className="mt-4 flex items-center justify-end">
                     <button
                       type="button"
