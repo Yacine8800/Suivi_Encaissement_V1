@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import IconEye from "@/components/icon/icon-eye";
+import IconTrashLines from "@/components/icon/icon-trash-lines"; // Importez l'icône de suppression
 import ForgotPasswordModal from "@/components/auth/components/modals/ForgotPasswordModal";
 import { useRouter } from "next/navigation";
 import IconDownload from "@/components/icon/icon-download";
@@ -59,6 +60,19 @@ const ComponentsAuthLoginForm = () => {
     }
   };
 
+  const resetBackground = () => {
+    if (
+      window.confirm(
+        "Êtes-vous sûr de vouloir réinitialiser le fond d'écran par défaut ?"
+      )
+    ) {
+      setBackground(defaultBackground);
+      setIsCustomBackground(false);
+      localStorage.removeItem("userBackground");
+      setSelectedImageName("Aucune image choisie");
+    }
+  };
+
   const user = useSelector((state: TRootState) => state.auth?.user);
 
   const { firstname = "", lastname = "" } = user || {};
@@ -80,7 +94,7 @@ const ComponentsAuthLoginForm = () => {
     if (login.fulfilled.match(result)) {
       Toastify(
         "success",
-        `Félicitation ${firstname} ${lastname} vous etes connecté avec succès`
+        `Félicitation ${firstname} ${lastname} vous êtes connecté avec succès`
       );
       router.push("/dashboard");
     } else {
@@ -99,8 +113,9 @@ const ComponentsAuthLoginForm = () => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Bouton flottant pour uploader l'image */}
-      <div className="fixed bottom-0 right-0 z-30 -translate-y-1/2 transform">
+      {/* Boutons flottants pour uploader et réinitialiser l'image */}
+      <div className="fixed bottom-0 right-0 z-30 flex -translate-y-1/2 transform flex-col items-end gap-2">
+        {/* Bouton d'upload */}
         <label htmlFor="file-upload" className="cursor-pointer">
           <div className="flex items-center gap-2 rounded-[10px] bg-white p-3 shadow-lg hover:bg-orange-100">
             <IconDownload className="h-6 w-6 text-orange-500" />
@@ -117,6 +132,20 @@ const ComponentsAuthLoginForm = () => {
           accept="image/*"
           onChange={handleFileChange}
         />
+
+        {/* Bouton de réinitialisation */}
+        {isCustomBackground && (
+          <button
+            type="button"
+            onClick={resetBackground}
+            className="flex items-center gap-2 rounded-[10px] bg-white p-3 shadow-lg hover:bg-red-100"
+          >
+            <IconTrashLines className="h-6 w-6 text-red-500" />
+            <span className="text-sm font-medium text-red-500">
+              Réinitialiser
+            </span>
+          </button>
+        )}
       </div>
 
       {/* Affichage du fond et autres éléments */}

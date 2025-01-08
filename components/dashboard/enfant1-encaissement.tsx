@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ComponentsDatatablesColumnChooser from "../datatables/components-datatables-encaissement";
 import IconZipFile from "../icon/icon-zip-file";
 import IconCircleCheck from "../icon/icon-circle-check";
 import { ITotal, Paginations } from "@/utils/interface";
+import getUserPermission from "@/utils/user-info";
 
 interface EncaissementComptableProps {
   statutValidation: number;
@@ -44,11 +45,22 @@ const EncaissementComptable: React.FC<EncaissementComptableProps> = ({
     });
   };
 
+  console.log(total);
+
   const getColorClass = (value: number): string => {
     if (value > 0) return "text-success";
     if (value < 0) return "text-danger";
     return "text-black";
   };
+
+  useEffect(() => {
+    if (total.totalDossiers > 0) {
+      const percentage = (total.dossiersClotures / total.totalDossiers) * 100;
+      setExpensesPercentage(percentage);
+    } else {
+      setExpensesPercentage(0);
+    }
+  }, [total.dossiersClotures, total.totalDossiers]);
 
   return (
     <div>
@@ -63,7 +75,7 @@ const EncaissementComptable: React.FC<EncaissementComptableProps> = ({
                 <div style={{ textAlign: "left" }}>
                   <h6>Taux de complétion</h6>
                   <p className="mt-1 text-xs text-[#ED6C03]">
-                    {`${validatedRecords}/${totalRecords} lignes`}
+                    {`${total.dossiersClotures}/${total.totalDossiers} lignes`}
                   </p>
                 </div>
               </button>

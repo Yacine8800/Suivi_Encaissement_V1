@@ -47,6 +47,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import IconRefresh from "../icon/icon-refresh";
 import { Paginations } from "@/utils/interface";
+import getUserPermission from "@/utils/user-info";
 
 interface DataReverse {
   id: number;
@@ -99,7 +100,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
   const [selectedDRIds, setSelectedDRIds] = useState<number[]>([]); // Liste des IDs sélectionnés
   // const [filteredSecteurs, setFilteredSecteurs] = useState<any[]>([]);
 
-  const drData: any[] = useSelector((state: TRootState) => state.dr?.data);
+  // const drData: any[] = useSelector((state: TRootState) => state.dr?.data);
 
   const drLoading = useSelector((state: TRootState) => state.dr?.loading);
 
@@ -278,8 +279,6 @@ const ComponentsDatatablesColumnChooser: React.FC<
   const [observationCaisse, setObservationCaisse] = useState("");
   const [observationBanque, setObservationBanque] = useState("");
 
-  console.log(selectedRow);
-
   const swiperRef = useRef<any>();
 
   const user = useSelector((state: TRootState) => state.auth?.user);
@@ -322,16 +321,16 @@ const ComponentsDatatablesColumnChooser: React.FC<
   };
 
   const baseCols = [
-    {
-      accessor: "caisse",
-      title: "Caisse",
-      sortable: true,
-      render: ({ caisse }: { caisse: string }) => (
-        <div className="cursor-pointer font-semibold text-primary underline hover:no-underline">
-          {`#${caisse}`}
-        </div>
-      ),
-    },
+    // {
+    //   accessor: "caisse",
+    //   title: "Caisse",
+    //   sortable: true,
+    //   render: ({ caisse }: { caisse: string }) => (
+    //     <div className="cursor-pointer font-semibold text-primary underline hover:no-underline">
+    //       {`#${caisse}`}
+    //     </div>
+    //   ),
+    // },
     {
       accessor: "modeEtJournee",
       title: "Journée caisse - Mode de règlement ",
@@ -467,7 +466,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
       render: (row: DataReverse) => {
         const canEditComptable =
           statutValidation === 0 &&
-          hasPermission("ENCAISSEMENT REVERSE", "MODIFIER");
+          hasPermission("ENCAISSEMENTS REVERSES", "MODIFIER");
 
         return (
           <>
@@ -1074,7 +1073,13 @@ const ComponentsDatatablesColumnChooser: React.FC<
     setRecordsData(allData);
   }, [data, statutValidation]);
 
-  const selectedDRs = drData.filter((dr) => selectedDRIds.includes(dr.id));
+  const dataDr = getUserPermission();
+
+  const drData = dataDr?.directionRegionales;
+
+  const selectedDRs = drData?.filter((dr: { id: number }) =>
+    selectedDRIds.includes(dr.id)
+  );
   const selectedSecteurs = secteurData.filter((secteur) =>
     selectedSecteurIds.includes(secteur.id)
   );
@@ -1166,6 +1171,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
   const handleSubmit = () => {
     if (!selectedRow) {
       console.warn("Aucune ligne sélectionnée pour validation.");
+
       return;
     }
 
@@ -1458,7 +1464,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
                   <Tippy
                     content={
                       <div>
-                        {selectedDRs.map((dr) => (
+                        {selectedDRs.map((dr: any) => (
                           <div key={dr.id} className="text-sm">
                             {dr.name}
                           </div>
@@ -1494,7 +1500,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
                         </div>
                       </li>
                     ) : (
-                      drData.map((dr) => (
+                      drData.map((dr: any) => (
                         <li key={dr.id} onClick={(e) => e.stopPropagation()}>
                           <div className="flex items-center px-4 py-1">
                             <label className="cursor-pointer">

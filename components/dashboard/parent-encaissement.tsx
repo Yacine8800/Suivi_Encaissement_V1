@@ -82,8 +82,6 @@ const ComponentsDashboardValider = () => {
     )
   );
 
-  console.log(filteredTabs);
-
   useEffect(() => {
     if (isMounted) {
       dispatch(fetchDataReleve({ id: activeTab.toString() }));
@@ -93,6 +91,8 @@ const ComponentsDashboardValider = () => {
   const dataEncaissementReverse = dataReverse?.result || [];
   const Totaldata = dataReverse?.totals || [];
   const paginate = dataReverse?.pagination || [];
+
+  console.log(Totaldata);
 
   return (
     <div>

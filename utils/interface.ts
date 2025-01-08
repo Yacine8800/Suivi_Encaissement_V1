@@ -40,6 +40,8 @@ export interface ITotal {
   totalMontantRestitutionCaisse: number;
   totalMontantReleve: number;
   totalMontantBordereauBanque: number;
+  totalDossiers: number;
+  dossiersClotures: number;
 }
 
 export interface DataReverse {
