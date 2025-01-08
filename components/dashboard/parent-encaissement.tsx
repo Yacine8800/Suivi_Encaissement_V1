@@ -23,6 +23,8 @@ const ComponentsDashboardValider = () => {
 
   const habilitation = getUserHabilitation();
 
+  console.log(habilitation);
+
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
@@ -45,40 +47,42 @@ const ComponentsDashboardValider = () => {
       id: EStatutEncaissement.EN_ATTENTE,
       label: "Encaissements Reversés",
       icon: IconBarChart,
-      habilitationName: "ENCAISSEMENT REVERSE",
+      habilitationName: "ENCAISSEMENTS REVERSES",
     },
     {
       id: EStatutEncaissement.TRAITE,
       label: "Encaissements Traités",
       icon: IconChecks,
-      habilitationName: "ENCAISSEMENT TRAITÉ",
+      habilitationName: "ENCAISSEMENTS TRAITÉS",
     },
     {
       id: EStatutEncaissement.REJETE,
       label: "Encaissements Rejetés",
       icon: IconXCircle,
-      habilitationName: "ENCAISSEMENT REJETE",
+      habilitationName: "ENCAISSEMENTS REJETES",
     },
     {
       id: EStatutEncaissement.VALIDE,
       label: "Encaissements Validés",
       icon: IconCircleCheck,
-      habilitationName: "ENCAISSEMENT VALIDE",
+      habilitationName: "ENCAISSEMENTS VALIDES",
     },
     {
       id: EStatutEncaissement.CLOTURE,
       label: "Encaissements Clôturés",
       icon: IconArchive,
-      habilitationName: "ENCAISSEMENT CLOTURE",
+      habilitationName: "ENCAISSEMENTS CLOTURES",
     },
   ];
 
-  const filteredTabs = allTabs.filter((tab) =>
+  const filteredTabs = allTabs?.filter((tab) =>
     habilitation.some(
       (h: { name: string; LIRE: boolean }) =>
         h.name === tab.habilitationName && h.LIRE === true
     )
   );
+
+  console.log(filteredTabs);
 
   useEffect(() => {
     if (isMounted) {
