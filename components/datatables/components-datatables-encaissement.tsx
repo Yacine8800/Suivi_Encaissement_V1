@@ -72,6 +72,7 @@ interface DataReverse {
   "Observation(B-C)"?: string;
   "Observation rejet"?: string;
   compteBanque: string;
+  numeroBordereau: string;
 }
 
 const formatNumber = (num: number | undefined): string => {
@@ -331,6 +332,16 @@ const ComponentsDatatablesColumnChooser: React.FC<
     //     </div>
     //   ),
     // },
+    {
+      accessor: "numeroBordereau",
+      title: "Numero Bordereau",
+      sortable: true,
+      render: ({ numeroBordereau }: { numeroBordereau: any }) => (
+        <div className="cursor-pointer font-semibold text-primary underline hover:no-underline">
+          {`#${numeroBordereau}`}
+        </div>
+      ),
+    },
     {
       accessor: "modeEtJournee",
       title: "Journée caisse - Mode de règlement ",
@@ -929,8 +940,6 @@ const ComponentsDatatablesColumnChooser: React.FC<
       buttonsStyling: false,
     });
 
-    let userInput = ""; // Variable pour stocker l'observation saisie
-
     await swalWithBootstrapButtons
       .fire({
         title: "Êtes-vous sûr de vouloir clôturer ?",
@@ -941,51 +950,14 @@ const ComponentsDatatablesColumnChooser: React.FC<
         cancelButtonText: "Annuler",
         reverseButtons: true,
         padding: "2em",
-        html: `
-          <div>
-            <textarea
-              id="reason-textarea"
-              class="form-control w-full border rounded-md p-2 mt-4"
-              rows="4"
-              placeholder="Veuillez indiquer une observation ici..."
-              style="width: 100%; box-sizing: border-box;"
-            ></textarea>
-          </div>
-        `,
-        preConfirm: () => {
-          const textareaValue = (
-            document.getElementById("reason-textarea") as HTMLTextAreaElement
-          )?.value.trim();
-          if (!textareaValue) {
-            Swal.showValidationMessage("Le champ de texte est requis !");
-            return false;
-          }
-          userInput = textareaValue; // Stocke l'observation saisie
-          return true;
-        },
-        didOpen: () => {
-          const confirmButton = Swal.getConfirmButton();
-          const textarea = document.getElementById(
-            "reason-textarea"
-          ) as HTMLTextAreaElement;
-
-          confirmButton?.setAttribute("disabled", "true");
-
-          textarea?.addEventListener("input", () => {
-            if (textarea.value.trim()) {
-              confirmButton?.removeAttribute("disabled");
-            } else {
-              confirmButton?.setAttribute("disabled", "true");
-            }
-          });
-        },
+        // Suppression de la section 'html' avec le textarea
+        // Suppression de 'preConfirm' car il n'y a plus de validation de champ
       })
       .then((result) => {
-        if (result.isConfirmed && userInput) {
-          // Payload à soumettre
+        if (result.isConfirmed) {
+          // Payload à soumettre sans 'observationReclamation'
           const payload = {
             encaissementId, // ID de l'encaissement
-            observationReclamation: userInput, // Observation saisie
             statutValidation: EStatutEncaissement.CLOTURE, // Statut clôturé
           };
 
