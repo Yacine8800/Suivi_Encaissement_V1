@@ -11,7 +11,7 @@ import IconBarChart from "../icon/icon-bar-chart";
 import IconXCircle from "../icon/icon-x-circle";
 import IconChecks from "../icon/icon-checks";
 import IconCircleCheck from "../icon/icon-circle-check";
-import { TAppDispatch } from "@/store";
+import { TAppDispatch, TRootState } from "@/store";
 import { fetchDataReleve } from "@/store/reducers/encaissements/relevé-slice";
 import { DataReverse } from "@/utils/interface";
 import { EStatutEncaissement } from "@/utils/enums";
@@ -23,17 +23,16 @@ const ComponentsDashboardValider = () => {
 
   const habilitation = getUserHabilitation();
 
-  console.log(habilitation);
-
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const dataReverse: DataReverse = useSelector(
-    (state: any) => state.encaissementReleve.data
+  const dataReverse: any = useSelector(
+    (state: TRootState) => state.encaissementReleve.data
   );
 
+  console.log(dataReverse);
   const dataReverseloading: any = useSelector(
     (state: any) => state.encaissementReleve.loading
   );
@@ -76,7 +75,7 @@ const ComponentsDashboardValider = () => {
   ];
 
   const filteredTabs = allTabs?.filter((tab) =>
-    habilitation.some(
+    habilitation?.some(
       (h: { name: string; LIRE: boolean }) =>
         h.name === tab.habilitationName && h.LIRE === true
     )
@@ -92,7 +91,9 @@ const ComponentsDashboardValider = () => {
   const Totaldata = dataReverse?.totals || [];
   const paginate = dataReverse?.pagination || [];
 
-  console.log(Totaldata);
+  console.log(paginate);
+
+  console.log(dataEncaissementReverse, "Mapped data");
 
   return (
     <div>

@@ -85,7 +85,7 @@ const formatNumber = (num: number | undefined): string => {
 };
 
 interface EncaissementComptableProps {
-  statutValidation: number;
+  statutValidation: any;
   data: any[];
   loading: boolean;
   paginate: Paginations;
@@ -99,9 +99,8 @@ const ComponentsDatatablesColumnChooser: React.FC<
 
   const [selectedSecteurIds, setSelectedSecteurIds] = useState<number[]>([]);
   const [selectedDRIds, setSelectedDRIds] = useState<number[]>([]); // Liste des IDs sélectionnés
-  // const [filteredSecteurs, setFilteredSecteurs] = useState<any[]>([]);
 
-  // const drData: any[] = useSelector((state: TRootState) => state.dr?.data);
+  console.log(paginate);
 
   const drLoading = useSelector((state: TRootState) => state.dr?.loading);
 
@@ -122,6 +121,37 @@ const ComponentsDatatablesColumnChooser: React.FC<
       dispatch(fetchSecteurs(selectedDRIds));
     }
   }, [selectedDRIds, dispatch]);
+
+  // useEffect(() => {
+  //   dispatch(fetchDataReleve({ id: statutValidation }));
+  // }, []);
+
+  const handleFilter = () => {
+    const directionRegionalNames = selectedDRs.map(
+      (dr: { name: any }) => dr.name
+    );
+    const codeExplNames = selectedSecteurs.map((secteur) => secteur.code);
+
+    const params: any = {
+      id: statutValidation.toString(), // Assurez-vous que 'id' est une chaîne de caractères
+      directionRegional: directionRegionalNames,
+      codeExpl: codeExplNames,
+      // startDate: dateRange[0] ? dateRange[0].toISOString() : undefined,
+      // endDate: dateRange[1] ? dateRange[1].toISOString() : undefined,
+    };
+
+    dispatch(fetchDataReleve(params));
+  };
+
+  const handleReset = () => {
+    setSelectedDRIds([]);
+    setSelectedSecteurIds([]);
+    setDateRange([jour, lendemain]); // Réinitialise la plage de dates
+    setSearch("");
+
+    // Recharge les données avec les valeurs par défaut
+    dispatch(fetchDataReleve({ id: statutValidation }));
+  };
 
   useEffect(() => {
     const secteurs = secteurData.filter((secteur) =>
@@ -1194,28 +1224,20 @@ const ComponentsDatatablesColumnChooser: React.FC<
     setUploadedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
-  const clearPreviews = () => {
-    uploadedFiles.forEach((file) => URL.revokeObjectURL(file.preview));
-    setUploadedFiles([]);
-  };
-
-  const handleCloseModal = () => {
-    clearPreviews();
-    setModal17(false);
-  };
-
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    try {
-      await dispatch(fetchDataReleve({ id: statutValidation.toString() }));
-    } catch (error) {
-      console.error("Erreur lors de l'actualisation :", error);
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
+  // const handleRefresh = async () => {
+  //   setIsRefreshing(true);
+  //   try {
+  //     // Appeler simplement le thunk avec les paramètres nécessaires
+  //     await dispatch(fetchDataReleve({ id: statutValidation.toString() }));
+  //     console.log("Rafraîchissement réussi.");
+  //   } catch (error) {
+  //     console.error("Erreur lors du rafraîchissement :", error);
+  //   } finally {
+  //     setIsRefreshing(false);
+  //   }
+  // };
 
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= paginate.totalPages) {
@@ -1305,6 +1327,27 @@ const ComponentsDatatablesColumnChooser: React.FC<
       }
     };
   }, []);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    const directionRegionalNames = selectedDRs.map(
+      (dr: { name: any }) => dr.name
+    );
+    const codeExplNames = selectedSecteurs.map((secteur) => secteur.code);
+    try {
+      const params: any = {
+        id: statutValidation.toString(), // Assurez-vous que 'id' est une chaîne de caractères
+        directionRegional: directionRegionalNames,
+        codeExpl: codeExplNames,
+      };
+
+      const result = await dispatch(fetchDataReleve(params));
+    } catch (error) {
+      console.error("Erreur inattendue lors du rafraîchissement :", error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     if (!modal17) {
@@ -1617,10 +1660,18 @@ const ComponentsDatatablesColumnChooser: React.FC<
               </div>
 
               <div className="flex gap-2">
-                <button type="button" className="btn btn-success w-full">
+                <button
+                  type="button"
+                  className="btn btn-success w-full"
+                  onClick={handleFilter}
+                >
                   Filtrer
                 </button>
-                <button type="button" className="btn btn-primary w-full">
+                <button
+                  type="button"
+                  className="btn btn-primary w-full"
+                  onClick={handleReset}
+                >
                   Reinitialiser
                 </button>
               </div>
@@ -1631,24 +1682,25 @@ const ComponentsDatatablesColumnChooser: React.FC<
         <div className="panel datatables">
           <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
             <div>
-              {isRefreshing ? (
-                <button
-                  type="button"
-                  className="btn btn-success flex items-center gap-2"
-                  disabled
-                >
-                  <span className="h-4 w-4 animate-spin rounded-full border-t-2 border-solid border-white"></span>
-                  Chargement en cours...
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="btn btn-success flex items-center gap-2"
-                  onClick={handleRefresh}
-                >
-                  <IconRefresh /> Actualiser
-                </button>
-              )}
+              <button
+                type="button"
+                className={`btn btn-success flex items-center gap-2 ${
+                  isRefreshing ? "cursor-not-allowed" : ""
+                }`}
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+              >
+                {isRefreshing ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-t-2 border-solid border-white"></span>
+                    Chargement en cours...
+                  </>
+                ) : (
+                  <>
+                    <IconRefresh /> Actualiser
+                  </>
+                )}
+              </button>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <button

@@ -9,39 +9,54 @@ export const fetchDataReleve = createAsyncThunk(
     {
       id,
       directionRegional,
-      banque,
-      caisse,
       codeExpl,
-      produit,
-      profile,
+      startDate,
+      endDate,
     }: {
       id: string;
       directionRegional?: string[];
-      banque?: string[];
-      caisse?: string[];
-      codeExpl?: string;
-      produit?: string[];
-      profile?: number;
+      codeExpl?: string[];
+      startDate?: string;
+      endDate?: string;
     },
     { rejectWithValue }
   ) => {
     try {
-      // Construction des paramètres facultatifs
-      const params = new URLSearchParams();
-      if (directionRegional)
-        params.append("directionRegional", JSON.stringify(directionRegional));
-      if (banque) params.append("banque", JSON.stringify(banque));
-      if (caisse) params.append("caisse", JSON.stringify(caisse));
-      if (codeExpl) params.append("codeExpl", codeExpl);
-      if (produit) params.append("produit", JSON.stringify(produit));
-      if (profile !== undefined) params.append("profile", profile.toString());
+      const cleanArray = (arr: string[] | undefined) =>
+        arr?.map((item) => item.trim()) || [];
 
-      // Requête API avec l'ID utilisateur dans l'URL
-      const response = await axiosInstance.get(
-        `${API_AUTH_SUIVI}/encaissements/${id}?${params.toString()}`
-      );
+      const formatArray = (arr: string[] | undefined) =>
+        JSON.stringify(cleanArray(arr));
+
+      const formatDate = (date: string | undefined) => {
+        if (!date) return undefined;
+        const d = new Date(date);
+        const day = d.getDate().toString().padStart(2, "0");
+        const month = (d.getMonth() + 1).toString().padStart(2, "0");
+        const year = d.getFullYear();
+        return `${day}-${month}-${year}`;
+      };
+
+      const params: Record<string, any> = {};
+      if (directionRegional?.length)
+        params["directionRegional"] = formatArray(directionRegional);
+      if (codeExpl?.length) params["codeExpl"] = formatArray(codeExpl);
+      if (startDate) params["startDate"] = formatDate(startDate);
+      if (endDate) params["endDate"] = formatDate(endDate);
+
+      Object.keys(params).forEach((key) => {
+        if (params[key] === undefined) {
+          delete params[key];
+        }
+      });
+
+      const baseURL = `${API_AUTH_SUIVI}/encaissements/${id}`;
+      console.log("URL:", baseURL, "Params:", params);
+
+      const response = await axiosInstance.get(baseURL, { params });
       return response.data;
     } catch (error: any) {
+      console.error("Erreur API:", error.response?.data || error.message);
       return rejectWithValue(
         error.response?.data || "Erreur lors du chargement des données"
       );

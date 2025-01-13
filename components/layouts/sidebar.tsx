@@ -130,7 +130,7 @@ const Sidebar = () => {
 
   const renderMenu = (section: string) => {
     return habilitation
-      .filter((item: { name: string; LIRE: any }) => {
+      ?.filter((item: { name: string; LIRE: any }) => {
         const menu = allowedMenus.find(
           (menu) =>
             menu.name === item.name && menu.section === section && item.LIRE
