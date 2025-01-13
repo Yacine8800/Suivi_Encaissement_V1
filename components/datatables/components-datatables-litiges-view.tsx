@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 const DatatablesLitigesView = (data: any) => {
-  console.log(data);
   // Types des états
   const [observationEcart1, setObservationEcart1] = useState<string>("");
 

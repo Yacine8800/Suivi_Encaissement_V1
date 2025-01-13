@@ -32,7 +32,6 @@ const ComponentsDashboardValider = () => {
     (state: TRootState) => state.encaissementReleve.data
   );
 
-  console.log(dataReverse);
   const dataReverseloading: any = useSelector(
     (state: any) => state.encaissementReleve.loading
   );
@@ -90,10 +89,6 @@ const ComponentsDashboardValider = () => {
   const dataEncaissementReverse = dataReverse?.result || [];
   const Totaldata = dataReverse?.totals || [];
   const paginate = dataReverse?.pagination || [];
-
-  console.log(paginate);
-
-  console.log(dataEncaissementReverse, "Mapped data");
 
   return (
     <div>

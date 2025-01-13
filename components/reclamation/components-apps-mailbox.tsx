@@ -412,7 +412,6 @@ const ComponentsAppsMailbox = () => {
     } else {
       setIds([...ids, id]);
       setMsgChecked(true);
-      console.log({ first: "1" });
     }
   };
 

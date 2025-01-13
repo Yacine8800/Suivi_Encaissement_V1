@@ -51,7 +51,6 @@ export const fetchDataReleve = createAsyncThunk(
       });
 
       const baseURL = `${API_AUTH_SUIVI}/encaissements/${id}`;
-      console.log("URL:", baseURL, "Params:", params);
 
       const response = await axiosInstance.get(baseURL, { params });
       return response.data;

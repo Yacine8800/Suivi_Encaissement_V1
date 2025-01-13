@@ -25,14 +25,14 @@ import deleteProfileReducer from "./permission/delete-habilitation.slice";
 //encaissement
 import datareleveReducer from "./encaissements/relevé-slice";
 import encaissementValidationReducer from "./encaissements/soumission.slice";
+import mailbanqReducer from "./mail/mail.slice";
 
 import themeConfigSlice from "../themeConfigSlice";
 
-// Configuration pour persister uniquement les slices "auth" et "mail"
 const persistConfig = {
   key: "suivi-encaissement",
   storage,
-  whitelist: ["auth", "mail"],
+  whitelist: ["auth", "mail", "sendmail"],
   blacklist: [],
 };
 
@@ -63,6 +63,7 @@ const topReducer = combineReducers({
   //encaissement
   encaissementReleve: datareleveReducer,
   validationEncaissement: encaissementValidationReducer,
+  sendmail: mailbanqReducer,
 });
 
 const rootReducer = (state: any, action: any) => {

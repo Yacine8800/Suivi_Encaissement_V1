@@ -93,13 +93,13 @@ interface EncaissementComptableProps {
   habilitation: any[];
 }
 
-const ComponentsDatatablesColumnChooser: React.FC<
+const ComponentsDatatablesColumnChooserttt: React.FC<
   EncaissementComptableProps
 > = ({ statutValidation, data, loading, paginate, habilitation }) => {
   const dispatch = useDispatch<TAppDispatch>();
 
   const [selectedSecteurIds, setSelectedSecteurIds] = useState<number[]>([]);
-  const [selectedDRIds, setSelectedDRIds] = useState<number[]>([]); // Liste des IDs sélectionnés
+  const [selectedDRIds, setSelectedDRIds] = useState<number[]>([]);
 
   const drLoading = useSelector((state: TRootState) => state.dr?.loading);
 
@@ -921,14 +921,12 @@ const ComponentsDatatablesColumnChooser: React.FC<
       })
       .then((result) => {
         if (result.isConfirmed && userInput) {
-          // Payload à envoyer
           const payload = {
-            encaissementId: selectedRow?.id, // ID de l'encaissement
-            observationReclamation: userInput, // Observation saisie dans le textarea
-            statutValidation: EStatutEncaissement.RECLAMATION, // Statut Rejeté
+            encaissementId: selectedRow?.id,
+            observationReclamation: userInput,
+            statutValidation: EStatutEncaissement.RECLAMATION,
           };
 
-          // Appel à la fonction Redux ou autre logique de soumission
           dispatch(submitEncaissementValidation(payload))
             .unwrap()
             .then((response) => {
@@ -1064,22 +1062,10 @@ const ComponentsDatatablesColumnChooser: React.FC<
     }
   };
 
-  const addEmail = (email: string) => {
-    if (validateEmail(email) && !ccEmails.includes(email)) {
-      setCcEmails((prevEmails) => [...prevEmails, email]);
-      ToastSuccess.fire({
-        text: "Email ajouté avec succès !",
-      });
-    } else {
-      ToastError.fire({
-        text: "Veuillez entrer un email valide et unique.",
-      });
-    }
-  };
-
   const removeToEmail = (index: number) => {
     setToEmails((prevEmails) => prevEmails.filter((_, i) => i !== index));
   };
+
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -1138,15 +1124,13 @@ const ComponentsDatatablesColumnChooser: React.FC<
     }
 
     try {
-      const files = uploadedFiles.map((item) => item.file);
-
       const resultAction = await dispatch(
         sendEmail({
           to: toEmails,
           cc: ccEmails,
           subject: emailSubject,
           text: params.description,
-          attachments: files,
+          attachments: uploadedFiles.map((fileObj) => fileObj.file),
         })
       );
 
@@ -1159,11 +1143,9 @@ const ComponentsDatatablesColumnChooser: React.FC<
         setParams({ description: "", displayDescription: "" });
         setUploadedFiles([]);
       } else {
-        console.error("Échec lors de l'envoi de l'email :", resultAction);
         ToastError.fire({ text: "Échec lors de l'envoi de l'email." });
       }
     } catch (error) {
-      console.error("Erreur inattendue :", error);
       ToastError.fire({ text: "Une erreur inattendue est survenue." });
     }
   };
@@ -2671,7 +2653,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
                     </h1>
                   </div>
 
-                  {/* Emails "To" */}
+                  {/* Emails "To" Multiples */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       À (Emails principaux)
@@ -2703,7 +2685,7 @@ const ComponentsDatatablesColumnChooser: React.FC<
                     </div>
                   </div>
 
-                  {/* Emails "CC" (Emails supplémentaires) */}
+                  {/* CC (Emails supplémentaires) */}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
                       CC (Emails supplémentaires)
@@ -2917,4 +2899,4 @@ const ComponentsDatatablesColumnChooser: React.FC<
   );
 };
 
-export default ComponentsDatatablesColumnChooser;
+export default ComponentsDatatablesColumnChooserttt;

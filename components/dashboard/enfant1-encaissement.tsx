@@ -45,8 +45,6 @@ const EncaissementComptable: React.FC<EncaissementComptableProps> = ({
     });
   };
 
-  console.log(total);
-
   const getColorClass = (value: number): string => {
     if (value > 0) return "text-success";
     if (value < 0) return "text-danger";

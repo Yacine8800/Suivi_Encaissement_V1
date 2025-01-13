@@ -23,8 +23,6 @@ const Sidebar = () => {
   const pathname = usePathname();
   const habilitation = getUserHabilitation();
 
-  console.log(habilitation);
-
   const allowedMenus = [
     {
       id: 1,

@@ -62,15 +62,12 @@ export const metadata: Metadata = {
 
 const Role = ({ modalEdit, selectedRole, onClose }: RoleProps) => {
   const dispatch = useDispatch<TAppDispatch>();
-  console.log("selectedRole", selectedRole);
 
   const [personalInfo, setPersonalInfo] = useState<any>({
     libelle: modalEdit && selectedRole ? selectedRole.text : "",
     description: modalEdit && selectedRole ? selectedRole.name : "",
     permissions: (modalEdit && selectedRole?.permissions) || [],
   });
-
-  console.log("personalInfo.permissions", personalInfo.permissions);
 
   const [errors, setErrors] = useState({
     libelle: "",
